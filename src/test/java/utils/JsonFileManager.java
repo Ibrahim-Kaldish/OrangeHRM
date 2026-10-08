@@ -15,8 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class jsonFileManager {
-    private static final Logger log = LogManager.getLogger(jsonFileManager.class);
+public class JsonFileManager {
+    private static final Logger log = LogManager.getLogger(JsonFileManager.class);
     private static final Type TYPE = new TypeToken<LinkedHashMap<String, Object>>() {}.getType();
 
     private final LinkedHashMap<String, Object> data;
@@ -26,7 +26,7 @@ public class jsonFileManager {
      *
      * @param jsonPath the path to the JSON file
      */
-    public jsonFileManager(String jsonPath) {
+    public JsonFileManager(String jsonPath) {
         if (jsonPath == null || jsonPath.isEmpty()) {
             log.error("❌ JSON path is null or empty");
             throw new IllegalArgumentException("JSON path must be provided");
@@ -204,5 +204,33 @@ public class jsonFileManager {
 
     private String normalize(String text) {
         return text.toLowerCase().replaceAll("\\s+", "");
+    }
+
+    public Object[][] getUsersByKey (String key){
+        List<Map<String,String>> users = (List<Map<String,String>>)getValueByKey(key);
+        Object res[][] = new Object[users.size()][2];
+        int i = 0;
+        for (Map<String,String> user : users){
+            res[i][0] = user.get("username");
+            res[i][1] = user.get("password");
+            i++;
+        }
+        return res;
+    }
+
+    public Object[][] getEmployeesByKey (String key){
+        List<Map<String,String>> employees = (List<Map<String,String>>)getValueByKey(key);
+        Object res[][] = new Object[employees.size()][6];
+        int i = 0;
+        for (Map<String,String> emp : employees){
+            res[i][0] = emp.get("firstName");
+            res[i][1] = emp.get("middleName");
+            res[i][2] = emp.get("lastName");
+            res[i][3] = emp.get("employeeId");
+            res[i][4] = emp.get("username");
+            res[i][5] = emp.get("password");
+            i++;
+        }
+        return res;
     }
 }
