@@ -4,15 +4,30 @@
     "password": "admin123"
   },
   "valid": [
-    {"username": "kaldish1", "password": "a234567"},
-    {"username": "kaldish2", "password": "a234567"},
-    {"username": "kaldish3"  , "password": "a234567"},
-    {"username": "kaldish4" , "password": "a234567"}
+    {"username": "jsmith1",     "password": "a234567"},
+    {"username": "mjohnson2",   "password": "a234567"},
+    {"username": "edavis3",     "password": "a234567"},
+    {"username": "obrown4",     "password": "a234567"},
+    {"username": "ewilson5",    "password": "a234567"},
+    {"username": "smiller6",    "password": "a234567"},
+    {"username": "dgarcia7",    "password": "a234567"},
+    {"username": "amartinez8",  "password": "a234567"},
+    {"username": "manderson9",  "password": "a234567"},
+    {"username": "mthompson10", "password": "a234567"}
   ],
 
   "invalid": [
-    {"username": "youssef2", "password": "a234567"},
-    {"username": "ahmed4"  , "password": "a234567"},
-    {"username": "marima5" , "password": "a234567"}
-    ]
+    {"username": "jsmith1",     "password": "wrongpass"},
+    {"username": "mjohnson2",   "password": "wrongpass"},
+    {"username": "edavis3",     "password": "wrongpass"},
+    {"username": "obrown4",     "password": "wrongpass"},
+    {"username": "ewilson5",    "password": "wrongpass"},
+    {"username": "smiller6",    "password": "wrongpass"},
+    {"username": "dgarcia7",    "password": "wrongpass"},
+    {"username": "amartinez8",  "password": "wrongpass"},
+    {"username": "manderson9",  "password": "wrongpass"},
+    {"username": "mthompson10", "password": "wrongpass"},
+    {"username": "nouser99",    "password": "a234567"},
+    {"username": "",            "password": "a234567"}
+  ]
 }

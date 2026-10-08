@@ -2,7 +2,8 @@
   "url": "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login",
   "dashboard": "https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index",
   "PIM": "https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList",
-  "addEmployee":"https://opensource-demo.orangehrmlive.com/web/index.php/pim/addEmployee"
+  "addEmployee":"https://opensource-demo.orangehrmlive.com/web/index.php/pim/addEmployee",
+  "admin": "https://opensource-demo.orangehrmlive.com/web/index.php/admin/viewSystemUsers"
 }
 
 
