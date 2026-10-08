@@ -1,5 +1,6 @@
 package pages.addEmployeeTest;
 
+import dataProviders.DataProviderTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
@@ -13,8 +14,8 @@ import java.util.Map;
 
 
 public class AddEmployeeTest extends BaseTest {
-    @Test
-    public void addEmployee() throws InterruptedException{
+    @Test (dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
+    public void addEmployee(String... employee) throws InterruptedException{
 
         LoginPage loginPage = new LoginPage(driver);
         DashboardPage dashboardPage = new DashboardPage(driver);
@@ -38,34 +39,29 @@ public class AddEmployeeTest extends BaseTest {
         pimPage.clickAddEmployeeLink();
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("addEmployee")));
 
-        Map<String, String> employee = (Map<String, String>) jsonFileManagerUsers.getValueByKey("employee");
-
-        addEmployeePage.enterFirstName(employee.get("firstName"));
-        addEmployeePage.enterMiddleName(employee.get("middleName"));
-        addEmployeePage.enterLastName(employee.get("lastName"));
-        addEmployeePage.enterEmployeeId(employee.get("employeeId"));
+        addEmployeePage.enterFirstName(employee[0]);
+        addEmployeePage.enterMiddleName(employee[1]);
+        addEmployeePage.enterLastName(employee[2]);
+        addEmployeePage.enterEmployeeId(employee[3]);
 
         addEmployeePage.clickCreateLoginDetails();
-        addEmployeePage.enterUsername(employee.get("username"));
+        addEmployeePage.enterUsername(employee[4]);
         addEmployeePage.selectEnabled();
         WebElement enabled = driver.findElement(By.xpath("//label[normalize-space()='Enabled']//input[@type='radio']"));
 
         softAssert.assertTrue(enabled.isSelected());
 
-        addEmployeePage.enterPassword(employee.get("password"));
-        addEmployeePage.enterConfirmPassword(employee.get("password"));
+        addEmployeePage.enterPassword(employee[5]);
+        addEmployeePage.enterConfirmPassword(employee[5]);
         addEmployeePage.clickSave();
         Thread.sleep(3000);
 
         dashboardPage.clickLogout();
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("url")));
 
-        Map<String, String> user = (Map<String, String>) jsonFileManagerUsers.getValueByKey("user");
-
-        loginPage.enterUsername(user.get("username"));
-        loginPage.enterPassword(user.get("password"));
+        loginPage.enterUsername(employee[4]);
+        loginPage.enterPassword(employee[5]);
         loginPage.clickLogin();
-
 
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")));
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
