@@ -1,3 +1,18 @@
 {
-  "user1": ["Admin", "admin123"]
+  "admin": {
+    "username": "Admin",
+    "password": "admin123"
+  },
+  "valid": [
+    {"username": "kaldish1", "password": "a234567"},
+    {"username": "kaldish2", "password": "a234567"},
+    {"username": "kaldish3"  , "password": "a234567"},
+    {"username": "kaldish4" , "password": "a234567"}
+  ],
+
+  "invalid": [
+    {"username": "youssef2", "password": "a234567"},
+    {"username": "ahmed4"  , "password": "a234567"},
+    {"username": "marima5" , "password": "a234567"}
+    ]
 }
