@@ -2,7 +2,10 @@
 <suite name = "MySuite">
     <test name = "LoginTests">
         <classes>
-           <class name = "pages.loginTest.ValidLogin"/>
+            <class name="pages.addEmployeeTest.AddEmployeeTest"/>
+            <class name="pages.addUserTest.AddUserTest"/>
+            <class name = "pages.loginTest.ValidLogin"/>
+            <class name = "pages.loginTest.InvalidLogin"/>
         </classes>
     </test>
 </suite>
