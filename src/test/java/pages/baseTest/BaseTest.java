@@ -11,18 +11,22 @@ import utils.jsonFileManager;
 
 public class BaseTest {
     private static final Logger log = LogManager.getLogger(BaseTest.class);
-    public static jsonFileManager jsonFileManager;
-
+    public static jsonFileManager jsonFileManagerUsers;
+    public static jsonFileManager jsonFileManagerUrls;
     public static WebDriver driver;
     public SoftAssert softAssert;
 
     @BeforeMethod
     public void setUp() {
-        jsonFileManager = new jsonFileManager("src/main/resources/file.json");
+        jsonFileManagerUsers = new jsonFileManager("src/main/resources/users.json");
+        jsonFileManagerUrls = new jsonFileManager("src/main/resources/urls.json");
+        softAssert = new SoftAssert();
+
         log.info("🚀 Starting Chrome driver");
         driver = GetChromeDriver.getDriver();
         log.debug("🔍 Driver created: {}", driver);
-        driver.get("https://www.saucedemo.com");
+        driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+
     }
 
     @AfterMethod
