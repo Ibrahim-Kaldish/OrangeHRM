@@ -7,6 +7,7 @@ import pages.baseTest.BaseTest;
 import pages.loginPage.LoginPage;
 
 import java.util.List;
+import java.util.Map;
 
 public class DashboardTest extends BaseTest {
     @Test
@@ -16,10 +17,10 @@ public class DashboardTest extends BaseTest {
         PIMPage pimPage = new PIMPage(driver);
 
 
-        List<String> user = (List<String>) jsonFileManagerUsers.getValueByKey("user1");
+        Map<String,String> user = (Map<String,String>) jsonFileManagerUsers.getValueByKey("admin");
 
-        loginPage.enterUsername(user.get(0));
-        loginPage.enterPassword(user.get(1));
+        loginPage.enterUsername(user.get("username"));
+        loginPage.enterPassword(user.get("password"));
         loginPage.clickLogin();
 
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")));
