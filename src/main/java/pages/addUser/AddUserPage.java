@@ -129,7 +129,7 @@ public class AddUserPage extends BasePage {
         input.clear();
         input.sendKeys(employeeName);
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         findElement(employeeSuggestions).click();
         log.info("👤 Selected employee {}", employeeName);
