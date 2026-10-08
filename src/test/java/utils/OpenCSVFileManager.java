@@ -44,7 +44,7 @@ public class OpenCSVFileManager {
     }
 
     public Object[][] getRowsAsArray() {
-        int st = 2, end = 5;
+        int st = 0, end = rows.size();
         List<String[]> rows = getRows().subList(st, end);
 
         Object[][] array = new Object[rows.size()][];
@@ -178,70 +178,4 @@ public class OpenCSVFileManager {
         return getSpecificColumnData(columnIndex).size();
     }
 
-    public String formatAll(List<String> columns, List<List<String>> ans) {
-        int colWidth = "Column".length();
-        int wordsWidth = "Word(s)".length();
-        List<String> wordsText = new ArrayList<>();
-
-        for (int i = 0; i < columns.size(); i++) {
-            List<String> subAns = ans.get(i);
-            List<String> words = new ArrayList<>(subAns.subList(0, subAns.size() - 1));
-            Collections.sort(words);
-            String text = String.join(", ", words);
-            wordsText.add(text);
-            colWidth = Math.max(colWidth, columns.get(i).length());
-            wordsWidth = Math.max(wordsWidth, text.length());
-        }
-
-        String line = "+-" + "-".repeat(colWidth) + "-+-------+-" + "-".repeat(wordsWidth) + "-+";
-        String row = "| %-" + colWidth + "s | %5s | %-" + wordsWidth + "s |%n";
-
-        StringBuilder sb = new StringBuilder("\n📊 Most frequent word(s) per column\n");
-        sb.append(line).append("\n");
-        sb.append(String.format(row, "Column", "Count", "Word(s)"));
-        sb.append(line).append("\n");
-        for (int i = 0; i < columns.size(); i++) {
-            List<String> subAns = ans.get(i);
-            sb.append(String.format(row, columns.get(i), subAns.get(subAns.size() - 1), wordsText.get(i)));
-        }
-        sb.append(line);
-        return sb.toString();
-    }
-
-    /**
-     * Finds the most frequent words across the given values, ignoring case.
-     * The last element of the result is the highest count, as a string.
-     */
-    public List<String> findMaxFrequentWordsInCloumn(List<String> values) {
-        Map<String, Integer> counts = new HashMap<>();
-        int max = 0;
-        for (String line : values) {
-            for (String word : line.toLowerCase().trim().split("\\s+")) {
-                if (word.isEmpty()) {
-                    continue;
-                }
-                max = Math.max(max, counts.merge(word, 1, Integer::sum));
-            }
-        }
-
-        List<String> subAns = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : counts.entrySet()) {
-            if (entry.getValue() == max) {
-                subAns.add(entry.getKey());
-            }
-        }
-        subAns.add(String.valueOf(max));
-        log.debug("🔤 Max frequency {} for {} candidate word(s)", max, subAns.size() - 1);
-        return subAns;
-    }
-
-    public List<List<String>> maxFrequentWordLogic() {
-        List<List<String>> ans = new ArrayList<>();
-        List<String> colNames = getColumns();
-        for (String colName : colNames) {
-            ans.add(findMaxFrequentWordsInCloumn(getSpecificColumnData(colName)));
-        }
-        log.info(formatAll(colNames, ans));
-        return ans;
-    }
 }
