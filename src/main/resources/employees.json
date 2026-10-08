@@ -1,0 +1,15 @@
+{
+  "valid": [
+    {"firstName": "Ibrahim" , "middleName": "Ali", "lastName": "Kaldish", "employeeId": "1", "username": "kaldish1", "password": "a234567"},
+    {"firstName": "Youssef" , "middleName": "Ali", "lastName": "Kaldish", "employeeId": "2", "username": "kaldish2", "password": "a234567"},
+    {"firstName": "Zein"    , "middleName": "Ali", "lastName": "Kaldish3","employeeId": "3", "username": "kaldish3", "password": "a234567"},
+    {"firstName": "yassmein", "middleName": "Ali", "lastName": "Kaldish", "employeeId": "4", "username": "kaldish4", "password": "a234567"}
+  ],
+
+  "invalid": [
+    {"firstName": "Ibrahim" , "middleName": "Ali", "lastName": "Kaldish", "employeeId": "1", "username": "kaldish1", "password": "a234567"},
+    {"firstName": "Youssef" , "middleName": "Ali", "lastName": "Kaldish", "employeeId": "2", "username": "kaldish2", "password": "a234567"},
+    {"firstName": "Zein"    , "middleName": "Ali", "lastName": "Kaldish3","employeeId": "3", "username": "kaldish3", "password": "a234567"},
+    {"firstName": "yassmein", "middleName": "Ali", "lastName": "Kaldish", "employeeId": "4", "username": "kaldish4", "password": "a234567"}
+  ]
+}
