@@ -43,6 +43,17 @@ public class OpenCSVFileManager {
         return new ArrayList<>(rows);
     }
 
+    public Object[][] getRowsAsArray() {
+        int st = 2, end = 5;
+        List<String[]> rows = getRows().subList(st, end);
+
+        Object[][] array = new Object[rows.size()][];
+        for (int i = 0; i < rows.size(); i++) {
+            array[i] = rows.get(i);
+        }
+        return array;
+    }
+
     /**
      * Returns the column names from the header row.
      */

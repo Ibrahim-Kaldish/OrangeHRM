@@ -4,11 +4,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.DataProvider;
 import utils.JsonFileManager;
+import utils.OpenCSVFileManager;
 
 public class DataProviderTest {
     private static final Logger log = LogManager.getLogger(DataProviderTest.class);
     public static JsonFileManager jsonFileManagerUsers = new JsonFileManager("src/main/resources/users.json");
     public static JsonFileManager jsonFileManagerEmployees = new JsonFileManager("src/main/resources/employees.json");
+    public static OpenCSVFileManager openCSVFileManager = new OpenCSVFileManager("src/main/resources/usernames.csv");
 
     @DataProvider (name = "validCredentials")
     public Object[][] validCredentials() {
@@ -49,4 +51,15 @@ public class DataProviderTest {
         }
         return data;
     }
+
+    @DataProvider (name = "validUsernames")
+    public Object[][] validUsernames() {
+        log.info("📋 Supplying valid Usernames data");
+        Object[][] data = openCSVFileManager.getRowsAsArray();
+        if (data.length == 0) {
+            log.warn("⚠️ Valid Usernames returned no rows");
+        }
+        return data;
+    }
+
 }
