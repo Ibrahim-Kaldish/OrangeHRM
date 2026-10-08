@@ -209,7 +209,7 @@ public class JsonFileManager {
     public Object[][] getUsersByKey (String key){
 
         List<Map<String,String>> users = (List<Map<String,String>>)getValueByKey(key);
-        int i = 0, st = 0, end = users.size();
+        int i = 0, st = 0, end = 1;
         users = users.subList(st, end);
         Object res[][] = new Object[users.size()][2];
 
@@ -224,7 +224,7 @@ public class JsonFileManager {
     public Object[][] getEmployeesByKey (String key){
 
         List<Map<String,String>> employees = (List<Map<String,String>>)getValueByKey(key);
-        int i = 0, st = 0, end = employees.size();
+        int i = 0, st = 0, end = 1;
         employees = employees.subList(st, end);
         Object res[][] = new Object[employees.size()][6];
 

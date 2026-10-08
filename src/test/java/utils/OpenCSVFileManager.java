@@ -44,7 +44,7 @@ public class OpenCSVFileManager {
     }
 
     public Object[][] getRowsAsArray() {
-        int st = 0, end = rows.size();
+        int st = 0, end = 1;
         List<String[]> rows = getRows().subList(st, end);
 
         Object[][] array = new Object[rows.size()][];
