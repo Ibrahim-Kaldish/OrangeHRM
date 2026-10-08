@@ -38,10 +38,12 @@ public class AddUserTest extends BaseTest {
         addUserPage.enterConfirmPassword(user[5]);
         addUserPage.clickSave();
 
+        Thread.sleep(5000);
+
         softAssert.assertEquals(driver.getCurrentUrl(), jsonFileManagerUrls.getValueByKey("admin"));
 
         softAssert.assertAll();
 
-        Thread.sleep(5000);
+
     }
 }
