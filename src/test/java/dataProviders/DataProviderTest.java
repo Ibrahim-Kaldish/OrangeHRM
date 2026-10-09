@@ -10,7 +10,9 @@ public class DataProviderTest {
     private static final Logger log = LogManager.getLogger(DataProviderTest.class);
     public static JsonFileManager jsonFileManagerUsers = new JsonFileManager("src/main/resources/users.json");
     public static JsonFileManager jsonFileManagerEmployees = new JsonFileManager("src/main/resources/employees.json");
-    public static OpenCSVFileManager openCSVFileManager = new OpenCSVFileManager("src/main/resources/usernames.csv");
+    public static OpenCSVFileManager openCSVFileManagerUsernames = new OpenCSVFileManager("src/main/resources/usernames.csv");
+    public static OpenCSVFileManager openCSVFileManagerEmployees = new OpenCSVFileManager("src/main/resources/employees.csv");
+    public static OpenCSVFileManager openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("src/main/resources/invalidEmployees.csv");
 
     @DataProvider (name = "validCredentials")
     public Object[][] validCredentials() {
@@ -35,7 +37,7 @@ public class DataProviderTest {
     @DataProvider (name = "validEmployeesData")
     public Object[][] validEmployeesData() {
         log.info("📋 Supplying valid Employees data");
-        Object[][] data = jsonFileManagerEmployees.getEmployeesByKey("valid");;
+        Object[][] data = openCSVFileManagerEmployees.getRowsAsArray();;
         if (data.length == 0) {
             log.warn("⚠️ valid Employees returned no rows");
         }
@@ -45,7 +47,7 @@ public class DataProviderTest {
     @DataProvider (name = "invalidEmployeesData")
     public Object[][] invalidEmployeesData() {
         log.info("📋 Supplying invalid Employees data");
-        Object[][] data = jsonFileManagerEmployees.getEmployeesByKey("invalid");;
+        Object[][] data = openCSVFileManagerInvalidEmployees.getRowsAsArray();
         if (data.length == 0) {
             log.warn("⚠️ Invalid Employees returned no rows");
         }
@@ -55,7 +57,7 @@ public class DataProviderTest {
     @DataProvider (name = "validUsernames")
     public Object[][] validUsernames() {
         log.info("📋 Supplying valid Usernames data");
-        Object[][] data = openCSVFileManager.getRowsAsArray();
+        Object[][] data = openCSVFileManagerUsernames.getRowsAsArray();
         if (data.length == 0) {
             log.warn("⚠️ Valid Usernames returned no rows");
         }
