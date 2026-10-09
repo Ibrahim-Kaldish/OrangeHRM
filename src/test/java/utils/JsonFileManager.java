@@ -220,23 +220,4 @@ public class JsonFileManager {
         }
         return res;
     }
-
-    public Object[][] getEmployeesByKey (String key){
-
-        List<Map<String,String>> employees = (List<Map<String,String>>)getValueByKey(key);
-        int i = 0, st = 0, end = 1;
-        employees = employees.subList(st, end);
-        Object res[][] = new Object[employees.size()][6];
-
-        for (Map<String,String> emp : employees){
-            res[i][0] = emp.get("firstName");
-            res[i][1] = emp.get("middleName");
-            res[i][2] = emp.get("lastName");
-            res[i][3] = emp.get("employeeId");
-            res[i][4] = emp.get("username");
-            res[i][5] = emp.get("password");
-            i++;
-        }
-        return res;
-    }
 }
