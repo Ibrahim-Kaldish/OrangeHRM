@@ -1,7 +1,7 @@
 package pages.addUserTest;
 
 import org.testng.annotations.Test;
-import pages.Dashboardpage.DashboardPage;
+import pages.dashboardPage.DashboardPage;
 import pages.addUser.AddUserPage;
 import pages.baseTest.BaseTest;
 import pages.loginPage.LoginPage;
