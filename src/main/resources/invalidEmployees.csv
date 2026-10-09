@@ -1,0 +1,8 @@
+firstName,middleName,lastName,employeeId,username,password,confirmPassword
+,Robert,Smith,1,jsmith1,a234567,
+Michael,Anthony,,2,mjohnson2,a234567,
+Emily,Grace,Davis,3,,a234567,
+Olivia,Marie,Brown,4,obrown4,abc,
+Ethan,James,Wilson,5,ewilson5,a23,
+Sophia,Lynn,Miller,6,smiller6,,
+Daniel,Lee,Garcia,7,dgarcia7,a234567,b234567
