@@ -1,12 +1,11 @@
 package pages.dashboardTest;
 
 import org.testng.annotations.Test;
-import pages.Dashboardpage.DashboardPage;
+import pages.dashboardPage.DashboardPage;
 import pages.PIMPage.PIMPage;
 import pages.baseTest.BaseTest;
 import pages.loginPage.LoginPage;
 
-import java.util.List;
 import java.util.Map;
 
 public class DashboardTest extends BaseTest {
