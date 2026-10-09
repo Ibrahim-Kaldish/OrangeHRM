@@ -2,10 +2,7 @@ package pages;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -64,5 +61,20 @@ public class BasePage {
             log.warn("⚠️ Expected URL {} but was {}", redirectedUrl, currentUrl);
         }
         return matches;
+    }
+
+    public void typeInto(By locator, String text) {
+        WebElement element = findElement(locator);
+        element.click();
+        element.sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.DELETE);
+
+        String remaining = element.getAttribute("value");
+        if (remaining != null && !remaining.isEmpty()) {
+            log.error("❌ Field {} still contains '{}' after clearing", locator, remaining);
+            throw new IllegalStateException("Field did not clear: " + locator);
+        }
+
+        element.sendKeys(text);
+        log.info("⌨️ Cleared and entered text into {}", locator);
     }
 }
