@@ -4,30 +4,30 @@
     "password": "admin123"
   },
   "valid": [
-    {"username": "jsmith1",     "password": "a234567"},
-    {"username": "mjohnson2",   "password": "a234567"},
-    {"username": "edavis3",     "password": "a234567"},
-    {"username": "obrown4",     "password": "a234567"},
-    {"username": "ewilson5",    "password": "a234567"},
-    {"username": "smiller6",    "password": "a234567"},
-    {"username": "dgarcia7",    "password": "a234567"},
-    {"username": "amartinez8",  "password": "a234567"},
-    {"username": "manderson9",  "password": "a234567"},
-    {"username": "mthompson10", "password": "a234567"}
+    {"username": "jsmith1",     "password": "Kx7#mQ2p"},
+    {"username": "mjohnson2",   "password": "Lw9$tR4z"},
+    {"username": "edavis3",     "password": "Bn3!eY8v"},
+    {"username": "obrown4",     "password": "Hd6%uJ1s"},
+    {"username": "ewilson5",    "password": "Zq2&nP5c"},
+    {"username": "smiller6",    "password": "Fg8*vM3k"},
+    {"username": "dgarcia7",    "password": "Tr4@wC7y"},
+    {"username": "amartinez8",  "password": "Yp1#aS9e"},
+    {"username": "manderson9",  "password": "Nm5$kD2h"},
+    {"username": "mthompson10", "password": "Uc7!xB6j"}
   ],
 
   "invalid": [
-    {"username": "rkapoor21",    "password": "wrongpass"},
-    {"username": "lnakamura22",  "password": "wrongpass"},
-    {"username": "tbaker23",     "password": "wrongpass"},
-    {"username": "sokafor24",    "password": "wrongpass"},
-    {"username": "cdubois25",    "password": "wrongpass"},
-    {"username": "fhassan26",    "password": "wrongpass"},
-    {"username": "pmorales27",   "password": "wrongpass"},
-    {"username": "yzhang28",     "password": "wrongpass"},
-    {"username": "ahernandez29", "password": "wrongpass"},
-    {"username": "elarsen30",    "password": "wrongpass"},
-    {"username": "nouser99",     "password": "a234567"},
-    {"username": "",             "password": "a234567"}
+    {"username": "rkapoor21",    "password": "abc"},
+    {"username": "lnakamura22",  "password": "12345"},
+    {"username": "tbaker23",     "password": "password"},
+    {"username": "sokafor24",    "password": "qwerty"},
+    {"username": "cdubois25",    "password": "letmein"},
+    {"username": "fhassan26",    "password": "hello"},
+    {"username": "pmorales27",   "password": "123456"},
+    {"username": "yzhang28",     "password": "abcdef"},
+    {"username": "ahernandez29", "password": "iloveyou"},
+    {"username": "elarsen30",    "password": "welcome"},
+    {"username": "nouser99",     "password": "Test1234"},
+    {"username": "",             "password": "Test1234"}
   ]
 }
