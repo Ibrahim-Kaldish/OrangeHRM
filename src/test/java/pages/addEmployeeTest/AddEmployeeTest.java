@@ -4,7 +4,7 @@ import dataProviders.DataProviderTest;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
-import pages.Dashboardpage.DashboardPage;
+import pages.dashboardPage.DashboardPage;
 import pages.PIMPage.PIMPage;
 import pages.addEmployeePage.AddEmployeePage;
 import pages.baseTest.BaseTest;
