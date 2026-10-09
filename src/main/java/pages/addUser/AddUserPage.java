@@ -145,13 +145,6 @@ public class AddUserPage extends BasePage {
         log.info("↩️ Clicked Cancel");
     }
 
-    private void typeInto(By locator, String text) {
-        WebElement element = findElement(locator);
-        element.clear();
-        element.sendKeys(text);
-        log.info("⌨️ Entered text into {}", locator);
-    }
-
     private void selectFromDropdown(By dropdownLocator, String optionText) {
         findElement(dropdownLocator).click();
         for (WebElement option : getDropdownOptions()) {

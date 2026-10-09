@@ -1,11 +1,10 @@
 package pages.addEmployeePage;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pages.BasePage;
-
-import java.util.List;
 
 public class AddEmployeePage extends BasePage {
     private final By firstNameLocator = By.name("firstName");
@@ -52,34 +51,39 @@ public class AddEmployeePage extends BasePage {
 
     // Actions
     public void enterFirstName(String firstName) {
-        getFirstName().sendKeys(firstName);
+        typeInto(firstNameLocator, firstName);
     }
+
     public void enterMiddleName(String middleName) {
-        getMiddleName().sendKeys(middleName);
+        typeInto(middleNameLocator, middleName);
     }
+
     public void enterLastName(String lastName) {
-        getLastName().sendKeys(lastName);
+        typeInto(lastNameLocator, lastName);
     }
+
     public void enterEmployeeId(String id) {
-        getEmployeeId().sendKeys(id);
+        typeInto(employeeIdLocator, id);
     }
+
     public void uploadPhoto(String absolutePath) {
         getPhotoUpload().sendKeys(absolutePath);
     }
+
     public void clickCreateLoginDetails() {
         getCreateLoginToggle().click();
     }
 
     public void enterUsername(String username) {
-        getUsername().sendKeys(username);
+        typeInto(usernameLocator, username);
     }
 
     public void enterPassword(String password) {
-        getPassword().sendKeys(password);
+        typeInto(passwordLocator, password);
     }
 
     public void enterConfirmPassword(String password) {
-        getConfirmPassword().sendKeys(password);
+        typeInto(confirmPasswordLocator, password);
     }
 
     public void selectEnabled() {
@@ -97,5 +101,5 @@ public class AddEmployeePage extends BasePage {
     public void clickCancel() {
         getCancelButton().click();
     }
-}
 
+}
