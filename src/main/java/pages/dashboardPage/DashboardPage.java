@@ -1,4 +1,4 @@
-package pages.Dashboardpage;
+package pages.dashboardPage;
 
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
@@ -16,7 +16,6 @@ public class DashboardPage extends BasePage {
     private final By logoutLocator = By.xpath("//a[normalize-space()='Logout']");
     private static final By adminMenuItem = By.cssSelector("a.oxd-main-menu-item[href='/web/index.php/admin/viewAdminModule']");
     private static final By headerSecondaryButton = By.xpath("//div[contains(@class,'orangehrm-header-container')]//button[contains(@class,'oxd-button--secondary')]");
-
 
 
     public DashboardPage(WebDriver driver) {super(driver);
