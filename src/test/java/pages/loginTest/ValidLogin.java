@@ -2,13 +2,13 @@ package pages.loginTest;
 
 import dataProviders.DataProviderTest;
 import org.testng.annotations.Test;
-import pages.Dashboardpage.DashboardPage;
+import pages.dashboardPage.DashboardPage;
 import pages.baseTest.BaseTest;
 import pages.loginPage.LoginPage;
 
 public class ValidLogin extends BaseTest {
     @Test (dataProvider = "validCredentials", dataProviderClass = DataProviderTest.class)
-    public void login(String username, String password) throws InterruptedException {
+    public void login(String username, String password) {
 
         LoginPage loginPage = new LoginPage(driver);
         DashboardPage dashboardPage = new DashboardPage(driver);
