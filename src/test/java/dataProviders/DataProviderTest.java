@@ -9,7 +9,6 @@ import utils.OpenCSVFileManager;
 public class DataProviderTest {
     private static final Logger log = LogManager.getLogger(DataProviderTest.class);
     public static JsonFileManager jsonFileManagerUsers = new JsonFileManager("src/main/resources/users.json");
-    public static JsonFileManager jsonFileManagerEmployees = new JsonFileManager("src/main/resources/employees.json");
     public static OpenCSVFileManager openCSVFileManagerUsernames = new OpenCSVFileManager("src/main/resources/usernames.csv");
     public static OpenCSVFileManager openCSVFileManagerEmployees = new OpenCSVFileManager("src/main/resources/employees.csv");
     public static OpenCSVFileManager openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("src/main/resources/invalidEmployees.csv");
