@@ -5,6 +5,7 @@
             <class name="pages.addEmployeeTest.AddEmployeeTest"/>
             <class name="pages.addUserTest.AddUserTest"/>
             <class name = "pages.loginTest.ValidLogin"/>
+            <class name = "pages.employeeInformationTest.EmployeeInformationTest"/>
             <class name = "pages.loginTest.InvalidLogin"/>
         </classes>
     </test>

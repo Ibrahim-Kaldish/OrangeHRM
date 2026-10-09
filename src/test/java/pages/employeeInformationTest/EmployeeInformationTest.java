@@ -1,6 +1,14 @@
 package pages.employeeInformationTest;
 
 import dataProviders.DataProviderTest;
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.annotations.Test;
 import pages.PIMPage.PIMPage;
 import pages.baseTest.BaseTest;
@@ -10,7 +18,10 @@ import pages.loginPage.LoginPage;
 
 import java.util.Map;
 
+@Epic("Employee Management")
+@Feature("Employee Information")
 public class EmployeeInformationTest extends BaseTest {
+    private static final Logger log = LogManager.getLogger(EmployeeInformationTest.class);
 
     String username;
     String password;
@@ -38,10 +49,13 @@ public class EmployeeInformationTest extends BaseTest {
     PIMPage pimPage;
 
     public void personalDetailsAssert(){
+        log.info("🔍 Verifying Personal Details after reload");
         softAssert.assertEquals(employeeInfoPage.getSelectedNationality(), nationality, "Nationality after reload");
         softAssert.assertEquals(employeeInfoPage.getSelectedMaritalStatus(), maritalStatus, "Marital status after reload");
     }
+
     public void contactDetailsAssert(){
+        log.info("🔍 Verifying Contact Details after reload");
         softAssert.assertEquals(employeeInfoPage.getContactStreet1Value(), street1, "Street 1 after reload");
         softAssert.assertEquals(employeeInfoPage.getContactStreet2Value(), street2, "Street 2 after reload");
         softAssert.assertEquals(employeeInfoPage.getContactCityValue(), city, "City after reload");
@@ -54,7 +68,9 @@ public class EmployeeInformationTest extends BaseTest {
         softAssert.assertEquals(employeeInfoPage.getContactWorkEmailValue(), workEmail, "Work email after reload");
         softAssert.assertEquals(employeeInfoPage.getContactOtherEmailValue(), otherEmail, "Other email after reload");
     }
+
     public void emergencyContactAssert(){
+        log.info("🔍 Verifying saved emergency contact");
         String savedCard = employeeInfoPage.getSavedContactCardText();
         softAssert.assertTrue(savedCard.contains(emergencyName), "Saved name missing: " + emergencyName);
         softAssert.assertTrue(savedCard.contains(emergencyRelationship), "Saved relationship missing: " + emergencyRelationship);
@@ -62,11 +78,14 @@ public class EmployeeInformationTest extends BaseTest {
         softAssert.assertTrue(savedCard.contains(emergencyMobile), "Saved mobile missing: " + emergencyMobile);
         softAssert.assertTrue(savedCard.contains(emergencyWorkTelephone), "Saved work telephone missing: " + emergencyWorkTelephone);
     }
+
     public void successMessage(String msg1, String msg2){
+        log.info("🔔 Checking toast: {}", msg1);
         softAssert.assertEquals(employeeInfoPage.getSuccessToastText(), msg1, msg2);
     }
 
     public void setAttributes(String ... employeeData){
+        log.info("📋 Loading employee data for username {}", employeeData[4]);
         username = employeeData[4];
         password = employeeData[5];
         nationality = employeeData[6];
@@ -94,14 +113,17 @@ public class EmployeeInformationTest extends BaseTest {
     }
 
     public void loginAsUser(){
+        log.info("🔐 Logging in as employee {}", username);
         loginPage.enterUsername(username);
         loginPage.enterPassword(password);
         loginPage.clickLogin();
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")));
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
+        log.info("✅ Employee logged in");
     }
 
     public void loginAsAdmin(){
+        log.info("🔐 Logging in as admin");
         Map<String, String> admin = (Map<String, String>) jsonFileManagerUsers.getValueByKey("admin");
 
         loginPage.enterUsername(admin.get("username"));
@@ -110,36 +132,49 @@ public class EmployeeInformationTest extends BaseTest {
 
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")));
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
+        log.info("✅ Admin logged in");
     }
 
     public void navigateToMyInfo(){
+        log.info("📂 Opening My Info");
         employeeInfoPage.clickMyInfoMenuItem();
     }
+
     public void navigateToEmergencyContacts(){
+        log.info("📂 Opening Emergency Contacts tab");
         employeeInfoPage.clickEmergencyContactsTab();
     }
+
     public void navigateToContactDetails(){
+        log.info("📂 Opening Contact Details tab");
         employeeInfoPage.clickContactDetailsTab();
     }
+
     public void navigateToPIMPage(){
+        log.info("📂 Opening PIM from the dashboard");
         dashboardPage.clickPIMBtn();
     }
 
     public void searchForEmployee(String id){
+        log.info("🔎 Searching PIM for employee Id {}", id);
         pimPage.enterEmployeeId(id);
         pimPage.clickSearch();
 
         pimPage.waitForSearchResults();
         softAssert.assertTrue(pimPage.getResultCount() > 0, "Search returned no results");
         pimPage.clickFirstResult();
+        log.info("✅ Opened employee record for Id {}", id);
     }
 
     public void personalDetailsActions(){
+        log.info("✏️ Updating Personal Details");
         employeeInfoPage.selectNationality(nationality);
         employeeInfoPage.selectMaritalStatus(maritalStatus);
         employeeInfoPage.clickPersonalDetailsSave();
     }
+
     public void emergencyContactActions(){
+        log.info("✏️ Adding emergency contact {}", emergencyName);
         employeeInfoPage.clickAssignedEmergencyContactsAdd();
         employeeInfoPage.enterEmergencyName(emergencyName);
         employeeInfoPage.enterEmergencyRelationship(emergencyRelationship);
@@ -148,14 +183,20 @@ public class EmployeeInformationTest extends BaseTest {
         employeeInfoPage.enterEmergencyWorkTelephone(emergencyWorkTelephone);
         employeeInfoPage.clickEmergencyContactSave();
     }
+
     public void contactDetailsActions(){
+        log.info("✏️ Updating Contact Details");
         employeeInfoPage.enterContactDetails(street1, street2, city, stateProvince, zipPostalCode,
                 country, contactHomeTelephone, contactMobile, contactWorkTelephone, workEmail, otherEmail);
         employeeInfoPage.clickContactSave();
     }
 
     @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
+    @Story("Employee updates personal, contact, and emergency details")
+    @Description("As an employee, I want to update my personal, contact, and emergency details so that HR has current records.")
+    @Severity(SeverityLevel.CRITICAL)
     public void updateEmployeeInformation(String... employeeData) throws InterruptedException {
+        log.info("🚀 Starting employee information update");
 
         setAttributes(employeeData);
 
@@ -181,6 +222,7 @@ public class EmployeeInformationTest extends BaseTest {
         contactDetailsAssert();
         Thread.sleep(3000);
 
+        log.info("🚪 Logging out employee");
         dashboardPage.clickLogout();
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("url")));
 
@@ -201,6 +243,7 @@ public class EmployeeInformationTest extends BaseTest {
         Thread.sleep(3000);
         contactDetailsAssert();
 
+        log.info("🏁 Employee information update finished, checking results");
         softAssert.assertAll();
     }
 }

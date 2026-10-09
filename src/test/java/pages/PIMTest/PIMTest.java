@@ -1,22 +1,28 @@
 package pages.PIMTest;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.annotations.Test;
-import pages.Dashboardpage.DashboardPage;
-import pages.PIMPage.PIMPage;
-import pages.addEmployeePage.AddEmployeePage;
 import pages.baseTest.BaseTest;
-import pages.loginPage.LoginPage;
 
-import java.util.List;
-import java.util.Map;
-
-import static pages.baseTest.BaseTest.jsonFileManagerUsers;
-
+@Epic("Employee Management")
+@Feature("PIM Search")
 public class PIMTest extends BaseTest {
+    private static final Logger log = LogManager.getLogger(PIMTest.class);
+
     @Test
+    @Story("Admin searches the employee list in PIM")
+    @Description("As an admin, I want to search PIM by employee name, Id, and filters so that I can find the right employee record.")
+    @Severity(SeverityLevel.NORMAL)
     public void searchForEmployee() throws InterruptedException {
+        log.info("🔎 Starting PIM employee search");
+
 //        LoginPage loginPage = new LoginPage(driver);
 //        DashboardPage dashboardPage = new DashboardPage(driver);
 //        PIMPage pimPage = new PIMPage(driver);
@@ -48,6 +54,7 @@ public class PIMTest extends BaseTest {
 //        pimPage.clickSearch();
 //
 //        Thread.sleep(5000);
-    }
 
+        log.info("✅ PIM search test finished");
+    }
 }

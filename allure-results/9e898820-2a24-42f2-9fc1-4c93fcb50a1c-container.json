@@ -1,0 +1,1 @@
+{"uuid":"9e898820-2a24-42f2-9fc1-4c93fcb50a1c","name":"updateEmployeeInformation","children":["b1b51b60-5ca0-45cc-87b3-2b0208e075f1"],"befores":[{"name":"validEmployeesData","status":"passed","stage":"finished","steps":[],"attachments":[],"parameters":[],"start":1791567060145,"stop":1791567060145}],"afters":[],"start":1791567060145,"stop":1791567117551}

@@ -1,8 +1,16 @@
 package pages.addEmployeeTest;
 
 import dataProviders.DataProviderTest;
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
+import io.qameta.allure.testng.AllureTestNg;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import pages.dashboardPage.DashboardPage;
 import pages.PIMPage.PIMPage;
@@ -12,10 +20,16 @@ import pages.loginPage.LoginPage;
 
 import java.util.Map;
 
-
+@Epic("Employee Management")
+@Feature("Add Employee")
+@Listeners(AllureTestNg.class)
 public class AddEmployeeTest extends BaseTest {
-    @Test (dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
-    public void addEmployee(String... employee) throws InterruptedException{
+
+    @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
+    @Story("Admin adds a new employee with login details")
+    @Description("As an admin, I want to add a new employee with login details so that the employee can sign in and use the system.")
+    @Severity(SeverityLevel.CRITICAL)
+    public void addEmployee(String... employee) throws InterruptedException {
 
         LoginPage loginPage = new LoginPage(driver);
         DashboardPage dashboardPage = new DashboardPage(driver);

@@ -2,15 +2,18 @@ package pages.baseTest;
 
 import dataProviders.DataProviderTest;
 import driverFactory.GetChromeDriver;
+import io.qameta.allure.testng.AllureTestNg;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import org.testng.asserts.SoftAssert;
 import utils.JsonFileManager;
 import utils.OpenCSVFileManager;
 
+@Listeners(AllureTestNg.class)
 public class BaseTest {
     private static final Logger log = LogManager.getLogger(BaseTest.class);
     public static JsonFileManager jsonFileManagerUsers;
@@ -35,7 +38,6 @@ public class BaseTest {
         log.debug("🔍 Driver created: {}", driver);
         driver.manage().window().maximize();
         driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
-
     }
 
     @AfterMethod

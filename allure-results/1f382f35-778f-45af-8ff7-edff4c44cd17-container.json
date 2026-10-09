@@ -1,0 +1,1 @@
+{"uuid":"1f382f35-778f-45af-8ff7-edff4c44cd17","name":"addEmployee","children":["3622bc35-5ffe-4d03-a5a4-6da551ff61b5"],"befores":[{"name":"validEmployeesData","status":"passed","stage":"finished","steps":[],"attachments":[],"parameters":[],"start":1791567016069,"stop":1791567016074}],"afters":[],"start":1791567016062,"stop":1791567117547}
