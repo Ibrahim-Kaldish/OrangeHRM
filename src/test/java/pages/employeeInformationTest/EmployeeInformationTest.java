@@ -231,7 +231,7 @@ public class EmployeeInformationTest extends BaseTest {
     }
 
 
-    @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
+    @Test(priority = 0, dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
     @Story("Employee updates personal, contact, and emergency details")
     @Description("As an employee, I want to update my personal, contact, and emergency details so that HR has current records.")
     @Severity(SeverityLevel.CRITICAL)
@@ -285,7 +285,7 @@ public class EmployeeInformationTest extends BaseTest {
         softAssert.assertAll();
     }
 
-    @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
+    @Test(priority = 1, dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
     @Story("Admin edits and removes an emergency contact, then adds a dependent")
     @Description("As an admin, I want to edit and remove an employee's emergency contact and add a dependent so that the employee's family and emergency records stay accurate.")
     @Severity(SeverityLevel.CRITICAL)
