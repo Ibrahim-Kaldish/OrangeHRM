@@ -82,6 +82,13 @@ public class EmployeeInformationTest extends BaseTest {
         softAssert.assertTrue(savedCard.contains(emergencyWorkTelephone), "Saved work telephone missing: " + emergencyWorkTelephone);
     }
 
+    public void dependentAssert(){
+        log.info("🔍 Verifying saved dependent");
+        String dependentCards = employeeInfoPage.getDependentCardsText();
+        softAssert.assertTrue(dependentCards.contains(dependentName), "Saved dependent name missing: " + dependentName);
+        softAssert.assertTrue(dependentCards.contains(dependentRelationship), "Saved dependent relationship missing: " + dependentRelationship);
+    }
+
     public void successMessage(String msg1, String msg2){
         log.info("🔔 Checking toast: {}", msg1);
         softAssert.assertEquals(employeeInfoPage.getSuccessToastText(), msg1, msg2);
@@ -158,6 +165,11 @@ public class EmployeeInformationTest extends BaseTest {
         dashboardPage.clickPIMBtn();
     }
 
+    public void navigateToDependents(){
+        log.info("📂 Opening Dependents tab");
+        employeeInfoPage.clickDependentsTab();
+    }
+
     public void searchForEmployee(String id){
         log.info("🔎 Searching PIM for employee Id {}", id);
         pimPage.enterEmployeeId(id);
@@ -178,16 +190,21 @@ public class EmployeeInformationTest extends BaseTest {
         searchForEmployee(id);
     }
 
+    public void clickAddEmergency(){
+        log.info("✏️ Adding emergency contact {}", emergencyName);
+        employeeInfoPage.clickAssignedEmergencyContactsAdd();
+    }
+
+    public void clickAddDependent(){
+        log.info("➕ Adding dependent {}", dependentName);
+        employeeInfoPage.clickAssignedDependentsAdd();
+    }
+
     public void personalDetailsActions(){
         log.info("✏️ Updating Personal Details");
         employeeInfoPage.selectNationality(nationality);
         employeeInfoPage.selectMaritalStatus(maritalStatus);
         employeeInfoPage.clickPersonalDetailsSave();
-    }
-
-    public void clickAddEmergency(){
-        log.info("✏️ Adding emergency contact {}", emergencyName);
-        employeeInfoPage.clickAssignedEmergencyContactsAdd();
     }
 
     public void emergencyContactActions(){
@@ -206,16 +223,6 @@ public class EmployeeInformationTest extends BaseTest {
         employeeInfoPage.clickContactSave();
     }
 
-    public void navigateToDependents(){
-        log.info("📂 Opening Dependents tab");
-        employeeInfoPage.clickDependentsTab();
-    }
-
-    public void clickAddDependent(){
-        log.info("➕ Adding dependent {}", dependentName);
-        employeeInfoPage.clickAssignedDependentsAdd();
-    }
-
     public void dependentActions(){
         employeeInfoPage.enterDependentName(dependentName);
         employeeInfoPage.selectDependentRelationship(dependentRelationship);
@@ -223,12 +230,6 @@ public class EmployeeInformationTest extends BaseTest {
         employeeInfoPage.clickDependentSave();
     }
 
-    public void dependentAssert(){
-        log.info("🔍 Verifying saved dependent");
-        String dependentCards = employeeInfoPage.getDependentCardsText();
-        softAssert.assertTrue(dependentCards.contains(dependentName), "Saved dependent name missing: " + dependentName);
-        softAssert.assertTrue(dependentCards.contains(dependentRelationship), "Saved dependent relationship missing: " + dependentRelationship);
-    }
 
     @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
     @Story("Employee updates personal, contact, and emergency details")
@@ -285,11 +286,10 @@ public class EmployeeInformationTest extends BaseTest {
     }
 
     @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
-    @Story("Employee updates personal, contact, and emergency details")
-    @Description("As an employee, I want to update my personal, contact, and emergency details so that HR has current records.")
+    @Story("Admin edits and removes an emergency contact, then adds a dependent")
+    @Description("As an admin, I want to edit and remove an employee's emergency contact and add a dependent so that the employee's family and emergency records stay accurate.")
     @Severity(SeverityLevel.CRITICAL)
-    public void editOrRemoveExistingContact(String ...employeeData) throws InterruptedException {
-
+    public void editOrRemoveExistingContact(String... employeeData) throws InterruptedException {
         setAttributes(employeeData);
 
         loginAsAdminAndSearch(employeeData[3]);
@@ -340,5 +340,4 @@ public class EmployeeInformationTest extends BaseTest {
         softAssert.assertAll();
 
     }
-
 }
