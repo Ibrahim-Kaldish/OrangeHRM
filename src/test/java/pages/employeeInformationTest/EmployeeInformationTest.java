@@ -43,6 +43,9 @@ public class EmployeeInformationTest extends BaseTest {
     String contactWorkTelephone;
     String workEmail;
     String otherEmail;
+    String dependentName = "Lina Smith";
+    String dependentRelationship = "Child";
+    String dependentDateOfBirth = "2015-10-03";
     LoginPage loginPage;
     DashboardPage dashboardPage;
     EmployeeInfoPage employeeInfoPage;
@@ -166,6 +169,15 @@ public class EmployeeInformationTest extends BaseTest {
         log.info("✅ Opened employee record for Id {}", id);
     }
 
+    public void loginAsAdminAndSearch(String id){
+
+        loginAsAdmin();
+
+        navigateToPIMPage();
+
+        searchForEmployee(id);
+    }
+
     public void personalDetailsActions(){
         log.info("✏️ Updating Personal Details");
         employeeInfoPage.selectNationality(nationality);
@@ -173,9 +185,12 @@ public class EmployeeInformationTest extends BaseTest {
         employeeInfoPage.clickPersonalDetailsSave();
     }
 
-    public void emergencyContactActions(){
+    public void clickAddEmergency(){
         log.info("✏️ Adding emergency contact {}", emergencyName);
         employeeInfoPage.clickAssignedEmergencyContactsAdd();
+    }
+
+    public void emergencyContactActions(){
         employeeInfoPage.enterEmergencyName(emergencyName);
         employeeInfoPage.enterEmergencyRelationship(emergencyRelationship);
         employeeInfoPage.enterEmergencyHomeTelephone(emergencyHomeTelephone);
@@ -189,6 +204,30 @@ public class EmployeeInformationTest extends BaseTest {
         employeeInfoPage.enterContactDetails(street1, street2, city, stateProvince, zipPostalCode,
                 country, contactHomeTelephone, contactMobile, contactWorkTelephone, workEmail, otherEmail);
         employeeInfoPage.clickContactSave();
+    }
+
+    public void navigateToDependents(){
+        log.info("📂 Opening Dependents tab");
+        employeeInfoPage.clickDependentsTab();
+    }
+
+    public void clickAddDependent(){
+        log.info("➕ Adding dependent {}", dependentName);
+        employeeInfoPage.clickAssignedDependentsAdd();
+    }
+
+    public void dependentActions(){
+        employeeInfoPage.enterDependentName(dependentName);
+        employeeInfoPage.selectDependentRelationship(dependentRelationship);
+        employeeInfoPage.enterDependentDateOfBirth(dependentDateOfBirth);
+        employeeInfoPage.clickDependentSave();
+    }
+
+    public void dependentAssert(){
+        log.info("🔍 Verifying saved dependent");
+        String dependentCards = employeeInfoPage.getDependentCardsText();
+        softAssert.assertTrue(dependentCards.contains(dependentName), "Saved dependent name missing: " + dependentName);
+        softAssert.assertTrue(dependentCards.contains(dependentRelationship), "Saved dependent relationship missing: " + dependentRelationship);
     }
 
     @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
@@ -211,6 +250,7 @@ public class EmployeeInformationTest extends BaseTest {
         Thread.sleep(3000);
 
         navigateToEmergencyContacts();
+        clickAddEmergency();
         emergencyContactActions();
         successMessage("Successfully Saved", "Emergency Contact save message");
         emergencyContactAssert();
@@ -226,11 +266,8 @@ public class EmployeeInformationTest extends BaseTest {
         dashboardPage.clickLogout();
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("url")));
 
-        loginAsAdmin();
+        loginAsAdminAndSearch(employeeData[3]);
 
-        navigateToPIMPage();
-
-        searchForEmployee(employeeData[3]);
 
         Thread.sleep(3000);
         personalDetailsAssert();
@@ -246,4 +283,62 @@ public class EmployeeInformationTest extends BaseTest {
         log.info("🏁 Employee information update finished, checking results");
         softAssert.assertAll();
     }
+
+    @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
+    @Story("Employee updates personal, contact, and emergency details")
+    @Description("As an employee, I want to update my personal, contact, and emergency details so that HR has current records.")
+    @Severity(SeverityLevel.CRITICAL)
+    public void editOrRemoveExistingContact(String ...employeeData) throws InterruptedException {
+
+        setAttributes(employeeData);
+
+        loginAsAdminAndSearch(employeeData[3]);
+
+        navigateToEmergencyContacts();
+        clickAddEmergency();
+        emergencyContactActions();
+        successMessage("Successfully Saved", "Emergency Contact save message");
+        Thread.sleep(3000);
+        emergencyContactAssert();
+
+        employeeInfoPage.clickEdit();
+        emergencyContactActions();
+        successMessage("Successfully Updated", "Emergency Contact save message");
+        Thread.sleep(3000);
+        emergencyContactAssert();
+
+
+        int countBefore = employeeInfoPage.getSavedContactCount();
+        employeeInfoPage.clickDelete();
+        employeeInfoPage.clickConfirmDelete();
+
+        softAssert.assertEquals(employeeInfoPage.getSuccessToastText(), "Successfully Deleted", "Delete message");
+
+        Thread.sleep(3000);
+        softAssert.assertEquals(employeeInfoPage.getSavedContactCount(), countBefore - 2, "Saved contact count after delete");
+//        softAssert.assertFalse(employeeInfoPage.isSavedContactShown(emergencyName), "Deleted contact still shown: " + emergencyName);
+
+        navigateToDependents();
+        clickAddDependent();
+        dependentActions();
+        successMessage("Successfully Saved", "Dependent save message");
+        dependentAssert();
+
+        dashboardPage.clickLogout();
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("url")));
+
+        loginAsAdminAndSearch(employeeData[3]);
+
+        navigateToEmergencyContacts();
+        softAssert.assertEquals(employeeInfoPage.getSavedContactCount(), countBefore - 2, "Saved contact count after delete");
+        emergencyContactAssert();
+
+
+        navigateToDependents();
+        dependentAssert();
+
+        softAssert.assertAll();
+
+    }
+
 }

@@ -11,6 +11,7 @@ import pages.BasePage;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class PIMPage extends BasePage {
@@ -148,20 +149,5 @@ public class PIMPage extends BasePage {
         }
         rows.get(0).click();
         log.info("🖱️ Clicked first search result");
-    }
-
-    public void clickResultByNameAndId(String firstAndMiddleName, String lastName, String employeeId) {
-        waitForSearchResults();
-        for (WebElement row : getDisplayedResultRows()) {
-            String text = row.getText();
-            boolean nameMatches = text.contains(firstAndMiddleName) && text.contains(lastName);
-            boolean idMatches = text.matches("(?s).*\\bId " + java.util.regex.Pattern.quote(employeeId) + "\\b.*");
-            if (nameMatches && idMatches) {
-                row.click();
-                log.info("🖱️ Clicked search result for {} {} (Id {})", firstAndMiddleName, lastName, employeeId);
-                return;
-            }
-        }
-        throw new IllegalStateException("No search result matches: " + firstAndMiddleName + " " + lastName + " (Id " + employeeId + ")");
     }
 }

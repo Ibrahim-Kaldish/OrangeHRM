@@ -10,6 +10,7 @@ import pages.BasePage;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EmployeeInfoPage extends BasePage {
     private static final Logger log = LogManager.getLogger(EmployeeInfoPage.class);
@@ -27,8 +28,8 @@ public class EmployeeInfoPage extends BasePage {
     // Emergency contacts locators
     private static final By emergencyContactsTab = By.xpath("//a[contains(@class,'orangehrm-tabs-item') and contains(@href,'/pim/viewEmergencyContacts/') and normalize-space(.)='Emergency Contacts']");
     private static final By assignedEmergencyContactsAddButton = By.xpath("//div[contains(@class,'orangehrm-action-header')][.//h6[normalize-space(.)='Assigned Emergency Contacts']]//button[contains(@class,'oxd-button--text')]");
-    private static final String emergencyCard = "//h6[normalize-space(.)='Save Emergency Contact']/ancestor::div[.//input][1]";
-    private static final String emergencyFieldGroup = "//div[contains(@class,'oxd-input-group')][.//label[normalize-space(.)='%s']]";
+    private static final String emergencyCard = "//h6[normalize-space(.)='Save Emergency Contact' or normalize-space(.)='Edit Emergency Contact']/ancestor::div[.//input][1]";
+    private static final String emergencyFieldGroup = "//div[contains(concat(' ',normalize-space(@class),' '),' oxd-input-group ')][.//label[starts-with(normalize-space(.),'%s')]]";
     private static final By emergencyNameInput = By.xpath(emergencyCard + String.format(emergencyFieldGroup, "Name") + "//input");
     private static final By emergencyRelationshipInput = By.xpath(emergencyCard + String.format(emergencyFieldGroup, "Relationship") + "//input");
     private static final By emergencyHomeTelephoneInput = By.xpath(emergencyCard + String.format(emergencyFieldGroup, "Home Telephone") + "//input");
@@ -54,6 +55,21 @@ public class EmployeeInfoPage extends BasePage {
     private static final By contactOtherEmailInput = By.xpath(contactForm + String.format(contactFieldGroup, "Other Email") + "//input");
     private static final By contactSaveButton = By.xpath(contactForm + "//button[@type='submit']");
 
+    // edit or delete
+    private static final By savedContactDeleteButton = By.xpath(".//div[contains(@class,'oxd-table-cell-actions')]//i[contains(@class,'bi-trash')]/ancestor::button");
+    private static final By savedContactEditButton = By.xpath(".//div[contains(@class,'oxd-table-cell-actions')]//button[contains(@class,'oxd-icon-button')][2]");
+    private static final By confirmDeleteButton = By.xpath("//div[contains(@class,'oxd-dialog-sheet')]//button[normalize-space(.)='Yes, Delete']");
+
+    // Dependents
+    private static final By dependentsTab = By.xpath("//a[contains(@class,'orangehrm-tabs-item') and contains(@href,'/pim/viewDependents/') and normalize-space(.)='Dependents']");
+    private static final By assignedDependentsAddButton = By.xpath("//div[contains(@class,'orangehrm-action-header')][.//h6[normalize-space(.)='Assigned Dependents']]//button[contains(@class,'oxd-button--text')]");
+    private static final String dependentForm = "//form[.//label[starts-with(normalize-space(.),'Relationship')]]";
+    private static final String dependentFieldGroup = "//div[contains(concat(' ',normalize-space(@class),' '),' oxd-input-group ')][.//label[starts-with(normalize-space(.),'%s')]]";
+    private static final By dependentNameInput = By.xpath(dependentForm + String.format(dependentFieldGroup, "Name") + "//input");
+    private static final By dependentRelationshipDropdown = By.xpath(dependentForm + String.format(dependentFieldGroup, "Relationship") + "//div[contains(@class,'oxd-select-text')]");    private static final By dependentDateOfBirthInput = By.xpath(dependentForm + String.format(dependentFieldGroup, "Date of Birth") + "//input");
+    private static final By dependentSaveButton = By.xpath(dependentForm + "//button[@type='submit']");
+    private static final By dependentCards = By.xpath("//div[contains(@class,'oxd-table-card')]");
+
     // Toast
     private static final By successToast = By.xpath("//div[contains(@class,'oxd-toast')]//p[contains(@class,'oxd-text--toast-message')]");
 
@@ -77,31 +93,6 @@ public class EmployeeInfoPage extends BasePage {
 
     public WebElement getEmergencyContactsTab() {
         return findElement(emergencyContactsTab);
-    }
-
-    public WebElement getAssignedEmergencyContactsAddButton() {
-        return findElement(assignedEmergencyContactsAddButton);
-    }
-
-    public WebElement getEmergencyContactSaveButton() {
-        return findElement(emergencyContactSaveButton);
-    }
-
-    public WebElement getDisplayedSavedContactCard() {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(d -> d.findElements(savedContactCards).stream().anyMatch(WebElement::isDisplayed));
-        return driver.findElements(savedContactCards).stream()
-                .filter(WebElement::isDisplayed)
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("No visible saved contact card"));
-    }
-
-    public String getSavedContactCardText() {
-        return getDisplayedSavedContactCard().getText();
-    }
-
-    public String getSuccessToastText() {
-        return findElement(successToast).getText().trim();
     }
 
     public WebElement getContactStreet1Input() {
@@ -150,6 +141,69 @@ public class EmployeeInfoPage extends BasePage {
 
     public WebElement getContactSaveButton() {
         return findElement(contactSaveButton);
+    }
+
+    public WebElement getSavedContactEditButton() {
+        return getDisplayedSavedContactCard().findElement(savedContactEditButton);
+    }
+
+    public WebElement getSavedContactDeleteButton() {
+        return getDisplayedSavedContactCard().findElement(savedContactDeleteButton);
+    }
+    public int getSavedContactCount() {
+        return (int) findElements(savedContactCards).stream()
+                .filter(WebElement::isDisplayed)
+                .count();
+    }
+
+    public WebElement getDependentsTab() {
+        return findElement(dependentsTab);
+    }
+
+    public WebElement getAssignedDependentsAddButton() {
+        return findElement(assignedDependentsAddButton);
+    }
+
+    public WebElement getAssignedEmergencyContactsAddButton() {
+        return findElement(assignedEmergencyContactsAddButton);
+    }
+
+    public WebElement getEmergencyContactSaveButton() {
+        return findElement(emergencyContactSaveButton);
+    }
+
+    public WebElement getDisplayedSavedContactCard() {
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(d -> d.findElements(savedContactCards).stream().anyMatch(WebElement::isDisplayed));
+        return findElements(savedContactCards).stream()
+                .filter(WebElement::isDisplayed)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No visible saved contact card"));
+    }
+
+    public WebElement getDependentNameInput() {
+        return findElement(dependentNameInput);
+    }
+
+    public WebElement getDependentRelationshipDropdown() {
+        return findElement(dependentRelationshipDropdown);
+    }
+
+    public WebElement getDependentDateOfBirthInput() {
+        return findElement(dependentDateOfBirthInput);
+    }
+
+    public WebElement getDependentSaveButton() {
+        return findElement(dependentSaveButton);
+    }
+
+
+    public String getSavedContactCardText() {
+        return getDisplayedSavedContactCard().getText();
+    }
+
+    public String getSuccessToastText() {
+        return findElement(successToast).getText().trim();
     }
 
     public String getContactStreet1Value() {
@@ -204,8 +258,22 @@ public class EmployeeInfoPage extends BasePage {
         return findElement(maritalStatusSelectedText).getText().trim();
     }
 
-    // Actions
+    public String getDependentCardsText() {
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(d -> !d.findElements(dependentCards).isEmpty());
+        return findElements(dependentCards).stream()
+                .filter(WebElement::isDisplayed)
+                .map(WebElement::getText)
+                .collect(Collectors.joining("\n"));
+    }
 
+    public boolean isSavedContactShown(String name) {
+        return findElements(savedContactCards).stream()
+                .filter(WebElement::isDisplayed)
+                .anyMatch(card -> card.getText().contains(name));
+    }
+
+    // Actions
     public void clickMyInfoMenuItem() {
         findElement(myInfoMenuItem).click();
         log.info("👤 Clicked My Info menu");
@@ -333,6 +401,48 @@ public class EmployeeInfoPage extends BasePage {
     public void clickContactSave() {
         getContactSaveButton().click();
         log.info("💾 Clicked Contact Details Save");
+    }
+
+    public void clickEdit() {
+        getSavedContactEditButton().click();
+        log.info("✏️ Clicked edit on saved contact");
+    }
+
+    public void clickDelete() {
+        getSavedContactDeleteButton().click();
+        log.info("🗑️ Clicked delete on saved contact");
+    }
+
+    public void clickConfirmDelete() {
+        findElement(confirmDeleteButton).click();
+        log.info("✅ Confirmed delete");
+    }
+
+    public void clickDependentsTab() {
+        getDependentsTab().click();
+        log.info("📑 Clicked Dependents tab");
+    }
+
+    public void clickAssignedDependentsAdd() {
+        getAssignedDependentsAddButton().click();
+        log.info("➕ Clicked Add in Assigned Dependents");
+    }
+
+    public void enterDependentName(String name) {
+        typeInto(dependentNameInput, name);
+    }
+
+    public void selectDependentRelationship(String relationship) {
+        selectFromDropdown(findElement(dependentRelationshipDropdown), relationship);
+    }
+
+    public void enterDependentDateOfBirth(String dateOfBirth) {
+        typeInto(dependentDateOfBirthInput, dateOfBirth);
+    }
+
+    public void clickDependentSave() {
+        getDependentSaveButton().click();
+        log.info("💾 Clicked Save Dependent");
     }
 
     // Helpers
