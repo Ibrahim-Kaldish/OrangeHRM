@@ -1,7 +1,12 @@
 package pages.timeSheetTest;
 
 import dataProviders.DataProviderTest;
-import org.openqa.selenium.WebElement;
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 import pages.baseTest.BaseTest;
@@ -16,6 +21,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+@Epic("Time Tracking")
+@Feature("Timesheet")
 public class TimeSheetTest extends BaseTest {
 
     LoginPage loginPage;
@@ -41,12 +48,15 @@ public class TimeSheetTest extends BaseTest {
                 "Activity on view page does not match the selected one");
     }
 
-    @Test (dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
+    @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
+    @Story("Employee submits a timesheet and admin approves it")
+    @Description("As an employee, I want to fill in and submit my weekly timesheet so that my manager can review and approve it.")
+    @Severity(SeverityLevel.CRITICAL)
     public void submitTimeSheet(String ...employee) throws InterruptedException{
 
-       loginPage = new LoginPage(driver);
-       dashboardPage = new DashboardPage(driver);
-       timeSheetPage = new TimeSheetPage(driver);
+        loginPage = new LoginPage(driver);
+        dashboardPage = new DashboardPage(driver);
+        timeSheetPage = new TimeSheetPage(driver);
 
         loginPage.enterUsername(employee[4]);
         loginPage.enterPassword(employee[5]);
@@ -71,7 +81,7 @@ public class TimeSheetTest extends BaseTest {
                         monday.getYear(), monday.getMonthValue(), monday.getDayOfMonth()),
                 "Chosen week is not shown in the timesheet period field");
 
-       timeSheetPage.clickEditAndWaitForNavigation();
+        timeSheetPage.clickEditAndWaitForNavigation();
 
         softAssert.assertTrue(driver.getCurrentUrl().contains("/time/editTimesheet"),
                 "Edit button did not navigate to the timesheet edit page");
