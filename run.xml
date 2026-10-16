@@ -2,11 +2,11 @@
 <suite name = "MySuite">
     <test name = "OrangeHRM Tests">
         <classes>
-            <class name="pages.addEmployeeTest.AddEmployeeTest"/>
-            <class name="pages.addUserTest.AddUserTest"/>
+            <class name = "pages.addEmployeeTest.AddEmployeeTest"/>
+            <class name = "pages.addUserTest.AddUserTest"/>
             <class name = "pages.loginTest.ValidLogin"/>
             <class name = "pages.employeeInformationTest.EmployeeInformationTest"/>
-            <class name = "pages.timeSheetPage.TimeSheetPage"/>
+            <class name = "pages.timeSheetTest.TimeSheetTest"/>
             <class name = "pages.loginTest.InvalidLogin"/>
         </classes>
     </test>
