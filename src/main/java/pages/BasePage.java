@@ -77,4 +77,9 @@ public class BasePage {
         element.sendKeys(text);
         log.info("⌨️ Cleared and entered text into {}", locator);
     }
+
+    public void waitForScreen() {
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(d -> "complete".equals(((JavascriptExecutor) d).executeScript("return document.readyState")));
+    }
 }
