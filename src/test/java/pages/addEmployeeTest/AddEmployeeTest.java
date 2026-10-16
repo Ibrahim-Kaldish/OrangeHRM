@@ -53,6 +53,8 @@ public class AddEmployeeTest extends BaseTest {
         pimPage.clickAddEmployeeLink();
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("addEmployee")));
 
+        Thread.sleep(3000);
+
         addEmployeePage.enterFirstName(employee[0]);
         addEmployeePage.enterMiddleName(employee[1]);
         addEmployeePage.enterLastName(employee[2]);
@@ -68,7 +70,8 @@ public class AddEmployeeTest extends BaseTest {
         addEmployeePage.enterPassword(employee[5]);
         addEmployeePage.enterConfirmPassword(employee[5]);
         addEmployeePage.clickSave();
-        Thread.sleep(3000);
+
+        Thread.sleep(10000);
 
         dashboardPage.clickLogout();
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("url")));
