@@ -15,6 +15,7 @@ public class BasePage {
 
     public WebDriver driver;
     public WebDriverWait wait;
+    public static final By successToast = By.xpath("//div[contains(@class,'oxd-toast')]//p[contains(@class,'oxd-text--toast-message')]");
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
@@ -81,5 +82,25 @@ public class BasePage {
     public void waitForScreen() {
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(d -> "complete".equals(((JavascriptExecutor) d).executeScript("return document.readyState")));
+    }
+
+    // Helpers
+    public void selectFromDropdown(WebElement dropdown, String optionText) {
+        dropdown.click();
+        final By dropdownOptions = By.xpath("//div[@role='listbox']//div[@role='option']");
+        List<WebElement> options = findElements(dropdownOptions);
+        for (WebElement option : options) {
+            if (option.getText().trim().equals(optionText)) {
+                option.click();
+                log.info("🔽 Selected '{}'", optionText);
+                return;
+            }
+        }
+        log.error("❌ Option '{}' not found in dropdown", optionText);
+        throw new IllegalArgumentException("Dropdown option not found: " + optionText);
+    }
+
+    public String getSuccessToastText() {
+        return findElement(successToast).getText().trim();
     }
 }
