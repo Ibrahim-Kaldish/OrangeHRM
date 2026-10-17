@@ -31,7 +31,7 @@ public class AddEmployeeTest extends BaseTest {
     @Story("Admin adds a new employee with login details")
     @Description("As an admin, I want to add a new employee with login details so that the employee can sign in and use the system.")
     @Severity(SeverityLevel.CRITICAL)
-    public void addEmployee(String... employee) throws InterruptedException {
+    public void addEmployee(String... employee) {
 
         LoginPage loginPage = new LoginPage(driver);
         DashboardPage dashboardPage = new DashboardPage(driver);
@@ -86,26 +86,27 @@ public class AddEmployeeTest extends BaseTest {
         softAssert.assertTrue(driver.getCurrentUrl().contains("viewPersonalDetails"),
                 "Employee was not saved and did not open the personal details page");
 
-        jobInfoPage.clickJobTab();
+        String jobTitle = employee[8];
+        String subUnit = employee[9];
+        String employmentStatus = employee[10];
+        String  reportingMethod = employee[12];
 
+        jobInfoPage.clickJobTab();
         softAssert.assertTrue(driver.getCurrentUrl().contains("viewJobDetails"),
                 "Job Details page did not open");
-
-        jobInfoPage.selectJobTitle(employee[8]);
-        jobInfoPage.selectSubUnit(employee[9]);
-        jobInfoPage.selectEmploymentStatus(employee[10]);
+        jobInfoPage.selectJobTitle(jobTitle);
+        jobInfoPage.selectSubUnit(subUnit);
+        jobInfoPage.selectEmploymentStatus(employmentStatus);
         jobInfoPage.clickJobSave();
 
-        if (!employee[11].isEmpty()) {
-            reportToPage.clickReportToTab();
-            softAssert.assertTrue(driver.getCurrentUrl().contains("viewReportToDetails"),
-                    "Report-to page did not open");
-            reportToPage.clickAddSupervisor();
-            reportToPage.enterSupervisorName("A");
-            reportToPage.selectFirstSupervisor();
-            reportToPage.selectReportingMethod(employee[12]);
-            reportToPage.clickSave();
-        }
+        reportToPage.clickReportToTab();
+        softAssert.assertTrue(driver.getCurrentUrl().contains("viewReportToDetails"),
+                "Report-to page did not open");
+        reportToPage.clickAddSupervisor();
+        reportToPage.enterSupervisorName("A");
+        reportToPage.selectFirstSupervisor();
+        reportToPage.selectReportingMethod(reportingMethod);
+        reportToPage.clickSave();
 
         dashboardPage.clickLogout();
 
