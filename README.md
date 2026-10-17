@@ -1,6 +1,6 @@
 # 🧪 OrangeHRM Test Automation
 
-![Java](https://img.shields.io/badge/Java-26-orange) ![Maven](https://img.shields.io/badge/Maven-build-blue) ![Selenium](https://img.shields.io/badge/Selenium-4.48.0-green) ![TestNG](https://img.shields.io/badge/TestNG-7.12.0-lightgrey) ![Allure](https://img.shields.io/badge/Allure-2.35.5-purple)
+![Java](https://img.shields.io/badge/Java-26-orange) ![Maven](https://img.shields.io/badge/Maven-build-blue) ![Selenium](https://img.shields.io/badge/Selenium-4.48.0-green) ![TestNG](https://img.shields.io/badge/TestNG-7.12.0-lightgrey) ![Allure](https://img.shields.io/badge/Allure-3.20.0-purple)
 
 ## 🎬 Demo video
 
