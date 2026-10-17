@@ -16,6 +16,8 @@ import pages.dashboardPage.DashboardPage;
 import pages.PIMPage.PIMPage;
 import pages.addEmployeePage.AddEmployeePage;
 import pages.baseTest.BaseTest;
+import pages.employeeInfoPage.JobInfoPage;
+import pages.employeeInfoPage.ReportToPage;
 import pages.loginPage.LoginPage;
 
 import java.util.Map;
@@ -35,6 +37,8 @@ public class AddEmployeeTest extends BaseTest {
         DashboardPage dashboardPage = new DashboardPage(driver);
         PIMPage pimPage = new PIMPage(driver);
         AddEmployeePage addEmployeePage = new AddEmployeePage(driver);
+        JobInfoPage jobInfoPage = new JobInfoPage(driver);
+        ReportToPage reportToPage = new ReportToPage(driver);
 
         Map<String, String> admin = (Map<String, String>) jsonFileManagerUsers.getValueByKey("admin");
 
@@ -42,18 +46,23 @@ public class AddEmployeeTest extends BaseTest {
         loginPage.enterPassword(admin.get("password"));
         loginPage.clickLogin();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")));
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")),
+                "Admin login did not redirect to the dashboard");
+        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
+                "Dashboard title is not displayed after admin login");
         softAssert.assertAll();
 
         dashboardPage.clickPIMBtn();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("PIM")));
-        softAssert.assertTrue(pimPage.getPIMTitle().isDisplayed());
+
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("PIM")),
+                "PIM page URL is incorrect");
+        softAssert.assertTrue(pimPage.getPIMTitle().isDisplayed(),
+                "PIM title is not displayed");
 
         pimPage.clickAddEmployeeLink();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("addEmployee")));
 
-        Thread.sleep(3000);
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("addEmployee")),
+                "Add Employee page URL is incorrect");
 
         addEmployeePage.enterFirstName(employee[0]);
         addEmployeePage.enterMiddleName(employee[1]);
@@ -65,23 +74,52 @@ public class AddEmployeeTest extends BaseTest {
         addEmployeePage.selectEnabled();
         WebElement enabled = driver.findElement(By.xpath("//label[normalize-space()='Enabled']//input[@type='radio']"));
 
-        softAssert.assertTrue(enabled.isSelected());
+        softAssert.assertTrue(enabled.isSelected(),
+                "Enabled status radio button is not selected");
 
         addEmployeePage.enterPassword(employee[5]);
         addEmployeePage.enterConfirmPassword(employee[5]);
         addEmployeePage.clickSave();
 
-        Thread.sleep(10000);
+        pimPage.waitForScreen();
+
+        softAssert.assertTrue(driver.getCurrentUrl().contains("viewPersonalDetails"),
+                "Employee was not saved and did not open the personal details page");
+
+        jobInfoPage.clickJobTab();
+
+        softAssert.assertTrue(driver.getCurrentUrl().contains("viewJobDetails"),
+                "Job Details page did not open");
+
+        jobInfoPage.selectJobTitle(employee[8]);
+        jobInfoPage.selectSubUnit(employee[9]);
+        jobInfoPage.selectEmploymentStatus(employee[10]);
+        jobInfoPage.clickJobSave();
+
+        if (!employee[11].isEmpty()) {
+            reportToPage.clickReportToTab();
+            softAssert.assertTrue(driver.getCurrentUrl().contains("viewReportToDetails"),
+                    "Report-to page did not open");
+            reportToPage.clickAddSupervisor();
+            reportToPage.enterSupervisorName("A");
+            reportToPage.selectFirstSupervisor();
+            reportToPage.selectReportingMethod(employee[12]);
+            reportToPage.clickSave();
+        }
 
         dashboardPage.clickLogout();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("url")));
+
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("url")),
+                "Logout did not return to the login page");
 
         loginPage.enterUsername(employee[4]);
         loginPage.enterPassword(employee[5]);
         loginPage.clickLogin();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")));
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")),
+                "New employee login did not redirect to the dashboard");
+        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
+                "Dashboard title is not displayed after new employee login");
         softAssert.assertAll();
     }
 }
