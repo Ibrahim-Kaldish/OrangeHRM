@@ -79,11 +79,6 @@ public class BasePage {
         log.info("⌨️ Cleared and entered text into {}", locator);
     }
 
-    public void waitForScreen() {
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(d -> "complete".equals(((JavascriptExecutor) d).executeScript("return document.readyState")));
-    }
-
     // Helpers
     public void selectFromDropdown(WebElement dropdown, String optionText) {
         dropdown.click();
@@ -103,4 +98,16 @@ public class BasePage {
     public String getSuccessToastText() {
         return findElement(successToast).getText().trim();
     }
+
+    public void waitForScreen() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        try {
+            new WebDriverWait(driver, Duration.ofSeconds(2))
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".oxd-loading-spinner")));
+        } catch (TimeoutException ignored) {
+            // spinner didn't appear, the page was already loaded
+        }
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".oxd-loading-spinner")));
+    }
+
 }
