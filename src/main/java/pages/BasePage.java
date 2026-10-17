@@ -79,7 +79,6 @@ public class BasePage {
         log.info("⌨️ Cleared and entered text into {}", locator);
     }
 
-    // Helpers
     public void selectFromDropdown(WebElement dropdown, String optionText) {
         dropdown.click();
         final By dropdownOptions = By.xpath("//div[@role='listbox']//div[@role='option']");
@@ -91,7 +90,10 @@ public class BasePage {
                 return;
             }
         }
-        log.error("❌ Option '{}' not found in dropdown", optionText);
+        log.error("❌ Option '{}' not found. Found {} options:", optionText, options.size());
+        for (WebElement option : options) {
+            log.error("   - '{}'", option.getText().trim());
+        }
         throw new IllegalArgumentException("Dropdown option not found: " + optionText);
     }
 
@@ -102,7 +104,7 @@ public class BasePage {
     public void waitForScreen() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
-            new WebDriverWait(driver, Duration.ofSeconds(2))
+            new WebDriverWait(driver, Duration.ofSeconds(1))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".oxd-loading-spinner")));
         } catch (TimeoutException ignored) {
             // spinner didn't appear, the page was already loaded
