@@ -8,7 +8,7 @@
             <class name = "pages.loginTest.InvalidLogin"/>
             <class name = "pages.employeeInformationTest.EmployeeInformationTest"/>
             <class name = "pages.timeSheetTest.TimeSheetTest"/>
-            <class name = "pages.generateReport.ReportGenerationPage"/>
+            <class name = "pages.reportGenerationTest.ReportGenerationTest"/>
         </classes>
     </test>
 </suite>
