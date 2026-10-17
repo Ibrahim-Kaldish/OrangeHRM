@@ -13,10 +13,7 @@ import org.testng.annotations.Test;
 import pages.PIMPage.PIMPage;
 import pages.baseTest.BaseTest;
 import pages.dashboardPage.DashboardPage;
-import pages.employeeInfoPage.ContactDetailsPage;
-import pages.employeeInfoPage.DependentsPage;
-import pages.employeeInfoPage.EmergencyContactsPage;
-import pages.employeeInfoPage.PersonalDetailsPage;
+import pages.employeeInfoPage.*;
 import pages.loginPage.LoginPage;
 
 import java.util.Map;
@@ -56,6 +53,7 @@ public class EmployeeInformationTest extends BaseTest {
     ContactDetailsPage contactDetailsPage;
     DependentsPage dependentsPage;
     PIMPage pimPage;
+
 
     public void personalDetailsAssert(){
         log.info("🔍 Verifying Personal Details after reload");
@@ -106,22 +104,22 @@ public class EmployeeInformationTest extends BaseTest {
         password = employeeData[5];
         nationality = employeeData[6];
         maritalStatus = employeeData[7];
-        emergencyName = employeeData[8];
-        emergencyRelationship = employeeData[9];
-        emergencyHomeTelephone = employeeData[10];
-        emergencyMobile = employeeData[11];
-        emergencyWorkTelephone = employeeData[12];
-        street1 = employeeData[13];
-        street2 = employeeData[14];
-        city = employeeData[15];
-        stateProvince = employeeData[16];
-        zipPostalCode = employeeData[17];
-        country = employeeData[18];
-        contactHomeTelephone = employeeData[19];
-        contactMobile = employeeData[20];
-        contactWorkTelephone = employeeData[21];
-        workEmail = employeeData[22];
-        otherEmail = employeeData[23];
+        emergencyName = employeeData[13];
+        emergencyRelationship = employeeData[14];
+        emergencyHomeTelephone = employeeData[15];
+        emergencyMobile = employeeData[16];
+        emergencyWorkTelephone = employeeData[17];
+        street1 = employeeData[18];
+        street2 = employeeData[19];
+        city = employeeData[20];
+        stateProvince = employeeData[21];
+        zipPostalCode = employeeData[22];
+        country = employeeData[23];
+        contactHomeTelephone = employeeData[24];
+        contactMobile = employeeData[25];
+        contactWorkTelephone = employeeData[26];
+        workEmail = employeeData[27];
+        otherEmail = employeeData[28];
         loginPage = new LoginPage(driver);
         dashboardPage = new DashboardPage(driver);
         personalDetailsPage = new PersonalDetailsPage(driver);
@@ -235,6 +233,7 @@ public class EmployeeInformationTest extends BaseTest {
         dependentsPage.enterDependentDateOfBirth(dependentDateOfBirth);
         dependentsPage.clickDependentSave();
     }
+
 
     @Test(priority = 0, dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
     @Story("Employee updates personal, contact, and emergency details")
