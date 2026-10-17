@@ -43,9 +43,9 @@ public class EmployeeInformationTest extends BaseTest {
     String contactWorkTelephone;
     String workEmail;
     String otherEmail;
-    String dependentName = "Lina Smith";
-    String dependentRelationship = "Child";
-    String dependentDateOfBirth = "2015-10-03";
+    String dependentName;
+    String dependentRelationship;
+    String dependentDateOfBirth;
     LoginPage loginPage;
     DashboardPage dashboardPage;
     PersonalDetailsPage personalDetailsPage;
@@ -54,6 +54,39 @@ public class EmployeeInformationTest extends BaseTest {
     DependentsPage dependentsPage;
     PIMPage pimPage;
 
+    public void setAttributes(String ... employeeData){
+        log.info("📋 Loading employee data for username {}", employeeData[4]);
+        username = employeeData[4];
+        password = employeeData[5];
+        nationality = employeeData[6];
+        maritalStatus = employeeData[7];
+        emergencyName = employeeData[13];
+        emergencyRelationship = employeeData[14];
+        emergencyHomeTelephone = employeeData[15];
+        emergencyMobile = employeeData[16];
+        emergencyWorkTelephone = employeeData[17];
+        street1 = employeeData[18];
+        street2 = employeeData[19];
+        city = employeeData[20];
+        stateProvince = employeeData[21];
+        zipPostalCode = employeeData[22];
+        country = employeeData[23];
+        contactHomeTelephone = employeeData[24];
+        contactMobile = employeeData[25];
+        contactWorkTelephone = employeeData[26];
+        workEmail = employeeData[27];
+        otherEmail = employeeData[28];
+        dependentName = employeeData[29];
+        dependentRelationship = employeeData[30];
+        dependentDateOfBirth = employeeData[31];
+        loginPage = new LoginPage(driver);
+        dashboardPage = new DashboardPage(driver);
+        personalDetailsPage = new PersonalDetailsPage(driver);
+        emergencyContactsPage = new EmergencyContactsPage(driver);
+        contactDetailsPage = new ContactDetailsPage(driver);
+        dependentsPage = new DependentsPage(driver);
+        pimPage = new PIMPage(driver);
+    }
 
     public void personalDetailsAssert(){
         log.info("🔍 Verifying Personal Details after reload");
@@ -96,37 +129,6 @@ public class EmployeeInformationTest extends BaseTest {
     public void successMessage(String msg1, String msg2){
         log.info("🔔 Checking toast: {}", msg1);
         softAssert.assertEquals(personalDetailsPage.getSuccessToastText(), msg1, msg2);
-    }
-
-    public void setAttributes(String ... employeeData){
-        log.info("📋 Loading employee data for username {}", employeeData[4]);
-        username = employeeData[4];
-        password = employeeData[5];
-        nationality = employeeData[6];
-        maritalStatus = employeeData[7];
-        emergencyName = employeeData[13];
-        emergencyRelationship = employeeData[14];
-        emergencyHomeTelephone = employeeData[15];
-        emergencyMobile = employeeData[16];
-        emergencyWorkTelephone = employeeData[17];
-        street1 = employeeData[18];
-        street2 = employeeData[19];
-        city = employeeData[20];
-        stateProvince = employeeData[21];
-        zipPostalCode = employeeData[22];
-        country = employeeData[23];
-        contactHomeTelephone = employeeData[24];
-        contactMobile = employeeData[25];
-        contactWorkTelephone = employeeData[26];
-        workEmail = employeeData[27];
-        otherEmail = employeeData[28];
-        loginPage = new LoginPage(driver);
-        dashboardPage = new DashboardPage(driver);
-        personalDetailsPage = new PersonalDetailsPage(driver);
-        emergencyContactsPage = new EmergencyContactsPage(driver);
-        contactDetailsPage = new ContactDetailsPage(driver);
-        dependentsPage = new DependentsPage(driver);
-        pimPage = new PIMPage(driver);
     }
 
     public void loginAsUser(){
