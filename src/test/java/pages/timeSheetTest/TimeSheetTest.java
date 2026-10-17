@@ -61,7 +61,7 @@ public class TimeSheetTest extends BaseTest {
         loginPage.enterUsername(employee[4]);
         loginPage.enterPassword(employee[5]);
         loginPage.clickLogin();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")));
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")));
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
 
         dashboardPage.clickTimeMenu();

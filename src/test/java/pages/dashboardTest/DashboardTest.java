@@ -37,7 +37,7 @@ public class DashboardTest extends BaseTest {
         loginPage.enterPassword(user.get("password"));
         loginPage.clickLogin();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")));
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")));
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
         softAssert.assertAll();
         log.info("✅ Dashboard is displayed");
@@ -45,7 +45,7 @@ public class DashboardTest extends BaseTest {
         log.info("📂 Opening PIM from the dashboard");
         dashboardPage.clickPIMBtn();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("PIM")));
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("PIM")));
         softAssert.assertTrue(pimPage.getPIMTitle().isDisplayed());
         softAssert.assertAll();
         log.info("✅ PIM page is displayed");

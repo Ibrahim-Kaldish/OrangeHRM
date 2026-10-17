@@ -134,7 +134,7 @@ public class EmployeeInformationTest extends BaseTest {
         loginPage.enterUsername(username);
         loginPage.enterPassword(password);
         loginPage.clickLogin();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")));
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")));
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
         log.info("✅ Employee logged in");
     }
@@ -147,7 +147,7 @@ public class EmployeeInformationTest extends BaseTest {
         loginPage.enterPassword(admin.get("password"));
         loginPage.clickLogin();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")));
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")));
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
         log.info("✅ Admin logged in");
     }
@@ -269,7 +269,7 @@ public class EmployeeInformationTest extends BaseTest {
 
         log.info("🚪 Logging out employee");
         dashboardPage.clickLogout();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("url")));
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("url")));
 
         loginAsAdminAndSearch(employeeData[3]);
 
@@ -339,7 +339,7 @@ public class EmployeeInformationTest extends BaseTest {
         dependentAssert();
 
         dashboardPage.clickLogout();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("url")));
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("url")));
 
         loginAsAdminAndSearch(employeeData[3]);
 

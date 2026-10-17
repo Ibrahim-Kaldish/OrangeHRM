@@ -46,7 +46,7 @@ public class AddEmployeeTest extends BaseTest {
         loginPage.enterPassword(admin.get("password"));
         loginPage.clickLogin();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")),
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
                 "Admin login did not redirect to the dashboard");
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
                 "Dashboard title is not displayed after admin login");
@@ -54,14 +54,14 @@ public class AddEmployeeTest extends BaseTest {
 
         dashboardPage.clickPIMBtn();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("PIM")),
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("PIM")),
                 "PIM page URL is incorrect");
         softAssert.assertTrue(pimPage.getPIMTitle().isDisplayed(),
                 "PIM title is not displayed");
 
         pimPage.clickAddEmployeeLink();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("addEmployee")),
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("addEmployee")),
                 "Add Employee page URL is incorrect");
 
         addEmployeePage.enterFirstName(employee[0]);
@@ -110,14 +110,14 @@ public class AddEmployeeTest extends BaseTest {
 
         dashboardPage.clickLogout();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("url")),
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("url")),
                 "Logout did not return to the login page");
 
         loginPage.enterUsername(employee[4]);
         loginPage.enterPassword(employee[5]);
         loginPage.clickLogin();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")),
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
                 "New employee login did not redirect to the dashboard");
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
                 "Dashboard title is not displayed after new employee login");

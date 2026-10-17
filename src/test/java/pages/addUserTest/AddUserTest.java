@@ -36,7 +36,7 @@ public class AddUserTest extends BaseTest {
         loginPage.enterPassword(admin.get("password"));
         loginPage.clickLogin();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerUrls.getValueByKey("dashboard")));
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")));
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
         softAssert.assertAll();
 
@@ -55,7 +55,7 @@ public class AddUserTest extends BaseTest {
 
         Thread.sleep(5000);
 
-        softAssert.assertEquals(driver.getCurrentUrl(), jsonFileManagerUrls.getValueByKey("admin"));
+        softAssert.assertEquals(driver.getCurrentUrl(), jsonFileManagerData.getValueByKey("admin"));
 
         softAssert.assertAll();
     }

@@ -27,7 +27,7 @@ import java.nio.file.StandardCopyOption;
 public class BaseTest {
     private static final Logger log = LogManager.getLogger(BaseTest.class);
     public static JsonFileManager jsonFileManagerUsers;
-    public static JsonFileManager jsonFileManagerUrls;
+    public static JsonFileManager jsonFileManagerData;
     public static OpenCSVFileManager openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("src/main/resources/invalidEmployees.csv");
     public static OpenCSVFileManager openCSVFileManagerEmployees = new OpenCSVFileManager("src/main/resources/employees.csv");
 
@@ -36,7 +36,7 @@ public class BaseTest {
 
     @BeforeMethod
     public void setUp() {
-        jsonFileManagerUrls = new JsonFileManager("src/main/resources/urls.json");
+        jsonFileManagerData = new JsonFileManager("src/main/resources/data.json");
         jsonFileManagerUsers = new JsonFileManager("src/main/resources/users.json");
         openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("src/main/resources/invalidEmployees.csv");
         openCSVFileManagerEmployees = new OpenCSVFileManager("src/main/resources/employees.csv");
