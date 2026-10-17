@@ -18,6 +18,7 @@ public class DashboardPage extends BasePage {
     private static final By headerSecondaryButton = By.xpath("//div[contains(@class,'orangehrm-header-container')]//button[contains(@class,'oxd-button--secondary')]");
     private static final By timeMenu = By.cssSelector("a[href='/web/index.php/time/viewTimeModule']");
     private static final By timesheetsSubMenu = By.xpath("//span[contains(@class,'oxd-topbar-body-nav-tab-item') and normalize-space(.)='Timesheets']");
+    private static final By reportsTab = By.xpath("//nav[@aria-label='Topbar Menu']//a[contains(@class,'oxd-topbar-body-nav-tab-item') and normalize-space(.)='Reports']");
 
     public DashboardPage(WebDriver driver) {super(driver);}
 
@@ -41,6 +42,7 @@ public class DashboardPage extends BasePage {
         return findElement(headerSecondaryButton);
     }
     public WebElement getTimeMenu() {return findElement(timeMenu);}
+    public WebElement getReportsTab() { return findElement(reportsTab); }
 
     // Actions
     public void clickPIMBtn(){
@@ -66,9 +68,16 @@ public class DashboardPage extends BasePage {
         log.info("⏱️ Opened Timesheets");
     }
 
+    public void clickReportsTab() {
+        getReportsTab().click();
+        log.info("📊 Clicked Reports tab");
+    }
+
     public void clickLogout() {
         clickUserDropdown();
         getLogout().click();
     }
+
+
 
 }
