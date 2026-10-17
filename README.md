@@ -47,7 +47,18 @@ java -version
 
 **2️⃣ 📦 Apache Maven**
 
-Download the Binary zip from https://maven.apache.org/download.cgi. Unzip it to `C:\apache-maven`, then add `C:\apache-maven\bin` to your `Path` environment variable. Open a new Command Prompt window after you change `Path`.
+Download the Binary zip from https://maven.apache.org/download.cgi and unzip it to `C:\apache-maven`.
+
+Then add the Maven `bin` folder to the system environment variables:
+
+1. 🔍 Press the Start key, type `environment variables`, and choose **Edit the system environment variables**.
+2. 🧭 Click **Environment Variables**.
+3. 📂 Under **System variables**, select **Path**, then click **Edit**.
+4. ➕ Click **New** and enter `C:\apache-maven\bin`.
+5. 💾 Click **OK** on each window to save.
+6. 🔁 Open a new Command Prompt window. Changes to `Path` do not apply to windows that were already open.
+
+📌 The `bin` folder contains the `mvn` command. Without it on `Path`, Windows cannot find `mvn`.
 
 ```cmd
 mvn -version
@@ -69,9 +80,20 @@ reg query "HKCU\Software\Google\Chrome\BLBeacon" /v version
 
 Install IntelliJ IDEA Community or Ultimate. You can run the project without it, but the steps below assume it.
 
-**5️⃣ 📊 Allure command-line tool**
+**5️⃣ 🟢 Node.js and npm**
 
-You need this only to view reports. See the 📊 Allure reporting section.
+npm is the package manager that installs the Allure command-line tool. Download the LTS version from https://nodejs.org and run the installer. Keep the default options.
+
+```cmd
+node -v
+npm -v
+```
+
+✅ Expected: a version number for each command, such as `v22.x.x` and `10.x.x`.
+
+**6️⃣ 📊 Allure command-line tool**
+
+You need this only to view reports. It is installed with npm (`npm install -g allure`). See the 📊 Allure reporting section.
 
 ## 📥 Getting the project
 
@@ -268,11 +290,13 @@ https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
    ✅ Expected at the end:
 
    ```text
-   [INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0
+   [INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0
    [INFO] BUILD SUCCESS
    ```
 
-   🔢 The numbers depend on the tests. If any test fails, the last line is `BUILD FAILURE`.
+   🔢 `Tests run` counts each time a `@Test` method runs. A method that uses a data provider runs once for each row that provider returns. With the current code, the seven classes in `run.xml` have 8 test runs in total: AddEmployeeTest (1), AddUserTest (1), ValidLogin (1), EmployeeInformationTest (2), TimeSheetTest (1), InvalidLogin (1), and ReportGenerationTest (1). If the number is different, check the data providers and the `@Test` methods again.
+
+   ❌ If any test fails, the `Failures` or `Errors` number is above 0, and the last line is `BUILD FAILURE`.
 
 🌐 A Chrome window opens for each test and closes when the test ends. ✋ Do not close it by hand while a test is running.
 
@@ -294,7 +318,7 @@ mvn test -Dtest=ValidLogin#methodName
 
 📄 `run.xml` is a TestNG suite file. It is a list of the test classes to run. The pom tells Maven to read it, through the `<suiteXmlFiles>` setting.
 
-The current file runs these classes, in this order:
+The current file runs these seven classes, in this order:
 
 | Order | Class | Package |
 |---|---|---|
@@ -304,10 +328,11 @@ The current file runs these classes, in this order:
 | 4️⃣ | EmployeeInformationTest | pages.employeeInformationTest |
 | 5️⃣ | TimeSheetTest | pages.timeSheetTest |
 | 6️⃣ | InvalidLogin | pages.loginTest |
+| 7️⃣ | ReportGenerationTest | pages.reportGenerationTest |
 
 ℹ️ Test classes that are not listed in `run.xml` are not run by `mvn test`.
 
-🔗 **Why the order matters:** AddEmployeeTest creates the employees that EmployeeInformationTest uses. If AddEmployeeTest does not run first, EmployeeInformationTest may fail because the employee is missing.
+🔗 **Why the order matters:** AddEmployeeTest creates the employees that EmployeeInformationTest uses. If AddEmployeeTest does not run first, EmployeeInformationTest and ReportGenerationTest may fail because the employee is missing.
 
 ➕ **To add a class,** place a line like this inside `<classes>`:
 
@@ -370,27 +395,34 @@ Each file line has:
 
 📈 Allure creates a web report from the test results. The report shows each test, its steps, its errors, and the failure screenshot.
 
+Allure uses two separate parts:
+
+- 🧩 **The Java library (already in the project):** `allure-testng` in `pom.xml`. The tests use it to write result files while they run. You do not install it by hand. Maven downloads it during `mvn clean install`.
+- 🖥️ **The command-line tool (you install it once):** this reads the result files and builds the web report. It is the `allure` npm package, version 3.x, as shown in Step 1.
+
 ### 1️⃣ Step 1: Install the Allure command-line tool
 
-🅰️ Option A, with Scoop (if you have it):
+📦 Install it globally with npm. Open Command Prompt and run:
 
 ```cmd
-scoop install allure
+npm install -g allure
 ```
 
-🅱️ Option B, manually:
-1. ⬇️ Go to https://github.com/allure-framework/allure2/releases and download the `.zip` file.
-2. 🗜️ Unzip it to `C:\allure`.
-3. 🛤️ Add `C:\allure\bin` to your `Path` environment variable.
-4. 🔁 Open a new Command Prompt window.
+📌 This downloads the `allure` package from npm and makes the `allure` command work from any folder.
 
-Check the install:
+✅ Expected: the command ends with a line like `added N packages` with no `ERR!` lines.
+
+🔍 Check the install:
 
 ```cmd
 allure --version
 ```
 
-✅ Expected: a version number, such as `2.x.x`.
+✅ Expected: a version number, such as `3.x.x`.
+
+ℹ️ The 3.x command-line tool can read the results that `allure-testng` (2.35.5 in `pom.xml`) writes, so the two versions do not need to match.
+
+❌ If you see `'allure' is not recognized`, close the Command Prompt window, open a new one, and run the check again. npm adds its global folder to `Path` when it is installed.
 
 ### 2️⃣ Step 2: Run the tests
 
@@ -403,13 +435,25 @@ mvn clean test
 
 📁 After the run, the results are in the `allure-results` folder in the project folder.
 
-### 3️⃣ Step 3: Open the report
+### 3️⃣ Step 3: Generate and open the report
+
+🏗️ First, build the report from the results folder:
 
 ```cmd
-allure serve allure-results
+allure generate allure-results --clean -o allure-report
 ```
 
-✅ Expected: a browser window opens with the report. ⏹️ To stop the report server, go back to the Command Prompt window and press **Ctrl + C**.
+✅ Expected: the command finishes without errors and creates an `allure-report` folder in the project folder.
+
+🌐 Then open it in your browser:
+
+```cmd
+allure open allure-report
+```
+
+✅ Expected: a line like `Allure is running on http://localhost:<port>` and the report opens in your browser.
+
+⏹️ To stop the report server, go back to the Command Prompt window and press **Ctrl + C**.
 
 ### 🔍 What the report shows
 
@@ -437,8 +481,8 @@ allure serve allure-results
 | 📑 `CSV file is empty` or `Could not read CSV file` | The tests are running from the wrong folder | Run Maven from the project folder that contains `pom.xml`. The data paths are relative to that folder. |
 | 🧾 `Could not read JSON file` or `Invalid JSON` | The file is missing, or the JSON has a syntax error | Check that the file exists in `src/main/resources`. Check for missing commas, quotes, or brackets. |
 | 🔁 Tests pass on one run and fail on the next | The demo site's data changed, or the same employee or username already exists from an earlier run | Use new employee IDs and usernames in `employees.csv`. Check the log for messages about duplicate records. |
-| 📊 `allure is not recognized` | The Allure command-line tool is not installed or not on `Path` | Follow Step 1 of 📊 Allure reporting. Open a new Command Prompt window. |
-| 🫥 The Allure report is empty | The tests did not run, or `allure-results` is in another folder | Run `mvn clean test` first. Then run `allure serve allure-results` from the project folder. |
+| 📊 `allure is not recognized` | The Allure command-line tool is not installed or not on `Path` | Follow Step 1 of 📊 Allure reporting (`npm install -g allure`). Open a new Command Prompt window. |
+| 🫥 The Allure report is empty | The tests did not run, or `allure-results` is in another folder | Run `mvn clean test` first. Then run `allure generate allure-results --clean -o allure-report` from the project folder. |
 
 ## ➕ Adding a new test or page object
 
