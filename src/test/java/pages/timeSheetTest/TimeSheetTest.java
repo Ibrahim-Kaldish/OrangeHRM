@@ -95,7 +95,7 @@ public class TimeSheetTest extends BaseTest {
         List<String> entered = timeSheetPage.enterRandomHoursForEachDay();
         timeSheetPage.clickSaveButton();
 
-        timeSheetPage.waitForScreen(5);
+        timeSheetPage.waitForScreen(2);
         projectNameAssert();
         selectedActivityAssert(activity);
         savedHoursAssert(entered);
