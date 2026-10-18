@@ -28,6 +28,7 @@
 - 🗃️ **Data provider:** a TestNG method that feeds rows of test data from a CSV or JSON file into a test. The test runs once for each row.
 - 1️⃣ **Singleton:** a pattern where only one object of a kind exists and is shared. In this project, one Chrome browser is created, reused, and then closed.
 - 🛟 **Soft assertion:** a check that records a failure but lets the test keep running. All recorded failures are reported at the end.
+- 🤖 **Robot:** a Java class that presses keys like a person would. This project uses it to paste the photo path into the file dialog.
 - 🕶️ **Incognito:** a Chrome mode that does not keep history or cookies after the window closes.
 - ⌨️ **Command line:** a text window where you type commands. On Windows, this is Command Prompt (`cmd`).
 
@@ -164,6 +165,8 @@ mvn clean install -DskipTests
     │       ├── 📑 employees.csv                   Employee data for the add and edit tests
     │       ├── 📑 invalidEmployees.csv            Invalid employee data
     │       ├── 📑 usernames.csv                   Usernames for the Add User test
+    │       ├── 📁 photos/                         Employee photos for the Add Employee test
+    │       │   └── 🖼️ employee.png
     │       └── 📝 log4j2.properties               Logging settings
     └── 📁 test/
         └── 📁 java/
@@ -303,7 +306,7 @@ https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
    ✅ Expected at the end:
 
    ```text
-   [INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0
+   [INFO] Tests run: <TOTAL>, Failures: 0, Errors: 0, Skipped: 0
    [INFO] BUILD SUCCESS
    ```
 
@@ -551,6 +554,77 @@ softAssert.assertTrue(reportGenerationPage.isPdfSaved(pdfName),
 - 📏 The `scale` setting changes only the PDF. The browser window keeps its normal size.
 - ⏳ Wait for the report table to load before you save. A PDF saved too early can be blank.
 
+## 🖼️ Uploading an employee photo
+
+📸 The Add Employee test uploads a profile photo. The photo is a file inside the project, and the test selects it through the operating system's file dialog.
+
+### 📁 Where the photo is kept
+
+Place the photo at this location inside the project folder:
+
+```text
+C:\Projects\OrangeHRM\src\main\resources\photos\employee.png
+```
+
+The site accepts JPG, PNG, and GIF files up to 1 MB.
+
+### 🧭 How the path is built
+
+The test builds a relative path from the project folder, then converts it to an absolute path. The file dialog needs the full path.
+
+```java
+Path photo = Paths.get("src", "main", "resources", "photos", "employee.png");
+String fullPath = photo.toAbsolutePath().toString();
+```
+
+### 🖱️ How the photo is selected
+
+The method `clickAddPhotoAndSelect` in `AddEmployeePage` runs these steps:
+
+1. 🖱️ Clicks the **+** button on the photo area.
+2. ⏱️ Waits 1.5 seconds for the file dialog to open.
+3. 📋 Copies the full path to the clipboard.
+4. ⌨️ Uses `Robot` to press Ctrl + V, pause, and press Enter. The dialog selects the file.
+
+The test calls it like this:
+
+```java
+Path photo = Paths.get("src", "main", "resources", "photos", "employee.png");
+addEmployeePage.clickAddPhotoAndSelect(photo.toAbsolutePath().toString());
+```
+
+### ✅ Checking the upload
+
+The test checks the photo in two ways:
+
+- 🔄 **The preview changes.** The test reads the preview's `src` before and after the upload, and asserts that the value changed.
+- 📏 **The size is within the limits.** The test reads the uploaded image and asserts that it is larger than 4.6 KB (the default photo size) and smaller than 1 MB.
+
+```java
+String defaultPhotoSrc = addEmployeePage.getPhotoPreviewSrc();
+
+Path photo = Paths.get("src", "main", "resources", "photos", "employee.png");
+addEmployeePage.clickAddPhotoAndSelect(photo.toAbsolutePath().toString());
+
+String uploadedPhotoSrc = addEmployeePage.getPhotoPreviewSrc();
+softAssert.assertNotEquals(uploadedPhotoSrc, defaultPhotoSrc,
+        "Photo preview did not change after upload");
+
+long uploadedSize = addEmployeePage.getUploadedPhotoSize();
+softAssert.assertTrue(uploadedSize > 4.6 * 1024,
+        "Uploaded photo is smaller than 4.6 KB: " + uploadedSize + " bytes");
+softAssert.assertTrue(uploadedSize < 1024 * 1024,
+        "Uploaded photo is larger than 1 MB: " + uploadedSize + " bytes");
+```
+
+### ⚠️ Things to know
+
+- 🖥️ `Robot` controls the real keyboard. It needs a desktop session, and the browser must be the active window when it types.
+- 🚫 It does not work on a headless run or on a remote machine without a desktop.
+- ⏱️ The 1.5-second wait is a fixed delay. On a slow machine, the dialog may take longer to open.
+- 🔁 If the site resizes or re-encodes the photo, its size can differ from the file on disk.
+- 📂 Check that the photo exists at `src\main\resources\photos\employee.png` before you run the test.
+
 ## 🛠️ Troubleshooting
 
 | Problem | Likely cause | Fix |
@@ -569,6 +643,11 @@ softAssert.assertTrue(reportGenerationPage.isPdfSaved(pdfName),
 | 🫥 The PDF is blank or has only part of the table | The table had not loaded when the page was printed, or the table is cut off by its scroll box | Wait for the table to load before you call `saveReportAsPdf`. Check the table width and the paper size settings. |
 | 🧨 `ClassCastException` when saving the PDF | The driver is not a `ChromeDriver` | Make sure `GetChromeDriver` creates the driver that the page objects use. |
 | 🧹 The PDF disappears after a new run | `mvn clean` deletes the `target` folder | Copy the PDF to another folder after the test, or save it outside `target`. |
+| 🖼️ The photo file dialog does not open | The Add photo button was not clicked, or the wait was too short | Check the log for the click. Increase the wait after the click if the dialog is slow. |
+| 📂 The photo is not selected | The browser was not the active window when `Robot` typed, or the path was pasted into another window | Keep the browser in front during the test. Do not use other windows while it runs. |
+| 🗂️ A different file is selected | The path is wrong or the file is in another folder | Check the absolute path in the log and confirm the photo is at `src\main\resources\photos\employee.png`. |
+| 🤖 `AWTException` or `HeadlessException` when using `Robot` | The test runs without a desktop, such as on CI or a headless machine | Run on a desktop session, or upload with `uploadPhoto` (sends the path to the hidden file input). |
+| 📏 Photo size check returns `-1` | The browser could not read the preview image | Check that the preview `src` is a `blob:` or `data:` URL. Look at the screenshot to see whether the photo appears. |
 | 🫥 The Allure report is empty | The tests did not run, or `allure-results` is in another folder | Run `mvn clean test` first. Then run `allure generate allure-results --clean -o allure-report` from the project folder. |
 
 ## ➕ Adding a new test or page object
@@ -610,6 +689,9 @@ In `target\screenshots` in the project folder. They are also attached to failed 
 
 **📄 Where is the report PDF saved?**
 In `target\downloads` in the project folder. The file name is the one you pass to `saveReportAsPdf`. `mvn clean` deletes this folder.
+
+**🖼️ Can the photo upload run without a desktop?**
+Yes. Use `uploadPhoto` in `AddEmployeePage`. It sends the file path straight to the hidden file input, so no file dialog or `Robot` is needed.
 
 **🤔 Why did a test that worked yesterday fail today?**
 The demo site is shared and can change. Data on the site can also change. Check the screenshot and the log.
