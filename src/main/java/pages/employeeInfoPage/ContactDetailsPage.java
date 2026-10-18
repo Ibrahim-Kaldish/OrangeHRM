@@ -10,9 +10,10 @@ import pages.BasePage;
 public class ContactDetailsPage extends BasePage {
     private static final Logger log = LogManager.getLogger(ContactDetailsPage.class);
 
-    private static final By contactDetailsTab = By.xpath("//a[contains(@class,'orangehrm-tabs-item') and normalize-space(.)='Contact Details']");
+    // Locators
     private static final String contactForm = "//form[.//label[normalize-space(.)='Street 1']]";
     private static final String contactFieldGroup = "//div[contains(concat(' ',normalize-space(@class),' '),' oxd-input-group ')][.//label[normalize-space(.)='%s']]";
+    private static final By contactDetailsTab = By.xpath("//a[contains(@class,'orangehrm-tabs-item') and normalize-space(.)='Contact Details']");
     private static final By contactStreet1Input = By.xpath(contactForm + String.format(contactFieldGroup, "Street 1") + "//input");
     private static final By contactStreet2Input = By.xpath(contactForm + String.format(contactFieldGroup, "Street 2") + "//input");
     private static final By contactCityInput = By.xpath(contactForm + String.format(contactFieldGroup, "City") + "//input");
@@ -30,6 +31,7 @@ public class ContactDetailsPage extends BasePage {
         super(driver);
     }
 
+    // Getters
     public WebElement getContactStreet1Input() { return findElement(contactStreet1Input); }
     public WebElement getContactStreet2Input() { return findElement(contactStreet2Input); }
     public WebElement getContactCityInput() { return findElement(contactCityInput); }
@@ -42,7 +44,6 @@ public class ContactDetailsPage extends BasePage {
     public WebElement getContactWorkEmailInput() { return findElement(contactWorkEmailInput); }
     public WebElement getContactOtherEmailInput() { return findElement(contactOtherEmailInput); }
     public WebElement getContactSaveButton() { return findElement(contactSaveButton); }
-
     public String getContactStreet1Value() { return getContactStreet1Input().getAttribute("value").trim(); }
     public String getContactStreet2Value() { return getContactStreet2Input().getAttribute("value").trim(); }
     public String getContactCityValue() { return getContactCityInput().getAttribute("value").trim(); }
@@ -55,11 +56,11 @@ public class ContactDetailsPage extends BasePage {
     public String getContactWorkEmailValue() { return getContactWorkEmailInput().getAttribute("value").trim(); }
     public String getContactOtherEmailValue() { return getContactOtherEmailInput().getAttribute("value").trim(); }
 
+    // Actions
     public void clickContactDetailsTab() {
         findElement(contactDetailsTab).click();
         log.info("📑 Clicked Contact Details tab");
     }
-
     public void enterContactStreet1(String value) { typeInto(contactStreet1Input, value); }
     public void enterContactStreet2(String value) { typeInto(contactStreet2Input, value); }
     public void enterContactCity(String value) { typeInto(contactCityInput, value); }
@@ -71,7 +72,6 @@ public class ContactDetailsPage extends BasePage {
     public void enterContactWorkTelephone(String value) { typeInto(contactWorkTelephoneInput, value); }
     public void enterContactWorkEmail(String value) { typeInto(contactWorkEmailInput, value); }
     public void enterContactOtherEmail(String value) { typeInto(contactOtherEmailInput, value); }
-
     public void enterContactDetails(String street1, String street2, String city, String stateProvince,
                                     String zipPostalCode, String country, String homeTelephone,
                                     String mobile, String workTelephone, String workEmail, String otherEmail) {
@@ -88,7 +88,6 @@ public class ContactDetailsPage extends BasePage {
         enterContactOtherEmail(otherEmail);
         log.info("🏠 Entered contact details");
     }
-
     public void clickContactSave() {
         getContactSaveButton().click();
         log.info("💾 Clicked Contact Details Save");

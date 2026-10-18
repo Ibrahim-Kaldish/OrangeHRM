@@ -6,21 +6,24 @@ import org.openqa.selenium.WebElement;
 import pages.BasePage;
 
 public class LoginPage extends BasePage {
+
+    // Locators
     private final By usernameLocator = By.name("username");
     private final By passwordLocator = By.name("password");
     private final By loginBtnLocator = By.xpath("//button[@type='submit']");
     private final By invalidCredentialsMsg = By.cssSelector("p.oxd-alert-content-text");
+
     public LoginPage(WebDriver driver){
         super(driver);
     }
 
+    // Getters
     public WebElement getUsernameField() {
         return findElement(usernameLocator);
     }
     public WebElement getPasswordField() {
         return findElement(passwordLocator);
     }
-
     public WebElement getLoginBtn() {
         return findElement(loginBtnLocator);
     }
@@ -28,6 +31,7 @@ public class LoginPage extends BasePage {
         return findElement(invalidCredentialsMsg);
     }
 
+    // Actions
     public void enterUsername(String username){
         getUsernameField().sendKeys(username);
     }
@@ -38,5 +42,4 @@ public class LoginPage extends BasePage {
     public void clickLogin(){
         getLoginBtn().click();
     }
-
 }

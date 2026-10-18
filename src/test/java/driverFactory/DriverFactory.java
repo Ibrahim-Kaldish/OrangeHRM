@@ -4,9 +4,8 @@ import org.openqa.selenium.WebDriver;
 
 public interface DriverFactory {
 
-    public static WebDriver getDriver() {
+    static WebDriver getDriver() {
         return null;
     }
-
-    public static void quitDriver(){}
+    static void quitDriver(){}
 }

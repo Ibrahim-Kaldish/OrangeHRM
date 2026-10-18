@@ -11,8 +11,8 @@ public class JobInfoPage extends BasePage {
     private static final Logger log = LogManager.getLogger(JobInfoPage.class);
 
     // Locators
-    private static final By jobTab = By.xpath("//a[contains(@class,'orangehrm-tabs-item') and contains(@href,'/pim/viewJobDetails/') and normalize-space(.)='Job']");
     private static final String jobFieldGroup = "//div[contains(concat(' ',normalize-space(@class),' '),' oxd-input-group ')][.//label[starts-with(normalize-space(.),'%s')]]";
+    private static final By jobTab = By.xpath("//a[contains(@class,'orangehrm-tabs-item') and contains(@href,'/pim/viewJobDetails/') and normalize-space(.)='Job']");
     private static final By jobTitleDropdown = By.xpath(String.format(jobFieldGroup, "Job Title") + "//div[contains(@class,'oxd-select-text')]");
     private static final By subUnitDropdown = By.xpath(String.format(jobFieldGroup, "Sub Unit") + "//div[contains(@class,'oxd-select-text')]");
     private static final By employmentStatusDropdown = By.xpath(String.format(jobFieldGroup, "Employment Status") + "//div[contains(@class,'oxd-select-text')]");

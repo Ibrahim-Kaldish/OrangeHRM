@@ -14,7 +14,6 @@ import org.testng.asserts.SoftAssert;
 import utils.JsonFileManager;
 import utils.OpenCSVFileManager;
 import utils.Screenshot;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;

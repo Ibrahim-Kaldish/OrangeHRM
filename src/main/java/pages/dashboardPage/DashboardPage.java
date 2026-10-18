@@ -10,6 +10,7 @@ public class DashboardPage extends BasePage {
 
     Logger log = org.apache.logging.log4j.LogManager.getLogger(DashboardPage.class);
 
+    // Locators
     private static final By dashboardTitleLocator = By.className("oxd-topbar-header-breadcrumb");
     private static final By PIMLocator = By.linkText("PIM");
     private static final By userDropdownLocator = By.xpath("//span[contains(@class,'oxd-userdropdown-tab')]");
@@ -27,14 +28,11 @@ public class DashboardPage extends BasePage {
     public WebElement getDashboardTitle(){
         return findElement(dashboardTitleLocator);
     }
-
     public WebElement getPIMBtn(){
         return findElement(PIMLocator);
     }
     public WebElement getUserDropdown() { return findElement(userDropdownLocator); }
-
     public WebElement getLogout() { return findElement(logoutLocator); }
-
     public WebElement getAdminMenuItem() {
         return findElement(adminMenuItem);
     }
@@ -48,11 +46,9 @@ public class DashboardPage extends BasePage {
     public void clickPIMBtn(){
         getPIMBtn().click();
     }
-
     public void clickUserDropdown() {
         getUserDropdown().click();
     }
-
     public void clickAdminMenuItem() {
         getAdminMenuItem().click();
         log.info("📂 Clicked Admin menu");
@@ -61,23 +57,18 @@ public class DashboardPage extends BasePage {
         getHeaderSecondaryButton().click();
         log.info("➕ Clicked header button");
     }
-
     public void clickTimeMenu() {
         getTimeMenu().click();
         findElement(timesheetsSubMenu).click();
         log.info("⏱️ Opened Timesheets");
     }
-
     public void clickReportsTab() {
         getReportsTab().click();
         log.info("📊 Clicked Reports tab");
     }
-
     public void clickLogout() {
         clickUserDropdown();
         getLogout().click();
     }
-
-
 
 }

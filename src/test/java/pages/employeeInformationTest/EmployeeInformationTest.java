@@ -15,7 +15,6 @@ import pages.baseTest.BaseTest;
 import pages.dashboardPage.DashboardPage;
 import pages.employeeInfoPage.*;
 import pages.loginPage.LoginPage;
-
 import java.util.Map;
 
 @Epic("Employee Management")

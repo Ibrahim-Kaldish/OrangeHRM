@@ -26,14 +26,13 @@ public class ReportGenerationPage extends BasePage {
     private static final Logger log = LogManager.getLogger(ReportGenerationPage.class);
 
     // Locators
-    private static final By reportNameInput = By.xpath("//label[normalize-space(.)='Report Name']/following::input[1]");
     private static final String reportOptionFormat = "//div[@role='listbox']//div[@role='option'][contains(normalize-space(.),'%s')]";
+    private static final By reportNameInput = By.xpath("//label[normalize-space(.)='Report Name']/following::input[1]");
     private static final By searchButton = By.xpath("//div[contains(@class,'oxd-form-actions')]//button[@type='submit' and normalize-space(.)='Search']");
     private static final By editReportButton = By.xpath("//button[.//i[contains(@class,'bi-pencil-fill')]]");
     private static final By employeeReportsTitle = By.xpath("//h5[contains(@class,'oxd-table-filter-title')]");
     private static final By selectionCriteriaDropdown = By.xpath("//div[contains(@class,'oxd-input-group')][.//label[normalize-space(.)='Selection Criteria']]//div[contains(@class,'oxd-select-text')]");
     private static final By selectionCriteriaAddButton = By.xpath("(//div[contains(@class,'orangehrm-report-criteria')][.//div[contains(@class,'oxd-select-wrapper')]]//button[contains(@class,'orangehrm-report-icon')])[1]");
-    private static final By reportCard = By.xpath("//div[contains(@class,'oxd-card-table-body')]//*[contains(normalize-space(.),'Employee Contact info report')]");
     private static final By jobTitleRowDropdown = By.xpath("(//div[contains(@class,'oxd-input-group')][.//div[contains(@class,'oxd-select-text')]])[3]//div[contains(@class,'oxd-select-text')]");
     private static final By subUnitDropdown = By.xpath("(//div[contains(@class,'oxd-input-group')][.//div[contains(@class,'oxd-select-text')]])[4]//div[contains(@class,'oxd-select-text')]");
     private static final By employmentStatusDropdown = By.xpath("(//div[contains(@class,'oxd-input-group')][.//div[contains(@class,'oxd-select-text')]])[5]//div[contains(@class,'oxd-select-text')]");
@@ -76,11 +75,9 @@ public class ReportGenerationPage extends BasePage {
     public boolean isEmployeeReportsTitleDisplayed() {
         return getEmployeeReportsTitle().isDisplayed();
     }
-
     public void enterReportName(String name) {
         typeInto(reportNameInput, name);
     }
-
     public void selectReport(String name) {
         By option = By.xpath(String.format(reportOptionFormat, name));
         new WebDriverWait(driver, Duration.ofSeconds(10))
@@ -88,35 +85,28 @@ public class ReportGenerationPage extends BasePage {
                 .click();
         log.info("📄 Selected report '{}'", name);
     }
-
     public void clickSearch() {
         getSearchButton().click();
         log.info("🔎 Clicked Search");
     }
-
     public void clickEditReport() {
         getEditReportButton().click();
         log.info("✏️ Clicked edit report");
     }
-
     public void selectSelectionCriteria(String criteria) {
         selectFromDropdown(getSelectionCriteriaDropdown(), criteria);
         log.info("🎯 Selected selection criteria '{}'", criteria);
     }
-
     public void clickSelectionCriteriaAdd() {
         getSelectionCriteriaAddButton().click();
         log.info("➕ Clicked + next to Selection Criteria");
     }
-
     public void selectJobTitleCriteria(String jobTitle) {
         selectFromDropdown(getJobTitleRowDropdown(), jobTitle);
     }
-
     public void selectSubUnitCriteria(String subUnit) {
         selectFromDropdown(getSubUnitDropdown(), subUnit);
     }
-
     public void selectEmploymentStatusCriteria(String status) {
         selectFromDropdown(getEmploymentStatusDropdown(), status);
     }
@@ -124,22 +114,18 @@ public class ReportGenerationPage extends BasePage {
         selectFromDropdown(getDisplayFieldDropdown(), field);
         log.info("🧾 Selected display field '{}'", field);
     }
-
     public void clickDisplayFieldAdd() {
         getDisplayFieldAddButton().click();
         log.info("➕ Clicked + beside Select Display Field");
     }
-
     public void clickSave() {
         getSaveButton().click();
         log.info("💾 Clicked Save on Edit Report");
     }
-
     public void clickExpandTable() {
         getExpandTableIcon().click();
         log.info("⛶ Clicked expand table");
     }
-
     public void saveReportAsPdf(String fileName) {
         try {
             ChromeDriver chrome = (ChromeDriver) driver;

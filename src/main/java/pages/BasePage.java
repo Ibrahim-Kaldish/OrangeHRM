@@ -5,10 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 
 public class BasePage {
     private static final Logger log = LogManager.getLogger(BasePage.class);
@@ -21,10 +19,10 @@ public class BasePage {
         this.driver = driver;
     }
 
+    // Getters
     public WebElement findElement(By locator) {
         return findElement(locator, Duration.ofSeconds(10));
     }
-
     public WebElement findElement(By locator, Duration duration) {
         wait = new WebDriverWait(driver, duration);
         log.debug("🔎 Waiting for element: {}", locator);
@@ -35,11 +33,9 @@ public class BasePage {
             throw e;
         }
     }
-
     public List<WebElement> findElements(By locator) {
         return findElements(locator, Duration.ofSeconds(10));
     }
-
     public List<WebElement> findElements(By locator, Duration duration) {
         wait = new WebDriverWait(driver, duration);
         log.debug("🔎 Waiting for elements: {}", locator);
@@ -53,17 +49,11 @@ public class BasePage {
         log.debug("📦 Found {} elements for {}", elements.size(), locator);
         return elements;
     }
-
-    public boolean navigateToPage(String redirectedUrl) {
-        String currentUrl = driver.getCurrentUrl();
-        log.debug("🌐 Current URL: {}", currentUrl);
-        boolean matches = Objects.equals(currentUrl, redirectedUrl);
-        if (!matches) {
-            log.warn("⚠️ Expected URL {} but was {}", redirectedUrl, currentUrl);
-        }
-        return matches;
+    public String getSuccessToastText() {
+        return findElement(successToast).getText().trim();
     }
 
+    // Actions
     public void typeInto(By locator, String text) {
         WebElement element = findElement(locator);
         element.click();
@@ -78,7 +68,6 @@ public class BasePage {
         element.sendKeys(text);
         log.info("⌨️ Cleared and entered text into {}", locator);
     }
-
     public void selectFromDropdown(WebElement dropdown, String optionText) {
         dropdown.click();
         final By dropdownOptions = By.xpath("//div[@role='listbox']//div[@role='option']");
@@ -96,11 +85,6 @@ public class BasePage {
         }
         throw new IllegalArgumentException("Dropdown option not found: " + optionText);
     }
-
-    public String getSuccessToastText() {
-        return findElement(successToast).getText().trim();
-    }
-
     public void waitForScreen(int seconds) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
@@ -111,7 +95,6 @@ public class BasePage {
         }
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".oxd-loading-spinner")));
     }
-
     public void waitForScreen() {
         waitForScreen(1);
     }

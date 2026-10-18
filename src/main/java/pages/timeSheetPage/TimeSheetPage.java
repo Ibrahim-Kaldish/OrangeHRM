@@ -20,26 +20,27 @@ import java.util.stream.Collectors;
 public class TimeSheetPage extends BasePage {
 
     // Locators
-    private final By dateInput = By.xpath("//div[contains(@class,'oxd-date-input')]//input");
-    private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-dd-MM");
-    private final By editButton = By.xpath("//button[contains(@class,'oxd-button--ghost') and normalize-space()='Edit']");
-    private final By submitButton = By.xpath("//button[contains(@class,'oxd-button--secondary') and normalize-space()='Submit']");
-    private final By timesheetTitle = By.xpath("//div[contains(@class,'orangehrm-timesheet-header--title')]");
-    private final By projectInput = By.xpath("//div[contains(@class,'orangehrm-timesheet-body')]//input[@placeholder='Type for hints...']");    private final By cocaColaOption = By.xpath("//div[@role='option']//span[contains(., 'The Coca-Cola Company')]");
-    private final By activityDropdown = By.xpath("//div[contains(@class,'orangehrm-timesheet-body')]//div[contains(concat(' ', normalize-space(@class), ' '), ' oxd-select-text ')]");
-    private final By activityListbox = By.xpath("//div[@role='listbox']");
-    private final By activityOption = By.xpath(".//div[@role='option']");
-    private final By dayInputs = By.xpath("//td[contains(@class,'orangehrm-timesheet-table-body-cell') and contains(@class,'--duration-input')]//input");
-    private final By saveButton = By.xpath("//button[@type='submit' and normalize-space()='Save']");
-    private final By savedHourCells = By.xpath("//div[contains(@class,'orangehrm-timesheet-body')]//tr[1]/td[position()>=3 and position()<=9]");
+    private static final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-dd-MM");
+    private static final By dateInput = By.xpath("//div[contains(@class,'oxd-date-input')]//input");
+    private static final By editButton = By.xpath("//button[contains(@class,'oxd-button--ghost') and normalize-space()='Edit']");
+    private static final By submitButton = By.xpath("//button[contains(@class,'oxd-button--secondary') and normalize-space()='Submit']");
+    private static final By timesheetTitle = By.xpath("//div[contains(@class,'orangehrm-timesheet-header--title')]");
+    private static final By projectInput = By.xpath("//div[contains(@class,'orangehrm-timesheet-body')]//input[@placeholder='Type for hints...']");
+    private static final By cocaColaOption = By.xpath("//div[@role='option']//span[contains(., 'The Coca-Cola Company')]");
+    private static final By activityDropdown = By.xpath("//div[contains(@class,'orangehrm-timesheet-body')]//div[contains(concat(' ', normalize-space(@class), ' '), ' oxd-select-text ')]");
+    private static final By activityListbox = By.xpath("//div[@role='listbox']");
+    private static final By activityOption = By.xpath(".//div[@role='option']");
+    private static final By dayInputs = By.xpath("//td[contains(@class,'orangehrm-timesheet-table-body-cell') and contains(@class,'--duration-input')]//input");
+    private static final By saveButton = By.xpath("//button[@type='submit' and normalize-space()='Save']");
+    private static final By savedHourCells = By.xpath("//div[contains(@class,'orangehrm-timesheet-body')]//tr[1]/td[position()>=3 and position()<=9]");
     private static final By submittedStatusLabel = By.xpath("//*[normalize-space(.)='Status: Submitted']");
-    private final By submittedCard = By.xpath("//div[contains(concat(' ', normalize-space(@class), ' '), ' oxd-table-card ')][.//*[normalize-space()='Submitted']]");
-    private final By employeeNameInput = By.xpath("//div[contains(@class,'oxd-autocomplete-text-input')]//input[@placeholder='Type for hints...']");
-    private final By viewEmployeeButton = By.xpath("//button[@type='submit' and normalize-space()='View']");
-    private final By viewProjectCell = By.xpath("//div[contains(@class,'orangehrm-timesheet-body')]//tr[1]/td[1]");
-    private final By viewActivityCell = By.xpath("//div[contains(@class,'orangehrm-timesheet-body')]//tr[1]/td[2]");
-    private final By approveButton = By.xpath("//button[contains(@class,'oxd-button--success') and normalize-space()='Approve']");
-    private final By approvedStatusLabel = By.xpath("//*[normalize-space(.)='Status: Approved']");
+    private static final By submittedCard = By.xpath("//div[contains(concat(' ', normalize-space(@class), ' '), ' oxd-table-card ')][.//*[normalize-space()='Submitted']]");
+    private static final By employeeNameInput = By.xpath("//div[contains(@class,'oxd-autocomplete-text-input')]//input[@placeholder='Type for hints...']");
+    private static final By viewEmployeeButton = By.xpath("//button[@type='submit' and normalize-space()='View']");
+    private static final By viewProjectCell = By.xpath("//div[contains(@class,'orangehrm-timesheet-body')]//tr[1]/td[1]");
+    private static final By viewActivityCell = By.xpath("//div[contains(@class,'orangehrm-timesheet-body')]//tr[1]/td[2]");
+    private static final By approveButton = By.xpath("//button[contains(@class,'oxd-button--success') and normalize-space()='Approve']");
+    private static final By approvedStatusLabel = By.xpath("//*[normalize-space(.)='Status: Approved']");
 
     public TimeSheetPage(WebDriver driver){
         super(driver);
@@ -55,6 +56,12 @@ public class TimeSheetPage extends BasePage {
     public WebElement getSubmitButton() {
         return findElement(submitButton);
     }
+    public WebElement getSaveButton() {
+        return findElement(saveButton);
+    }
+    public WebElement getSubmittedActionCard() {return findElement(submittedCard);}
+    public WebElement getViewEmployeeButton() {return findElement(viewEmployeeButton);}
+    public WebElement getApproveButton() {return findElement(approveButton);}
     public List<WebElement> getDayInputs() {
         List<WebElement> boxes = findElements(dayInputs);
         if (boxes.size() != 7) {
@@ -62,33 +69,8 @@ public class TimeSheetPage extends BasePage {
         }
         return boxes;
     }
-    public WebElement getSaveButton() {
-        return findElement(saveButton);
-    }
-    public WebElement getSubmittedActionCard() {return findElement(submittedCard);}
-    public WebElement getViewEmployeeButton() {return findElement(viewEmployeeButton);}
     public String getViewProjectName() {return findElement(viewProjectCell).getText().trim();}
     public String getViewActivityName() {return findElement(viewActivityCell).getText().trim();}
-    public List<String> enterRandomHoursForEachDay() {
-        Random rnd = new Random();
-        List<String> entered = new ArrayList<>();
-        getDayInputs();
-        for (int i = 1; i <= 7; i++) {
-            String time = String.format("%02d:%02d", rnd.nextInt(1, 24), rnd.nextInt(0, 60));
-            typeInto(dayInput(i), time);
-            entered.add(time);
-        }
-        return entered;
-    }
-    public List<String> getSavedHours() {
-        return findElements(savedHourCells).stream()
-                .map(e -> e.getText().trim())
-                .collect(Collectors.toList());
-    }
-    public WebElement getApproveButton() {return findElement(approveButton);}
-    private By dayInput(int index) {
-        return By.xpath("(//td[contains(@class,'orangehrm-timesheet-table-body-cell') and contains(@class,'--duration-input')]//input)[" + index + "]");
-    }
     public String selectRandomActivity() {
         findElement(activityDropdown).click();
 
@@ -110,6 +92,26 @@ public class TimeSheetPage extends BasePage {
         String text = findElement(approvedStatusLabel).getText().trim();   // "Status: Approved"
         return text.replace("Status:", "").trim();                          // "Approved"
     }
+    public List<String> enterRandomHoursForEachDay() {
+        Random rnd = new Random();
+        List<String> entered = new ArrayList<>();
+        getDayInputs();
+        for (int i = 1; i <= 7; i++) {
+            String time = String.format("%02d:%02d", rnd.nextInt(1, 24), rnd.nextInt(0, 60));
+            typeInto(dayInput(i), time);
+            entered.add(time);
+        }
+        return entered;
+    }
+    public List<String> getSavedHours() {
+        return findElements(savedHourCells).stream()
+                .map(e -> e.getText().trim())
+                .collect(Collectors.toList());
+    }
+    private By dayInput(int index) {
+        return By.xpath("(//td[contains(@class,'orangehrm-timesheet-table-body-cell') and contains(@class,'--duration-input')]//input)[" + index + "]");
+    }
+
 
     // Actions
     public void enterTimesheetWeek(LocalDate date) {
@@ -162,15 +164,4 @@ public class TimeSheetPage extends BasePage {
     }
     public void clickViewEmployeeButton() {getViewEmployeeButton().click();}
     public void clickApproveButton() {getApproveButton().click();}
-    public void waitForApproval() {
-        try {
-            new WebDriverWait(driver, Duration.ofSeconds(15))
-                    .until(ExpectedConditions.visibilityOfElementLocated(
-                            By.xpath("//*[normalize-space(.)='Status: Approved']")));
-        } catch (TimeoutException e) {
-            System.out.println("URL after approve: " + driver.getCurrentUrl());
-            System.out.println("PAGE TEXT: " + driver.findElement(By.tagName("body")).getText());
-            throw e;
-        }
-    }
 }

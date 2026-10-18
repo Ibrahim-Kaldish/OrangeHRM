@@ -1,13 +1,11 @@
 package pages.addEmployeePage;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.BasePage;
-
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
@@ -16,72 +14,52 @@ import java.time.Duration;
 public class AddEmployeePage extends BasePage {
 
     // Locators
-    private final By firstNameLocator = By.name("firstName");
-    private final By middleNameLocator = By.name("middleName");
-    private final By lastNameLocator = By.name("lastName");
-    private final By employeeIdLocator = By.xpath("//label[normalize-space()='Employee Id']/parent::div/following-sibling::div//input");
-    private final By photoUploadLocator = By.xpath("//input[@type='file']");
-    private final By createLoginDetailsLocator = By.xpath("//div[contains(@class,'user-form-header')]//span[contains(@class,'oxd-switch-input')]");
-    private final By createLoginCheckboxLocator = By.xpath("//div[contains(@class,'user-form-header')]//input[@type='checkbox']");
-    private final By usernameLocator = By.xpath("//label[normalize-space()='Username']/parent::div/following-sibling::div//input");
-    private final By passwordLocator = By.xpath("//label[normalize-space()='Password']/parent::div/following-sibling::div//input");
-    private final By confirmPasswordLocator = By.xpath("//label[normalize-space()='Confirm Password']/parent::div/following-sibling::div//input");
-    private final By enabledRadioLocator = By.xpath("//label[normalize-space()='Enabled']");
-    private final By disabledRadioLocator = By.xpath("//label[normalize-space()='Disabled']");
-    private final By enabledRadioInputLocator = By.xpath("//label[normalize-space()='Enabled']//input[@type='radio']");
-    private final By disabledRadioInputLocator = By.xpath("//label[normalize-space()='Disabled']//input[@type='radio']");
-    private final By saveButtonLocator = By.xpath("//button[normalize-space()='Save']");
-    private final By cancelButtonLocator = By.xpath("//button[normalize-space()='Cancel']");
-    private final By requiredHintLocator = By.xpath("//*[normalize-space()='* Required']");
-
+    private static final By firstNameLocator = By.name("firstName");
+    private static final By middleNameLocator = By.name("middleName");
+    private static final By lastNameLocator = By.name("lastName");
+    private static final By employeeIdLocator = By.xpath("//label[normalize-space()='Employee Id']/parent::div/following-sibling::div//input");
+    private static final By createLoginDetailsLocator = By.xpath("//div[contains(@class,'user-form-header')]//span[contains(@class,'oxd-switch-input')]");
+    private static final By usernameLocator = By.xpath("//label[normalize-space()='Username']/parent::div/following-sibling::div//input");
+    private static final By passwordLocator = By.xpath("//label[normalize-space()='Password']/parent::div/following-sibling::div//input");
+    private static final By confirmPasswordLocator = By.xpath("//label[normalize-space()='Confirm Password']/parent::div/following-sibling::div//input");
+    private static final By enabledRadioLocator = By.xpath("//label[normalize-space()='Enabled']");
+    private static final By saveButtonLocator = By.xpath("//button[normalize-space()='Save']");
     private static final By addPhotoButton = By.xpath("//button[contains(@class,'employee-image-action')]");
+    private static final By photoPreview = By.xpath("//div[contains(@class,'employee-image-wrapper')]//img");
 
     public AddEmployeePage(WebDriver driver) {
         super(driver);
     }
 
     // Getters
-    public WebElement getFirstName() { return findElement(firstNameLocator); }
-    public WebElement getMiddleName() { return findElement(middleNameLocator); }
-    public WebElement getLastName() { return findElement(lastNameLocator); }
-    public WebElement getEmployeeId() { return findElement(employeeIdLocator); }
-    public WebElement getPhotoUpload() { return findElement(photoUploadLocator); }
     public WebElement getCreateLoginToggle() { return findElement(createLoginDetailsLocator); }
-    public WebElement getCreateLoginCheckbox() { return findElement(createLoginCheckboxLocator); }
     public WebElement getUsername() { return findElement(usernameLocator); }
     public WebElement getPassword() { return findElement(passwordLocator); }
-    public WebElement getConfirmPassword() { return findElement(confirmPasswordLocator); }
     public WebElement getEnabledRadio() { return findElement(enabledRadioLocator); }
-    public WebElement getDisabledRadio() { return findElement(disabledRadioLocator); }
-    public WebElement getEnabledRadioInput() { return findElement(enabledRadioInputLocator); }
-    public WebElement getDisabledRadioInput() { return findElement(disabledRadioInputLocator); }
     public WebElement getSaveButton() { return findElement(saveButtonLocator); }
-    public WebElement getCancelButton() { return findElement(cancelButtonLocator); }
-    public WebElement getRequiredHint() { return findElement(requiredHintLocator); }
     public WebElement getAddPhotoButton() { return findElement(addPhotoButton); }
-    private static final By photoPreview = By.xpath("//div[contains(@class,'employee-image-wrapper')]//img");
+    public String getPhotoPreviewSrc() {
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(photoPreview))
+                .getAttribute("src");
+    }
 
     // Actions
     public void enterFirstName(String firstName) {
         typeInto(firstNameLocator, firstName);
     }
-
     public void enterMiddleName(String middleName) {
         typeInto(middleNameLocator, middleName);
     }
-
     public void enterLastName(String lastName) {
         typeInto(lastNameLocator, lastName);
     }
-
     public void enterEmployeeId(String id) {
         typeInto(employeeIdLocator, id);
     }
-
     public void clickAddPhoto() {
         getAddPhotoButton().click();
     }
-
     public void clickAddPhotoAndSelect(String absolutePath) {
         try {
             clickAddPhoto();
@@ -106,43 +84,23 @@ public class AddEmployeePage extends BasePage {
             throw new IllegalStateException("Interrupted while selecting photo: " + absolutePath, e);
         }
     }
-
-    public String getPhotoPreviewSrc() {
-        return new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(photoPreview))
-                .getAttribute("src");
-    }
-
     public void clickCreateLoginDetails() {
         getCreateLoginToggle().click();
     }
-
     public void enterUsername(String username) {
         typeInto(usernameLocator, username);
     }
-
     public void enterPassword(String password) {
         typeInto(passwordLocator, password);
     }
-
     public void enterConfirmPassword(String password) {
         typeInto(confirmPasswordLocator, password);
     }
-
     public void selectEnabled() {
         getEnabledRadio().click();
     }
-
-    public void selectDisabled() {
-        getDisabledRadio().click();
-    }
-
     public void clickSave() {
         getSaveButton().click();
-    }
-
-    public void clickCancel() {
-        getCancelButton().click();
     }
 
 }

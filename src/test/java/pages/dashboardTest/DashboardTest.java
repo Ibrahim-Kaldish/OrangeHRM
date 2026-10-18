@@ -13,7 +13,6 @@ import pages.dashboardPage.DashboardPage;
 import pages.PIMPage.PIMPage;
 import pages.baseTest.BaseTest;
 import pages.loginPage.LoginPage;
-
 import java.util.Map;
 
 @Epic("Navigation")

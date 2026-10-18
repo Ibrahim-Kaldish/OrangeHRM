@@ -7,13 +7,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.BasePage;
-
 import java.time.Duration;
 import java.util.stream.Collectors;
 
 public class DependentsPage extends BasePage {
     private static final Logger log = LogManager.getLogger(DependentsPage.class);
 
+    // Locators
     private static final By dependentsTab = By.xpath("//a[contains(@class,'orangehrm-tabs-item') and contains(@href,'/pim/viewDependents/') and normalize-space(.)='Dependents']");
     private static final By assignedDependentsAddButton = By.xpath("//div[contains(@class,'orangehrm-action-header')][.//h6[normalize-space(.)='Assigned Dependents']]//button[contains(@class,'oxd-button--text')]");
     private static final String dependentForm = "//form[.//label[starts-with(normalize-space(.),'Relationship')]]";
@@ -28,13 +28,10 @@ public class DependentsPage extends BasePage {
         super(driver);
     }
 
+    // Getters
     public WebElement getDependentsTab() { return findElement(dependentsTab); }
     public WebElement getAssignedDependentsAddButton() { return findElement(assignedDependentsAddButton); }
-    public WebElement getDependentNameInput() { return findElement(dependentNameInput); }
-    public WebElement getDependentRelationshipDropdown() { return findElement(dependentRelationshipDropdown); }
-    public WebElement getDependentDateOfBirthInput() { return findElement(dependentDateOfBirthInput); }
     public WebElement getDependentSaveButton() { return findElement(dependentSaveButton); }
-
     public String getDependentCardsText() {
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(d -> !d.findElements(dependentCards).isEmpty());
@@ -44,24 +41,22 @@ public class DependentsPage extends BasePage {
                 .collect(Collectors.joining("\n"));
     }
 
+    // Actions
     public void clickDependentsTab() {
         getDependentsTab().click();
         log.info("📑 Clicked Dependents tab");
     }
-
     public void clickAssignedDependentsAdd() {
         getAssignedDependentsAddButton().click();
         log.info("➕ Clicked Add in Assigned Dependents");
     }
-
     public void enterDependentName(String name) { typeInto(dependentNameInput, name); }
-
     public void selectDependentRelationship(String relationship) {
         selectFromDropdown(findElement(dependentRelationshipDropdown), relationship);
     }
-
-    public void enterDependentDateOfBirth(String dateOfBirth) { typeInto(dependentDateOfBirthInput, dateOfBirth); }
-
+    public void enterDependentDateOfBirth(String dateOfBirth) {
+        typeInto(dependentDateOfBirthInput, dateOfBirth);
+    }
     public void clickDependentSave() {
         getDependentSaveButton().click();
         log.info("💾 Clicked Save Dependent");

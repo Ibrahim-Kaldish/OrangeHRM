@@ -19,7 +19,6 @@ import pages.employeeInfoPage.EmergencyContactsPage;
 import pages.employeeInfoPage.PersonalDetailsPage;
 import pages.generateReport.ReportGenerationPage;
 import pages.loginPage.LoginPage;
-
 import java.util.Map;
 
 @Epic("Employee Management")

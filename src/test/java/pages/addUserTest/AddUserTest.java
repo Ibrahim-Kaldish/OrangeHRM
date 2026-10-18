@@ -13,7 +13,6 @@ import pages.dashboardPage.DashboardPage;
 import pages.addUser.AddUserPage;
 import pages.baseTest.BaseTest;
 import pages.loginPage.LoginPage;
-
 import java.util.Map;
 
 @Epic("User Management")
