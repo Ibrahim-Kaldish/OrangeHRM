@@ -5,11 +5,22 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.BasePage;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ReportGenerationPage extends BasePage {
     private static final Logger log = LogManager.getLogger(ReportGenerationPage.class);
@@ -28,6 +39,7 @@ public class ReportGenerationPage extends BasePage {
     private static final By employmentStatusDropdown = By.xpath("(//div[contains(@class,'oxd-input-group')][.//div[contains(@class,'oxd-select-text')]])[5]//div[contains(@class,'oxd-select-text')]");
     private static final By displayFieldGroupDropdown = By.xpath("//div[contains(@class,'oxd-input-group')][.//label[normalize-space(.)='Select Display Field Group']]//div[contains(@class,'oxd-select-text')]");
     private static final By displayFieldAddButton = By.xpath("(//div[contains(@class,'oxd-select-text')][ancestor::div[contains(@class,'oxd-input-group')][.//label[normalize-space(.)='Select Display Field']]]/following::button[contains(@class,'orangehrm-report-icon')])[1]");    private static final By saveButton = By.xpath("//div[contains(@class,'oxd-form-actions')]//button[@type='submit' and normalize-space(.)='Save']");
+    private static final By expandTableIcon = By.xpath("//i[contains(@class,'bi-arrows-fullscreen')]");
 
     public ReportGenerationPage(WebDriver driver){
         super(driver);
@@ -45,6 +57,20 @@ public class ReportGenerationPage extends BasePage {
     public WebElement getDisplayFieldDropdown() { return findElement(displayFieldGroupDropdown); }
     public WebElement getDisplayFieldAddButton() { return findElement(displayFieldAddButton); }
     public WebElement getSaveButton() { return findElement(saveButton); }
+    public WebElement getExpandTableIcon() { return findElement(expandTableIcon); }
+    public boolean isPdfSaved(String fileName) {
+        Path file = Paths.get("target", "downloads", fileName);
+        if (!Files.exists(file)) {
+            return false;
+        }
+        try (InputStream in = Files.newInputStream(file)) {
+            byte[] header = in.readNBytes(4);
+            return header.length == 4 && new String(header, StandardCharsets.US_ASCII).equals("%PDF");
+        } catch (IOException e) {
+            log.error("❌ Could not read PDF '{}'", fileName, e);
+            return false;
+        }
+    }
 
     // Actions
     public boolean isEmployeeReportsTitleDisplayed() {
@@ -107,6 +133,35 @@ public class ReportGenerationPage extends BasePage {
     public void clickSave() {
         getSaveButton().click();
         log.info("💾 Clicked Save on Edit Report");
+    }
+
+    public void clickExpandTable() {
+        getExpandTableIcon().click();
+        log.info("⛶ Clicked expand table");
+    }
+
+    public void saveReportAsPdf(String fileName) {
+        try {
+            ChromeDriver chrome = (ChromeDriver) driver;
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("printBackground", true);
+            params.put("landscape", true);
+            params.put("scale", 0.5);
+
+            Map<String, Object> result = chrome.executeCdpCommand("Page.printToPDF", params);
+            byte[] pdf = Base64.getDecoder().decode((String) result.get("data"));
+
+            Path folder = Paths.get("target", "downloads");
+            Files.createDirectories(folder);
+            Path target = folder.resolve(fileName);
+            Files.write(target, pdf);
+
+            log.info("📄 Saved report as PDF: {}", target);
+        } catch (IOException e) {
+            log.error("❌ Could not save report PDF '{}'", fileName, e);
+            throw new UncheckedIOException("Could not save report PDF: " + fileName, e);
+        }
     }
 
 }
