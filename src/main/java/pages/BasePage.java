@@ -101,10 +101,10 @@ public class BasePage {
         return findElement(successToast).getText().trim();
     }
 
-    public void waitForScreen() {
+    public void waitForScreen(int seconds) {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
-            new WebDriverWait(driver, Duration.ofSeconds(1))
+            new WebDriverWait(driver, Duration.ofSeconds(seconds))
                     .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".oxd-loading-spinner")));
         } catch (TimeoutException ignored) {
             // spinner didn't appear, the page was already loaded
@@ -112,4 +112,7 @@ public class BasePage {
         wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".oxd-loading-spinner")));
     }
 
+    public void waitForScreen() {
+        waitForScreen(1);
+    }
 }
