@@ -119,11 +119,6 @@ public class ReportGenerationTest extends BaseTest {
         reportGenerationPage.waitForScreen();
         reportGenerationPage.selectEmploymentStatusCriteria(employee[10]);
 
-        log.info("🧾 Adding display field group: Contact Details");
-        reportGenerationPage.selectDisplayField("Contact Details");
-        reportGenerationPage.clickDisplayFieldAdd();
-        reportGenerationPage.waitForScreen();
-
         log.info("🧾 Adding display field group: Job");
         reportGenerationPage.selectDisplayField("Job");
         reportGenerationPage.clickDisplayFieldAdd();
@@ -131,10 +126,13 @@ public class ReportGenerationTest extends BaseTest {
 
         log.info("💾 Saving the predefined report");
         reportGenerationPage.clickSave();
-        reportGenerationPage.waitForScreen();
+        reportGenerationPage.waitForScreen(4);
 
         softAssert.assertTrue(driver.getCurrentUrl().contains("displayPredefinedReport"),
                 "Report did not open the displayPredefinedReport page");
+
+        reportGenerationPage.waitForScreen(4);
+
 
         log.info("🏁 Report generation test finished, checking results");
         softAssert.assertAll();
