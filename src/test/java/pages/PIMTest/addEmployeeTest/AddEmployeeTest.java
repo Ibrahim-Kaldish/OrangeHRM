@@ -1,4 +1,4 @@
-package pages.addEmployeeTest;
+package pages.PIMTest.addEmployeeTest;
 
 import dataProviders.DataProviderTest;
 import io.qameta.allure.Description;

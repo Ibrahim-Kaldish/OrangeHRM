@@ -1,4 +1,4 @@
-package pages.reportGenerationTest;
+package pages.PIMTest.reportGenerationTest;
 
 import dataProviders.DataProviderTest;
 import io.qameta.allure.Description;

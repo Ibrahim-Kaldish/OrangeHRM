@@ -124,12 +124,12 @@ public class AddUserPage extends BasePage {
         selectFromDropdown(statusDropdown, status);
     }
 
-    public void selectEmployee(String employeeName) throws InterruptedException {
+    public void selectEmployee(String employeeName) {
         WebElement input = findElement(employeeNameInput);
         input.clear();
         input.sendKeys(employeeName);
 
-        Thread.sleep(2000);
+        waitForScreen(2);
 
         findElement(employeeSuggestions).click();
         log.info("👤 Selected employee {}", employeeName);

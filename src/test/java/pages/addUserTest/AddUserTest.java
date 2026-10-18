@@ -25,7 +25,7 @@ public class AddUserTest extends BaseTest {
     @Story("Admin creates a system user for an existing employee")
     @Description("As an admin, I want to create login accounts for existing employees so that they can sign in with the assigned role and status.")
     @Severity(SeverityLevel.CRITICAL)
-    public void addAllValidUsers(String... user) throws InterruptedException {
+    public void addAllValidUsers(String... user) {
         LoginPage loginPage = new LoginPage(driver);
         DashboardPage dashboardPage = new DashboardPage(driver);
         AddUserPage addUserPage = new AddUserPage(driver);
@@ -53,8 +53,7 @@ public class AddUserTest extends BaseTest {
         addUserPage.enterConfirmPassword(user[5]);
         addUserPage.clickSave();
 
-        Thread.sleep(5000);
-
+        addUserPage.waitForScreen(5);
         softAssert.assertEquals(driver.getCurrentUrl(), jsonFileManagerData.getValueByKey("admin"));
 
         softAssert.assertAll();

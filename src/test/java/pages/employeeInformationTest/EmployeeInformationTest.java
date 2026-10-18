@@ -22,7 +22,6 @@ import java.util.Map;
 @Feature("Employee Information")
 public class EmployeeInformationTest extends BaseTest {
     private static final Logger log = LogManager.getLogger(EmployeeInformationTest.class);
-
     String username;
     String password;
     String nationality;
@@ -87,13 +86,11 @@ public class EmployeeInformationTest extends BaseTest {
         dependentsPage = new DependentsPage(driver);
         pimPage = new PIMPage(driver);
     }
-
     public void personalDetailsAssert(){
         log.info("🔍 Verifying Personal Details after reload");
         softAssert.assertEquals(personalDetailsPage.getSelectedNationality(), nationality, "Nationality after reload");
         softAssert.assertEquals(personalDetailsPage.getSelectedMaritalStatus(), maritalStatus, "Marital status after reload");
     }
-
     public void contactDetailsAssert(){
         log.info("🔍 Verifying Contact Details after reload");
         softAssert.assertEquals(contactDetailsPage.getContactStreet1Value(), street1, "Street 1 after reload");
@@ -108,7 +105,6 @@ public class EmployeeInformationTest extends BaseTest {
         softAssert.assertEquals(contactDetailsPage.getContactWorkEmailValue(), workEmail, "Work email after reload");
         softAssert.assertEquals(contactDetailsPage.getContactOtherEmailValue(), otherEmail, "Other email after reload");
     }
-
     public void emergencyContactAssert(){
         log.info("🔍 Verifying saved emergency contact");
         String savedCard = emergencyContactsPage.getSavedContactCardText();
@@ -118,19 +114,16 @@ public class EmployeeInformationTest extends BaseTest {
         softAssert.assertTrue(savedCard.contains(emergencyMobile), "Saved mobile missing: " + emergencyMobile);
         softAssert.assertTrue(savedCard.contains(emergencyWorkTelephone), "Saved work telephone missing: " + emergencyWorkTelephone);
     }
-
     public void dependentAssert(){
         log.info("🔍 Verifying saved dependent");
         String dependentCards = dependentsPage.getDependentCardsText();
         softAssert.assertTrue(dependentCards.contains(dependentName), "Saved dependent name missing: " + dependentName);
         softAssert.assertTrue(dependentCards.contains(dependentRelationship), "Saved dependent relationship missing: " + dependentRelationship);
     }
-
     public void successMessage(String msg1, String msg2){
         log.info("🔔 Checking toast: {}", msg1);
         softAssert.assertEquals(personalDetailsPage.getSuccessToastText(), msg1, msg2);
     }
-
     public void loginAsUser(){
         log.info("🔐 Logging in as employee {}", username);
         loginPage.enterUsername(username);
@@ -140,7 +133,6 @@ public class EmployeeInformationTest extends BaseTest {
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
         log.info("✅ Employee logged in");
     }
-
     public void loginAsAdmin(){
         log.info("🔐 Logging in as admin");
         Map<String, String> admin = (Map<String, String>) jsonFileManagerUsers.getValueByKey("admin");
@@ -153,32 +145,26 @@ public class EmployeeInformationTest extends BaseTest {
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
         log.info("✅ Admin logged in");
     }
-
     public void navigateToMyInfo(){
         log.info("📂 Opening My Info");
         personalDetailsPage.clickMyInfoMenuItem();
     }
-
     public void navigateToEmergencyContacts(){
         log.info("📂 Opening Emergency Contacts tab");
         emergencyContactsPage.clickEmergencyContactsTab();
     }
-
     public void navigateToContactDetails(){
         log.info("📂 Opening Contact Details tab");
         contactDetailsPage.clickContactDetailsTab();
     }
-
     public void navigateToPIMPage(){
         log.info("📂 Opening PIM from the dashboard");
         dashboardPage.clickPIMBtn();
     }
-
     public void navigateToDependents(){
         log.info("📂 Opening Dependents tab");
         dependentsPage.clickDependentsTab();
     }
-
     public void searchForEmployee(String id){
         log.info("🔎 Searching PIM for employee Id {}", id);
         pimPage.enterEmployeeId(id);
@@ -189,30 +175,25 @@ public class EmployeeInformationTest extends BaseTest {
         pimPage.clickFirstResult();
         log.info("✅ Opened employee record for Id {}", id);
     }
-
     public void loginAsAdminAndSearch(String id){
         loginAsAdmin();
         navigateToPIMPage();
         searchForEmployee(id);
     }
-
     public void clickAddEmergency(){
         log.info("✏️ Adding emergency contact {}", emergencyName);
         emergencyContactsPage.clickAssignedEmergencyContactsAdd();
     }
-
     public void clickAddDependent(){
         log.info("➕ Adding dependent {}", dependentName);
         dependentsPage.clickAssignedDependentsAdd();
     }
-
     public void personalDetailsActions(){
         log.info("✏️ Updating Personal Details");
         personalDetailsPage.selectNationality(nationality);
         personalDetailsPage.selectMaritalStatus(maritalStatus);
         personalDetailsPage.clickPersonalDetailsSave();
     }
-
     public void emergencyContactActions(){
         emergencyContactsPage.enterEmergencyName(emergencyName);
         emergencyContactsPage.enterEmergencyRelationship(emergencyRelationship);
@@ -221,14 +202,12 @@ public class EmployeeInformationTest extends BaseTest {
         emergencyContactsPage.enterEmergencyWorkTelephone(emergencyWorkTelephone);
         emergencyContactsPage.clickEmergencyContactSave();
     }
-
     public void contactDetailsActions(){
         log.info("✏️ Updating Contact Details");
         contactDetailsPage.enterContactDetails(street1, street2, city, stateProvince, zipPostalCode,
                 country, contactHomeTelephone, contactMobile, contactWorkTelephone, workEmail, otherEmail);
         contactDetailsPage.clickContactSave();
     }
-
     public void dependentActions(){
         dependentsPage.enterDependentName(dependentName);
         dependentsPage.selectDependentRelationship(dependentRelationship);
@@ -236,12 +215,11 @@ public class EmployeeInformationTest extends BaseTest {
         dependentsPage.clickDependentSave();
     }
 
-
     @Test(priority = 0, dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
     @Story("Employee updates personal, contact, and emergency details")
     @Description("As an employee, I want to update my personal, contact, and emergency details so that HR has current records.")
     @Severity(SeverityLevel.CRITICAL)
-    public void updateEmployeeInformation(String... employeeData) throws InterruptedException {
+    public void updateEmployeeInformation(String... employeeData) {
         log.info("🚀 Starting employee information update");
 
         setAttributes(employeeData);
@@ -249,25 +227,25 @@ public class EmployeeInformationTest extends BaseTest {
         loginAsUser();
 
         navigateToMyInfo();
-        Thread.sleep(3000);
+        dashboardPage.waitForScreen(3);
 
         personalDetailsActions();
         successMessage("Successfully Updated", "Personal Details save message");
         personalDetailsAssert();
-        Thread.sleep(3000);
+        personalDetailsPage.waitForScreen(3);
 
         navigateToEmergencyContacts();
         clickAddEmergency();
         emergencyContactActions();
         successMessage("Successfully Saved", "Emergency Contact save message");
         emergencyContactAssert();
-        Thread.sleep(3000);
+        emergencyContactsPage.waitForScreen(3);
 
         navigateToContactDetails();
         contactDetailsActions();
         successMessage("Successfully Updated", "Contact Details save message");
         contactDetailsAssert();
-        Thread.sleep(3000);
+        contactDetailsPage.waitForScreen(3);
 
         log.info("🚪 Logging out employee");
         dashboardPage.clickLogout();
@@ -275,15 +253,15 @@ public class EmployeeInformationTest extends BaseTest {
 
         loginAsAdminAndSearch(employeeData[3]);
 
-        Thread.sleep(3000);
+        dashboardPage.waitForScreen(3);
         personalDetailsAssert();
 
         emergencyContactsPage.clickEmergencyContactsTab();
-        Thread.sleep(3000);
+        emergencyContactsPage.waitForScreen(3);
         emergencyContactAssert();
 
         contactDetailsPage.clickContactDetailsTab();
-        Thread.sleep(3000);
+        contactDetailsPage.waitForScreen(3);
         contactDetailsAssert();
 
         log.info("🏁 Employee information update finished, checking results");
@@ -294,7 +272,7 @@ public class EmployeeInformationTest extends BaseTest {
     @Story("Admin edits and removes an emergency contact, then adds a dependent")
     @Description("As an admin, I want to edit and remove an employee's emergency contact and add a dependent so that the employee's family and emergency records stay accurate.")
     @Severity(SeverityLevel.CRITICAL)
-    public void editOrRemoveExistingContact(String... employeeData) throws InterruptedException {
+    public void editOrRemoveExistingContact(String... employeeData) {
         setAttributes(employeeData);
 
         loginAsAdminAndSearch(employeeData[3]);
@@ -303,7 +281,7 @@ public class EmployeeInformationTest extends BaseTest {
         clickAddEmergency();
         emergencyContactActions();
         successMessage("Successfully Saved", "Emergency Contact save message");
-        Thread.sleep(3000);
+        emergencyContactsPage.waitForScreen(3);
         emergencyContactAssert();
 
         emergencyContactsPage.clickEdit();
@@ -314,7 +292,7 @@ public class EmployeeInformationTest extends BaseTest {
         emergencyContactsPage.enterEmergencyWorkTelephone("0987654321");
         emergencyContactsPage.clickEmergencyContactSave();
         successMessage("Successfully Updated", "Emergency Contact save message");
-        Thread.sleep(3000);
+        emergencyContactsPage.waitForScreen(3);
         String savedCard = emergencyContactsPage.getSavedContactCardText();
         log.info("🔍 Verifying saved emergency contact");
         softAssert.assertTrue(savedCard.contains("Emily Johnson"), "Saved name missing: Emily Johnson");
@@ -330,9 +308,8 @@ public class EmployeeInformationTest extends BaseTest {
 
         softAssert.assertEquals(personalDetailsPage.getSuccessToastText(), "Successfully Deleted", "Delete message");
 
-        Thread.sleep(3000);
+        emergencyContactsPage.waitForScreen(3);
         softAssert.assertEquals(emergencyContactsPage.getSavedContactCount(), countBefore - 2, "Saved contact count after delete");
-//        softAssert.assertFalse(emergencyContactsPage.isSavedContactShown(emergencyName), "Deleted contact still shown: " + emergencyName);
 
         navigateToDependents();
         clickAddDependent();

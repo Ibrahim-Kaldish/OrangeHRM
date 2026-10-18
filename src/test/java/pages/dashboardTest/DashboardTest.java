@@ -25,7 +25,7 @@ public class DashboardTest extends BaseTest {
     @Story("Admin navigates from the dashboard to PIM")
     @Description("As an admin, I want to open PIM from the dashboard so that I can manage employee records.")
     @Severity(SeverityLevel.NORMAL)
-    public void navigateToPIM() throws InterruptedException {
+    public void navigateToPIM() {
         LoginPage loginPage = new LoginPage(driver);
         DashboardPage dashboardPage = new DashboardPage(driver);
         PIMPage pimPage = new PIMPage(driver);
@@ -49,7 +49,5 @@ public class DashboardTest extends BaseTest {
         softAssert.assertTrue(pimPage.getPIMTitle().isDisplayed());
         softAssert.assertAll();
         log.info("✅ PIM page is displayed");
-
-        Thread.sleep(3000);
     }
 }

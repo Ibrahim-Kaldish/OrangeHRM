@@ -3,7 +3,6 @@ package pages.generateReport;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -22,7 +21,8 @@ public class ReportGenerationPage extends BasePage {
     private static final By editReportButton = By.xpath("//button[.//i[contains(@class,'bi-pencil-fill')]]");
     private static final By employeeReportsTitle = By.xpath("//h5[contains(@class,'oxd-table-filter-title')]");
     private static final By selectionCriteriaDropdown = By.xpath("//div[contains(@class,'oxd-input-group')][.//label[normalize-space(.)='Selection Criteria']]//div[contains(@class,'oxd-select-text')]");
-    private static final By selectionCriteriaAddButton = By.xpath("(//div[contains(@class,'orangehrm-report-criteria')][.//div[contains(@class,'oxd-select-wrapper')]]//button[contains(@class,'orangehrm-report-icon')])[1]");    private static final By reportCard = By.xpath("//div[contains(@class,'oxd-card-table-body')]//*[contains(normalize-space(.),'Employee Contact info report')]");
+    private static final By selectionCriteriaAddButton = By.xpath("(//div[contains(@class,'orangehrm-report-criteria')][.//div[contains(@class,'oxd-select-wrapper')]]//button[contains(@class,'orangehrm-report-icon')])[1]");
+    private static final By reportCard = By.xpath("//div[contains(@class,'oxd-card-table-body')]//*[contains(normalize-space(.),'Employee Contact info report')]");
     private static final By jobTitleRowDropdown = By.xpath("(//div[contains(@class,'oxd-input-group')][.//div[contains(@class,'oxd-select-text')]])[3]//div[contains(@class,'oxd-select-text')]");
     private static final By subUnitDropdown = By.xpath("(//div[contains(@class,'oxd-input-group')][.//div[contains(@class,'oxd-select-text')]])[4]//div[contains(@class,'oxd-select-text')]");
     private static final By employmentStatusDropdown = By.xpath("(//div[contains(@class,'oxd-input-group')][.//div[contains(@class,'oxd-select-text')]])[5]//div[contains(@class,'oxd-select-text')]");

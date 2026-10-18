@@ -52,7 +52,7 @@ public class TimeSheetTest extends BaseTest {
     @Story("Employee submits a timesheet and admin approves it")
     @Description("As an employee, I want to fill in and submit my weekly timesheet so that my manager can review and approve it.")
     @Severity(SeverityLevel.CRITICAL)
-    public void submitTimeSheet(String ...employee) throws InterruptedException{
+    public void submitTimeSheet(String ...employee){
 
         loginPage = new LoginPage(driver);
         dashboardPage = new DashboardPage(driver);
@@ -92,7 +92,7 @@ public class TimeSheetTest extends BaseTest {
         List<String> entered = timeSheetPage.enterRandomHoursForEachDay();
         timeSheetPage.clickSaveButton();
 
-        Thread.sleep(5000);
+        timeSheetPage.waitForScreen(5);
         projectNameAssert();
         selectedActivityAssert(activity);
         savedHoursAssert(entered);
@@ -124,10 +124,7 @@ public class TimeSheetTest extends BaseTest {
         savedHoursAssert(entered);
 
         timeSheetPage.clickApproveButton();
-
-        String todayText = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-dd-MM"));
-
-        Thread.sleep(2000);
+        timeSheetPage.waitForScreen(2);
         softAssert.assertEquals(timeSheetPage.getApprovalStatus(), "Approved",
                 "Approval status is not Approved");
 
