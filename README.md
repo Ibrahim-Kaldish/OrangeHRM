@@ -4,8 +4,7 @@
 
 ## 🎬 Demo video
 
-▶️ Watch the full test run before you install anything: **<https://github.com/Ibrahim-Kaldish/OrangeHRM/blob/master/OrangeHRM_test_run.mp4>**
-
+▶️ Watch the full test run before you install anything: **[Open the demo video](https://github.com/user-attachments/assets/<generated-id>)**
 🎞️ The video shows the whole test run from the first login to the last logout, in the order the tests run.
 
 ## 📖 What this project does
