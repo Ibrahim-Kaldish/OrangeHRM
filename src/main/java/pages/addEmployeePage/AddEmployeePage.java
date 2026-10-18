@@ -6,7 +6,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import pages.BasePage;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
+
 public class AddEmployeePage extends BasePage {
+
+    // Locators
     private final By firstNameLocator = By.name("firstName");
     private final By middleNameLocator = By.name("middleName");
     private final By lastNameLocator = By.name("lastName");
@@ -17,7 +23,6 @@ public class AddEmployeePage extends BasePage {
     private final By usernameLocator = By.xpath("//label[normalize-space()='Username']/parent::div/following-sibling::div//input");
     private final By passwordLocator = By.xpath("//label[normalize-space()='Password']/parent::div/following-sibling::div//input");
     private final By confirmPasswordLocator = By.xpath("//label[normalize-space()='Confirm Password']/parent::div/following-sibling::div//input");
-
     private final By enabledRadioLocator = By.xpath("//label[normalize-space()='Enabled']");
     private final By disabledRadioLocator = By.xpath("//label[normalize-space()='Disabled']");
     private final By enabledRadioInputLocator = By.xpath("//label[normalize-space()='Enabled']//input[@type='radio']");
@@ -25,6 +30,8 @@ public class AddEmployeePage extends BasePage {
     private final By saveButtonLocator = By.xpath("//button[normalize-space()='Save']");
     private final By cancelButtonLocator = By.xpath("//button[normalize-space()='Cancel']");
     private final By requiredHintLocator = By.xpath("//*[normalize-space()='* Required']");
+
+    private static final By addPhotoButton = By.xpath("//button[contains(@class,'employee-image-action')]");
 
     public AddEmployeePage(WebDriver driver) {
         super(driver);
@@ -48,6 +55,7 @@ public class AddEmployeePage extends BasePage {
     public WebElement getSaveButton() { return findElement(saveButtonLocator); }
     public WebElement getCancelButton() { return findElement(cancelButtonLocator); }
     public WebElement getRequiredHint() { return findElement(requiredHintLocator); }
+    public WebElement getAddPhotoButton() { return findElement(addPhotoButton); }
 
     // Actions
     public void enterFirstName(String firstName) {
@@ -66,8 +74,33 @@ public class AddEmployeePage extends BasePage {
         typeInto(employeeIdLocator, id);
     }
 
-    public void uploadPhoto(String absolutePath) {
-        getPhotoUpload().sendKeys(absolutePath);
+    public void clickAddPhoto() {
+        getAddPhotoButton().click();
+    }
+
+    public void clickAddPhotoAndSelect(String absolutePath) {
+        try {
+            clickAddPhoto();
+            Thread.sleep(1500);
+
+            StringSelection selection = new StringSelection(absolutePath);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
+
+            Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            robot.keyPress(KeyEvent.VK_V);
+            robot.keyRelease(KeyEvent.VK_V);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
+            robot.delay(500);
+
+            robot.keyPress(KeyEvent.VK_ENTER);
+            robot.keyRelease(KeyEvent.VK_ENTER);
+        } catch (AWTException e) {
+            throw new IllegalStateException("Could not select photo: " + absolutePath, e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Interrupted while selecting photo: " + absolutePath, e);
+        }
     }
 
     public void clickCreateLoginDetails() {
