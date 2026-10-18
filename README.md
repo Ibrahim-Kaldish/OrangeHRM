@@ -303,11 +303,11 @@ https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
    ✅ Expected at the end:
 
    ```text
-   [INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0
+   [INFO] Tests run: <TOTAL>, Failures: 0, Errors: 0, Skipped: 0
    [INFO] BUILD SUCCESS
    ```
 
-   🔢 `Tests run` counts each time a `@Test` method runs. A method that uses a data provider runs once for each row that provider returns. With the current code, the seven classes in `run.xml` have 8 test runs in total: AddEmployeeTest (1), AddUserTest (1), ValidLogin (1), EmployeeInformationTest (2), TimeSheetTest (1), InvalidLogin (1), and ReportGenerationTest (1). If the number is different, check the data providers and the `@Test` methods again.
+   🔢 `Tests run` counts each time a `@Test` method runs. A method that uses a data provider runs once for each row that provider returns. With the current code, the eight classes in `run.xml` have <TOTAL> test runs in total: AddEmployeeTest (1), PIMSearchTest (<N>), AddUserTest (1), ValidLogin (1), InvalidLogin (1), EmployeeInformationTest (2), TimeSheetTest (1), and ReportGenerationTest (1). If the number is different, check the data providers and the `@Test` methods again.
 
    ❌ If any test fails, the `Failures` or `Errors` number is above 0, and the last line is `BUILD FAILURE`.
 
@@ -331,26 +331,27 @@ mvn test -Dtest=ValidLogin#methodName
 
 📄 `run.xml` is a TestNG suite file. It is a list of the test classes to run. The pom tells Maven to read it, through the `<suiteXmlFiles>` setting.
 
-The current file runs these seven classes, in this order:
+The current file runs these eight classes, in this order:
 
 | Order | Class | Package |
 |---|---|---|
-| 1️⃣ | AddEmployeeTest | pages.addEmployeeTest |
-| 2️⃣ | AddUserTest | pages.addUserTest |
-| 3️⃣ | ValidLogin | pages.loginTest |
-| 4️⃣ | EmployeeInformationTest | pages.employeeInformationTest |
-| 5️⃣ | TimeSheetTest | pages.timeSheetTest |
-| 6️⃣ | InvalidLogin | pages.loginTest |
-| 7️⃣ | ReportGenerationTest | pages.reportGenerationTest |
+| 1️⃣ | AddEmployeeTest | pages.PIMTest.addEmployeeTest |
+| 2️⃣ | PIMSearchTest | pages.PIMTest.PIMSearchTest |
+| 3️⃣ | AddUserTest | pages.addUserTest |
+| 4️⃣ | ValidLogin | pages.loginTest |
+| 5️⃣ | InvalidLogin | pages.loginTest |
+| 6️⃣ | EmployeeInformationTest | pages.employeeInformationTest |
+| 7️⃣ | TimeSheetTest | pages.timeSheetTest |
+| 8️⃣ | ReportGenerationTest | pages.PIMTest.reportGenerationTest |
 
 ℹ️ Test classes that are not listed in `run.xml` are not run by `mvn test`.
 
-🔗 **Why the order matters:** AddEmployeeTest creates the employees that EmployeeInformationTest uses. If AddEmployeeTest does not run first, EmployeeInformationTest and ReportGenerationTest may fail because the employee is missing.
+🔗 **Why the order matters:** AddEmployeeTest creates the employees that EmployeeInformationTest uses. If AddEmployeeTest does not run first, EmployeeInformationTest, PIMSearchTest, and ReportGenerationTest may fail because the employee is missing.
 
 ➕ **To add a class,** place a line like this inside `<classes>`:
 
 ```xml
-<class name = "pages.reportGenerationTest.ReportGenerationTest"/>
+<class name = "pages.PIMTest.reportGenerationTest.ReportGenerationTest"/>
 ```
 
 ➖ **To remove a class,** delete its line. Save the file before you run the tests.
