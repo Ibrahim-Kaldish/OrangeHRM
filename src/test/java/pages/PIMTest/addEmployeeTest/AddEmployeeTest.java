@@ -20,6 +20,8 @@ import pages.employeeInfoPage.JobInfoPage;
 import pages.employeeInfoPage.ReportToPage;
 import pages.loginPage.LoginPage;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 @Epic("Employee Management")
@@ -68,6 +70,16 @@ public class AddEmployeeTest extends BaseTest {
         addEmployeePage.enterMiddleName(employee[1]);
         addEmployeePage.enterLastName(employee[2]);
         addEmployeePage.enterEmployeeId(employee[3]);
+
+        String defaultPhotoSrc = addEmployeePage.getPhotoPreviewSrc();
+
+        Path photo = Paths.get("src", "main", "resources", "photos", "employee.jpeg");
+        addEmployeePage.clickAddPhotoAndSelect(photo.toAbsolutePath().toString());
+        addEmployeePage.waitForScreen();
+        String uploadedPhotoSrc = addEmployeePage.getPhotoPreviewSrc();
+        softAssert.assertNotNull(uploadedPhotoSrc, "No photo preview after upload");
+        softAssert.assertNotEquals(uploadedPhotoSrc, defaultPhotoSrc,
+                "Photo preview did not change after upload");
 
         addEmployeePage.clickCreateLoginDetails();
         addEmployeePage.enterUsername(employee[4]);

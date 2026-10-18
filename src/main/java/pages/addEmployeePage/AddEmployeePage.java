@@ -4,11 +4,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.BasePage;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
+import java.time.Duration;
 
 public class AddEmployeePage extends BasePage {
 
@@ -56,6 +59,7 @@ public class AddEmployeePage extends BasePage {
     public WebElement getCancelButton() { return findElement(cancelButtonLocator); }
     public WebElement getRequiredHint() { return findElement(requiredHintLocator); }
     public WebElement getAddPhotoButton() { return findElement(addPhotoButton); }
+    private static final By photoPreview = By.xpath("//div[contains(@class,'employee-image-wrapper')]//img");
 
     // Actions
     public void enterFirstName(String firstName) {
@@ -101,6 +105,12 @@ public class AddEmployeePage extends BasePage {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("Interrupted while selecting photo: " + absolutePath, e);
         }
+    }
+
+    public String getPhotoPreviewSrc() {
+        return new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(photoPreview))
+                .getAttribute("src");
     }
 
     public void clickCreateLoginDetails() {
