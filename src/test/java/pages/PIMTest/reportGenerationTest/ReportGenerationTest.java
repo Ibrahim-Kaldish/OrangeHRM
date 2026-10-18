@@ -127,12 +127,16 @@ public class ReportGenerationTest extends BaseTest {
         log.info("💾 Saving the predefined report");
         reportGenerationPage.clickSave();
         reportGenerationPage.waitForScreen(4);
-
         softAssert.assertTrue(driver.getCurrentUrl().contains("displayPredefinedReport"),
                 "Report did not open the displayPredefinedReport page");
 
+        reportGenerationPage.clickExpandTable();
         reportGenerationPage.waitForScreen(4);
 
+        String pdfName = "Employee Contact info report.pdf";
+        reportGenerationPage.saveReportAsPdf(pdfName);
+        softAssert.assertTrue(reportGenerationPage.isPdfSaved(pdfName),
+                "PDF was not saved or is not a valid PDF: " + pdfName);
 
         log.info("🏁 Report generation test finished, checking results");
         softAssert.assertAll();
