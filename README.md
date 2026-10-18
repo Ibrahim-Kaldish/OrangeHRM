@@ -141,53 +141,61 @@ mvn clean install -DskipTests
 ## 🗂️ Project structure
 
 ```text
-OrangeHRM/
-├── pom.xml                       Maven settings: libraries, Java version, how tests run
-├── run.xml                       TestNG suite file: which test classes run, in what order
-├── .gitignore                    Folders and files Git should not save
-├── .idea/                        IntelliJ settings (created by IntelliJ)
-└── src/
-    ├── main/
-    │   ├── java/pages/           Page objects: locators and actions for each app page
-    │   │   ├── BasePage.java           Shared helpers: find, type, select from dropdown
-    │   │   ├── addEmployeePage/        Add Employee form
-    │   │   ├── addUser/                Add User form
-    │   │   ├── dashboardPage/          Dashboard
-    │   │   ├── employeeInfoPage/       Personal, contact, emergency, dependents, job, report-to
-    │   │   ├── generateReport/         Reports page
-    │   │   ├── loginPage/              Login page
-    │   │   ├── PIMPage/                PIM (employee list) page
-    │   │   └── timeSheetPage/          Time sheet page
-    │   └── resources/            Test data and logging settings
-    │       ├── data.json               Page addresses and the report name
-    │       ├── users.json              Login accounts for admin, valid, and invalid tests
-    │       ├── employees.csv           Employee data for the add and edit tests
-    │       ├── invalidEmployees.csv    Invalid employee data
-    │       ├── usernames.csv           Usernames for the Add User test
-    │       └── log4j2.properties       Logging settings
-    └── test/
-        └── java/
-            ├── dataProviders/DataProviderTest.java   Feeds data from files into tests
-            ├── driverFactory/                        Creates and closes the browser
-            │   ├── DriverFactory.java
-            │   ├── GetChromeDriver.java              Chrome browser setup (used by the tests)
-            │   ├── GetEdgeDriver.java                Edge browser setup
-            │   └── GetFirefoxDriver.java             Firefox browser setup
-            ├── utils/                                Helpers for JSON, CSV, and screenshots
-            │   ├── JsonFileManager.java
-            │   ├── OpenCSVFileManager.java
-            │   └── Screenshot.java
-            └── pages/                                The test classes
-                ├── baseTest/BaseTest.java            Setup and teardown for every test
-                ├── addEmployeeTest/AddEmployeeTest.java
-                ├── addUserTest/AddUserTest.java
-                ├── dashboardTest/DashboardTest.java
-                ├── employeeInformationTest/EmployeeInformationTest.java
-                ├── loginTest/ValidLogin.java
-                ├── loginTest/InvalidLogin.java
-                ├── PIMTest/PIMTest.java
-                ├── reportGenerationTest/ReportGenerationTest.java
-                └── timeSheetTest/TimeSheetTest.java
+📁 OrangeHRM/
+├── 📁 .idea/                                      IntelliJ settings (created by IntelliJ)
+├── 🙈 .gitignore                                  Folders and files Git should not save
+├── ⚙️ pom.xml                                     Maven settings: libraries, Java version, how tests run
+├── 🧩 run.xml                                     TestNG suite file: which test classes run, in what order
+└── 📁 src/
+    ├── 📁 main/
+    │   ├── 📁 java/pages/                         Page objects: locators and actions for each app page
+    │   │   ├── ☕ BasePage.java                   Shared helpers: find, type, select from dropdown
+    │   │   ├── 📁 addEmployeePage/                Add Employee form
+    │   │   ├── 📁 addUser/                        Add User form
+    │   │   ├── 📁 dashboardPage/                  Dashboard
+    │   │   ├── 📁 employeeInfoPage/               Personal, contact, emergency, dependents, job, report-to
+    │   │   ├── 📁 generateReport/                 Reports page
+    │   │   ├── 📁 loginPage/                      Login page
+    │   │   ├── 📁 PIMPage/                        PIM (employee list) page
+    │   │   └── 📁 timeSheetPage/                  Time sheet page
+    │   └── 📁 resources/                          Test data and logging settings
+    │       ├── 🧾 data.json                       Page addresses and the report name
+    │       ├── 🔑 users.json                      Login accounts for admin, valid, and invalid tests
+    │       ├── 📑 employees.csv                   Employee data for the add and edit tests
+    │       ├── 📑 invalidEmployees.csv            Invalid employee data
+    │       ├── 📑 usernames.csv                   Usernames for the Add User test
+    │       └── 📝 log4j2.properties               Logging settings
+    └── 📁 test/
+        └── 📁 java/
+            ├── 📁 dataProviders/
+            │   └── ☕ DataProviderTest.java       Feeds data from files into tests
+            ├── 📁 driverFactory/                  Creates and closes the browser
+            │   ├── ☕ DriverFactory.java
+            │   ├── ☕ GetChromeDriver.java        Chrome browser setup (used by the tests)
+            │   ├── ☕ GetEdgeDriver.java          Edge browser setup
+            │   └── ☕ GetFirefoxDriver.java       Firefox browser setup
+            ├── 📁 utils/                          Helpers for JSON, CSV, and screenshots
+            │   ├── ☕ JsonFileManager.java
+            │   ├── ☕ OpenCSVFileManager.java
+            │   └── ☕ Screenshot.java
+            └── 📁 pages/                          The test classes
+                ├── 📁 baseTest/
+                │   └── ☕ BaseTest.java           Setup and teardown for every test
+                ├── 📁 addUserTest/
+                │   └── ☕ AddUserTest.java
+                ├── 📁 dashboardTest/
+                │   └── ☕ DashboardTest.java
+                ├── 📁 employeeInformationTest/
+                │   └── ☕ EmployeeInformationTest.java
+                ├── 📁 loginTest/
+                │   ├── ☕ ValidLogin.java
+                │   └── ☕ InvalidLogin.java
+                ├── 📁 PIMTest/
+                │   ├── 📁 addEmployeeTest/        Add Employee test
+                │   ├── 📁 PIMSearchTest/          PIM search test
+                │   └── 📁 reportGenerationTest/   Report generation test
+                └── 📁 timeSheetTest/
+                    └── ☕ TimeSheetTest.java
 ```
 
 💡 **Page objects and tests:** Page objects live under `src/main/java`. Test classes live under `src/test/java`.
