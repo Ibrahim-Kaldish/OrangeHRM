@@ -303,7 +303,7 @@ https://opensource-demo.orangehrmlive.com/web/index.php/auth/login
    ✅ Expected at the end:
 
    ```text
-   [INFO] Tests run: <TOTAL>, Failures: 0, Errors: 0, Skipped: 0
+   [INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0
    [INFO] BUILD SUCCESS
    ```
 
@@ -482,6 +482,75 @@ allure open allure-report
 
 ❌ When a test fails, `BaseTest` saves a screenshot to `target\screenshots` in the project folder. The same image is attached to the test in the Allure report. Open the failed test in the report and look at the attachment to see the page at the moment of failure.
 
+## 📄 Saving the report as PDF
+
+📑 The test can save the Employee Contact info report as a PDF file. The method `saveReportAsPdf` asks Chrome to print the page, so no browser download is needed.
+
+### 🧭 How the PDF is created
+
+1. ⚙️ The method asks Chrome to print the current page with the DevTools command `Page.printToPDF`.
+2. 🎨 The print options turn on background colors, use landscape pages, and shrink the page to 50% (`scale` 0.5).
+3. 🔤 Chrome returns the PDF as Base64 text, and the method converts it back into a file.
+4. 📁 The method creates the `target\downloads` folder if it does not exist.
+5. 💾 It writes the PDF with the file name you pass in.
+6. 📝 It logs the full path of the saved file.
+
+### 🏷️ Name the file
+
+Pass the file name when you call the method. Include the `.pdf` extension:
+
+```java
+reportGenerationPage.saveReportAsPdf("Employee Contact info report.pdf");
+```
+
+⚠️ Do not use these characters in the name, because Windows does not allow them: `\ / : * ? " < > |`. Spaces are fine.
+
+### 📂 Where the file is saved
+
+The PDF goes into the `target\downloads` folder inside the project folder:
+
+```text
+C:\Projects\OrangeHRM\target\downloads\Employee Contact info report.pdf
+```
+
+To find it:
+
+1. 📁 Open File Explorer, go to `C:\Projects\OrangeHRM`, then open `target` and `downloads`.
+2. 🔎 Or search `logs\application.log` for `Saved report as PDF`. The line shows the full path.
+3. ⌨️ Or run this in Command Prompt:
+
+   ```cmd
+   cd /d C:\Projects\OrangeHRM
+   dir target\downloads
+   ```
+
+🧹 The `target` folder is deleted by `mvn clean`. If you run `mvn clean test`, the PDF from the previous run is removed. Copy the file somewhere else if you need to keep it.
+
+### ✅ Checking that the PDF was saved
+
+The method `isPdfSaved` checks two things:
+
+- 📁 The file exists in `target\downloads`.
+- 🔍 The first four bytes of the file are `%PDF`, the header every PDF file starts with.
+
+Call it in the test with the same file name, and use a soft assertion so the test keeps running if the check fails:
+
+```java
+String pdfName = "Employee Contact info report.pdf";
+reportGenerationPage.saveReportAsPdf(pdfName);
+
+softAssert.assertTrue(reportGenerationPage.isPdfSaved(pdfName),
+        "PDF was not saved or is not a valid PDF: " + pdfName);
+```
+
+ℹ️ The check confirms that a valid PDF exists. It does not check what the PDF contains.
+
+### ⚠️ Things to know
+
+- 📄 Chrome prints the page as it is on screen. The report shows only the rows on the current page, so the PDF has only those rows.
+- 📏 The `scale` setting changes only the PDF. The browser window keeps its normal size.
+- ⏳ Wait for the report table to load before you save. A PDF saved too early can be blank.
+
 ## 🛠️ Troubleshooting
 
 | Problem | Likely cause | Fix |
@@ -496,6 +565,10 @@ allure open allure-report
 | 🧾 `Could not read JSON file` or `Invalid JSON` | The file is missing, or the JSON has a syntax error | Check that the file exists in `src/main/resources`. Check for missing commas, quotes, or brackets. |
 | 🔁 Tests pass on one run and fail on the next | The demo site's data changed, or the same employee or username already exists from an earlier run | Use new employee IDs and usernames in `employees.csv`. Check the log for messages about duplicate records. |
 | 📊 `allure is not recognized` | The Allure command-line tool is not installed or not on `Path` | Follow Step 1 of 📊 Allure reporting (`npm install -g allure`). Open a new Command Prompt window. |
+| 📄 `PDF file is not found` | The save step did not run, or the file name in the test is different | Search `logs\application.log` for `Saved report as PDF`. Check that the file name in the call matches the name you look for. |
+| 🫥 The PDF is blank or has only part of the table | The table had not loaded when the page was printed, or the table is cut off by its scroll box | Wait for the table to load before you call `saveReportAsPdf`. Check the table width and the paper size settings. |
+| 🧨 `ClassCastException` when saving the PDF | The driver is not a `ChromeDriver` | Make sure `GetChromeDriver` creates the driver that the page objects use. |
+| 🧹 The PDF disappears after a new run | `mvn clean` deletes the `target` folder | Copy the PDF to another folder after the test, or save it outside `target`. |
 | 🫥 The Allure report is empty | The tests did not run, or `allure-results` is in another folder | Run `mvn clean test` first. Then run `allure generate allure-results --clean -o allure-report` from the project folder. |
 
 ## ➕ Adding a new test or page object
@@ -534,6 +607,9 @@ The tests start Chrome. To use another browser, change the driver creation in `B
 
 **📸 Where are the screenshots?**
 In `target\screenshots` in the project folder. They are also attached to failed tests in the Allure report.
+
+**📄 Where is the report PDF saved?**
+In `target\downloads` in the project folder. The file name is the one you pass to `saveReportAsPdf`. `mvn clean` deletes this folder.
 
 **🤔 Why did a test that worked yesterday fail today?**
 The demo site is shared and can change. Data on the site can also change. Check the screenshot and the log.
