@@ -7,6 +7,8 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 import pages.baseTest.BaseTest;
@@ -22,6 +24,7 @@ import java.util.Map;
 @Epic("Time Tracking")
 @Feature("Timesheet")
 public class TimeSheetTest extends BaseTest {
+    private static final Logger log = LogManager.getLogger(TimeSheetTest.class);
 
     LoginPage loginPage;
     DashboardPage dashboardPage ;
@@ -51,11 +54,13 @@ public class TimeSheetTest extends BaseTest {
     @Description("As an employee, I want to fill in and submit my weekly timesheet so that my manager can review and approve it.")
     @Severity(SeverityLevel.CRITICAL)
     public void submitTimeSheet(String ...employee){
+        log.info("🚀 Starting timesheet test for employee {}", employee[4]);
 
         loginPage = new LoginPage(driver);
         dashboardPage = new DashboardPage(driver);
         timeSheetPage = new TimeSheetPage(driver);
 
+        log.info("🔐 Logging in as employee {}", employee[4]);
         loginPage.enterUsername(employee[4]);
         loginPage.enterPassword(employee[5]);
         loginPage.clickLogin();
@@ -107,6 +112,7 @@ public class TimeSheetTest extends BaseTest {
 
         Map<String, String> admin = (Map<String, String>) jsonFileManagerUsers.getValueByKey("admin");
 
+        log.info("👔 Logging in as admin to review the timesheet");
         loginPage.enterUsername(admin.get("username"));
         loginPage.enterPassword(admin.get("password"));
         loginPage.clickLogin();
@@ -126,6 +132,7 @@ public class TimeSheetTest extends BaseTest {
         softAssert.assertEquals(timeSheetPage.getApprovalStatus(), "Approved",
                 "Approval status is not Approved");
 
+        log.info("🏁 Timesheet test finished, checking results");
         softAssert.assertAll();
 
     }

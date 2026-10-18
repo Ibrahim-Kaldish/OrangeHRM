@@ -5,6 +5,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pages.BasePage;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -12,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.time.Duration;
 
 public class AddEmployeePage extends BasePage {
+    private static final Logger log = LogManager.getLogger(AddEmployeePage.class);
 
     // Locators
     private static final By firstNameLocator = By.name("firstName");
@@ -58,12 +61,15 @@ public class AddEmployeePage extends BasePage {
         typeInto(employeeIdLocator, id);
     }
     public void clickAddPhoto() {
+        log.info("🖼️ Clicking Add photo");
         getAddPhotoButton().click();
     }
     public void clickAddPhotoAndSelect(String absolutePath) {
+        log.info("🖼️ Selecting photo through the file dialog: {}", absolutePath);
         try {
             clickAddPhoto();
-            Thread.sleep(1500);
+
+            waitForScreen(2);
 
             StringSelection selection = new StringSelection(absolutePath);
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
@@ -77,14 +83,14 @@ public class AddEmployeePage extends BasePage {
 
             robot.keyPress(KeyEvent.VK_ENTER);
             robot.keyRelease(KeyEvent.VK_ENTER);
+            log.info("✅ Photo path sent to the file dialog");
         } catch (AWTException e) {
+            log.error("❌ Could not create the keyboard robot for photo {}", absolutePath, e);
             throw new IllegalStateException("Could not select photo: " + absolutePath, e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException("Interrupted while selecting photo: " + absolutePath, e);
         }
     }
     public void clickCreateLoginDetails() {
+        log.info("🔐 Enabling Create Login Details");
         getCreateLoginToggle().click();
     }
     public void enterUsername(String username) {
@@ -97,9 +103,11 @@ public class AddEmployeePage extends BasePage {
         typeInto(confirmPasswordLocator, password);
     }
     public void selectEnabled() {
+        log.info("✅ Selecting Enabled status");
         getEnabledRadio().click();
     }
     public void clickSave() {
+        log.info("💾 Clicking Save on Add Employee");
         getSaveButton().click();
     }
 

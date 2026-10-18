@@ -56,7 +56,7 @@ public class JsonFileManager {
             return null;
         }
         Object value = data.get(key);
-        log.debug("🔑 Value of key '{}': {}", key, value);
+        log.debug("🔑 Found key '{}' ({})", key, value == null ? "null" : value.getClass().getSimpleName());
         return value;
     }
 
@@ -72,6 +72,7 @@ public class JsonFileManager {
             res[i][1] = user.get("password");
             i++;
         }
+        log.debug("👥 Built {} user rows for key '{}'", users.size(), key);
         return res;
     }
 }

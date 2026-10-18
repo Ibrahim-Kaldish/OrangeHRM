@@ -56,7 +56,6 @@ public class BaseTest {
         } else if (result.getStatus() == ITestResult.FAILURE) {
             saveFailureScreenshot(result.getMethod().getMethodName());
         }
-        log.info("🛑 Quitting Chrome driver");
         GetChromeDriver.quitDriver();
         driver = null;
         log.debug("🧹 Driver quit and references cleared");

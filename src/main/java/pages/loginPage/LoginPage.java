@@ -3,9 +3,12 @@ package pages.loginPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pages.BasePage;
 
 public class LoginPage extends BasePage {
+    private static final Logger log = LogManager.getLogger(LoginPage.class);
 
     // Locators
     private final By usernameLocator = By.name("username");
@@ -33,13 +36,16 @@ public class LoginPage extends BasePage {
 
     // Actions
     public void enterUsername(String username){
+        log.info("⌨️ Entering username");
         getUsernameField().sendKeys(username);
     }
     public void enterPassword(String password){
+        log.info("🔑 Entering password (hidden)");
         getPasswordField().sendKeys(password);
 
     }
     public void clickLogin(){
+        log.info("🔐 Clicking Login");
         getLoginBtn().click();
     }
 }

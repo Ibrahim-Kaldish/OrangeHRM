@@ -9,6 +9,8 @@ import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import io.qameta.allure.testng.AllureTestNg;
 import org.openqa.selenium.By;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -27,12 +29,14 @@ import java.util.Map;
 @Feature("Add Employee")
 @Listeners(AllureTestNg.class)
 public class AddEmployeeTest extends BaseTest {
+    private static final Logger log = LogManager.getLogger(AddEmployeeTest.class);
 
     @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
     @Story("Admin adds a new employee with login details")
     @Description("As an admin, I want to add a new employee with login details so that the employee can sign in and use the system.")
     @Severity(SeverityLevel.CRITICAL)
     public void addEmployee(String... employee) {
+        log.info("🚀 Starting add employee test for username {}", employee[4]);
 
         LoginPage loginPage = new LoginPage(driver);
         DashboardPage dashboardPage = new DashboardPage(driver);
@@ -132,6 +136,7 @@ public class AddEmployeeTest extends BaseTest {
                 "New employee login did not redirect to the dashboard");
         softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
                 "Dashboard title is not displayed after new employee login");
+        log.info("🏁 Add employee test finished for username {}", employee[4]);
         softAssert.assertAll();
     }
 }

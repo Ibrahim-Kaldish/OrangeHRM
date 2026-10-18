@@ -70,5 +70,4 @@ public class DashboardPage extends BasePage {
         clickUserDropdown();
         getLogout().click();
     }
-
 }

@@ -4,6 +4,8 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pages.BasePage;
 
 import java.time.DayOfWeek;
@@ -18,6 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class TimeSheetPage extends BasePage {
+    private static final Logger log = LogManager.getLogger(TimeSheetPage.class);
 
     // Locators
     private static final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-dd-MM");
@@ -65,6 +68,7 @@ public class TimeSheetPage extends BasePage {
     public List<WebElement> getDayInputs() {
         List<WebElement> boxes = findElements(dayInputs);
         if (boxes.size() != 7) {
+            log.error("❌ Expected 7 day inputs but found {}", boxes.size());
             throw new IllegalStateException("Expected 7 day boxes but found " + boxes.size());
         }
         return boxes;
@@ -85,6 +89,7 @@ public class TimeSheetPage extends BasePage {
 
         WebElement picked = choices.get(new Random().nextInt(choices.size()));
         String name = picked.getText().trim();
+        log.info("🎲 Selected random activity '{}'", name);
         picked.click();
         return name;
     }
@@ -93,6 +98,7 @@ public class TimeSheetPage extends BasePage {
         return text.replace("Status:", "").trim();                          // "Approved"
     }
     public List<String> enterRandomHoursForEachDay() {
+        log.info("⏱️ Entering random hours for 7 days");
         Random rnd = new Random();
         List<String> entered = new ArrayList<>();
         getDayInputs();
@@ -101,6 +107,7 @@ public class TimeSheetPage extends BasePage {
             typeInto(dayInput(i), time);
             entered.add(time);
         }
+        log.info("✅ Entered hours for 7 days");
         return entered;
     }
     public List<String> getSavedHours() {
@@ -112,9 +119,9 @@ public class TimeSheetPage extends BasePage {
         return By.xpath("(//td[contains(@class,'orangehrm-timesheet-table-body-cell') and contains(@class,'--duration-input')]//input)[" + index + "]");
     }
 
-
     // Actions
     public void enterTimesheetWeek(LocalDate date) {
+        log.info("📅 Entering timesheet week starting {}", date);
         typeInto(dateInput, date.format(fmt));
         closeCalendar();
     }
@@ -139,18 +146,22 @@ public class TimeSheetPage extends BasePage {
     }
     public void clickEditAndWaitForNavigation() {
         String before = driver.getCurrentUrl();
+        log.info("✏️ Clicking Edit timesheet");
         getEditButton().click();
         new WebDriverWait(driver, Duration.ofSeconds(5))
                 .until(d -> !d.getCurrentUrl().equals(before));
     }
     public void selectCocaColaProject() {
+        log.info("🏢 Selecting project The Coca-Cola Company");
         typeInto(projectInput, "Coca");
         findElement(cocaColaOption).click();
     }
     public void clickSaveButton() {
+        log.info("💾 Clicking Save timesheet");
         getSaveButton().click();
     }
     public void clickSubmitButton() {
+        log.info("📤 Clicking Submit timesheet");
         getSubmitButton().click();
     }
     public void waitForSubmittedStatus() {
@@ -158,10 +169,14 @@ public class TimeSheetPage extends BasePage {
                 .until(ExpectedConditions.visibilityOfElementLocated(submittedStatusLabel));
     }
     public void enterEmployeeName(String name) {
+        log.info("👤 Searching timesheets for employee {}", name);
         typeInto(employeeNameInput, name);
         By option = By.xpath("//div[@role='option']//span[normalize-space()='" + name + "']");
         findElement(option).click();
     }
     public void clickViewEmployeeButton() {getViewEmployeeButton().click();}
-    public void clickApproveButton() {getApproveButton().click();}
+    public void clickApproveButton() {
+        log.info("✅ Clicking Approve timesheet");
+        getApproveButton().click();
+    }
 }
