@@ -169,9 +169,9 @@ mvn clean install -DskipTests
     │       └── 📝 log4j2.properties               Logging settings
     └── 📁 test/
         └── 📁 java/
-            ├── 📁 dataProviders/
+            ├── 📁 dataproviders/
             │   └── ☕ DataProviderTest.java       Feeds data from files into tests
-            ├── 📁 driverFactory/                  Creates and closes the browser
+            ├── 📁 driverfactory/                  Creates and closes the browser
             │   ├── ☕ DriverFactory.java
             │   ├── ☕ GetChromeDriver.java        Chrome browser setup (used by the tests)
             │   ├── ☕ GetEdgeDriver.java          Edge browser setup
@@ -337,14 +337,14 @@ The current file runs these eight classes, in this order:
 
 | Order | Class | Package |
 |---|---|---|
-| 1️⃣ | AddEmployeeTest | pages.PIMTest.addEmployeeTest |
-| 2️⃣ | PIMSearchTest | pages.PIMTest.PIMSearchTest |
-| 3️⃣ | AddUserTest | pages.addUserTest |
-| 4️⃣ | ValidLogin | pages.loginTest |
-| 5️⃣ | InvalidLogin | pages.loginTest |
-| 6️⃣ | EmployeeInformationTest | pages.employeeInformationTest |
-| 7️⃣ | TimeSheetTest | pages.timeSheetTest |
-| 8️⃣ | ReportGenerationTest | pages.PIMTest.reportGenerationTest |
+| 1️⃣ | AddEmployeeTest | pages.pim.addemployeetest |
+| 2️⃣ | PIMSearchTest | pages.pim.pimsearchtest |
+| 3️⃣ | AddUserTest | pages.addusertest |
+| 4️⃣ | ValidLogin | pages.logintest |
+| 5️⃣ | InvalidLogin | pages.logintest |
+| 6️⃣ | EmployeeInformationTest | pages.employeeinformationtest |
+| 7️⃣ | TimeSheetTest | pages.timesheettest |
+| 8️⃣ | ReportGenerationTest | pages.pim.reportgenerationtest |
 
 ℹ️ Test classes that are not listed in `run.xml` are not run by `mvn test`.
 
@@ -353,7 +353,8 @@ The current file runs these eight classes, in this order:
 ➕ **To add a class,** place a line like this inside `<classes>`:
 
 ```xml
-<class name = "pages.PIMTest.reportGenerationTest.ReportGenerationTest"/>
+
+<class name="pages.pim.reportgenerationtest.ReportGenerationTest"/>
 ```
 
 ➖ **To remove a class,** delete its line. Save the file before you run the tests.

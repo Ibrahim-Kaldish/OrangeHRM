@@ -60,7 +60,7 @@ public class JsonFileManager {
         return value;
     }
 
-    public Object[][] getUsersByKey (String key){
+    public Object[][] getUsersByKey(String key){
 
         List<Map<String,String>> users = (List<Map<String,String>>)getValueByKey(key);
         int i = 0, st = 0, end = 1;

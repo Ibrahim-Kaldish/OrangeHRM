@@ -11,9 +11,9 @@ import java.util.List;
 public class BasePage {
     private static final Logger log = LogManager.getLogger(BasePage.class);
 
-    public WebDriver driver;
-    public WebDriverWait wait;
-    public static final By successToast = By.xpath("//div[contains(@class,'oxd-toast')]//p[contains(@class,'oxd-text--toast-message')]");
+    protected final WebDriver driver;
+    private WebDriverWait wait;
+    private static final By successToast = By.xpath("//div[contains(@class,'oxd-toast')]//p[contains(@class,'oxd-text--toast-message')]");
 
     public BasePage(WebDriver driver) {
         this.driver = driver;

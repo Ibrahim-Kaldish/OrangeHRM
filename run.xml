@@ -2,14 +2,14 @@
 <suite name = "MySuite">
     <test name = "OrangeHRM Tests">
         <classes>
-            <class name = "pages.PIMTest.addEmployeeTest.AddEmployeeTest"/>
-            <class name = "pages.PIMTest.PIMSearchTest.PIMSearchTest"/>
-            <class name = "pages.addUserTest.AddUserTest"/>
-            <class name = "pages.loginTest.ValidLogin"/>
-            <class name = "pages.loginTest.InvalidLogin"/>
-            <class name = "pages.employeeInformationTest.EmployeeInformationTest"/>
-            <class name = "pages.timeSheetTest.TimeSheetTest"/>
-            <class name = "pages.PIMTest.reportGenerationTest.ReportGenerationTest"/>
+            <class name = "pages.pim.addemployeetest.AddEmployeeTest"/>
+            <class name = "pages.pim.pimsearchtest.PIMSearchTest"/>
+            <class name = "pages.addusertest.AddUserTest"/>
+            <class name = "pages.logintest.ValidLoginTest"/>
+            <class name = "pages.logintest.InvalidLoginTest"/>
+            <class name = "pages.employeeinformationtest.EmployeeInformationTest"/>
+            <class name = "pages.timesheettest.TimesheetTest"/>
+            <class name = "pages.pim.reportgenerationtest.ReportGenerationTest"/>
         </classes>
     </test>
 </suite>
