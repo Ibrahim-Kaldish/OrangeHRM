@@ -17,6 +17,7 @@ import utils.ScreenshotUtil;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -62,21 +63,20 @@ public class BaseTest {
     }
 
     private void saveFailureScreenshot(String testName) {
-        try {
-            File captured = ScreenshotUtil.takeScreenshot(driver);
-            if (captured == null) {
-                log.warn("⚠️ No screenshot captured for {}", testName);
-                return;
-            }
+        File captured = ScreenshotUtil.takeScreenshot(driver);
+        if (captured == null) {
+            log.warn("⚠️ No screenshot captured for {}", testName);
+            return;
+        }
 
-            Path target = Paths.get("target", "screenshots", testName + "_" + System.currentTimeMillis() + ".png");
+        Path target = Paths.get("target", "screenshots", testName + "_" + System.currentTimeMillis() + ".png");
+        try {
             Files.createDirectories(target.getParent());
             Files.copy(captured.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
-
             Allure.addAttachment(testName, "image/png", new ByteArrayInputStream(Files.readAllBytes(target)), "png");
             log.info("📸 Failure screenshot saved to {}", target.toAbsolutePath());
-        } catch (IOException | RuntimeException e) {
-            log.error("❌ Could not save failure screenshot for {}", testName, e);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Could not save failure screenshot for " + testName, e);
         }
     }
 }

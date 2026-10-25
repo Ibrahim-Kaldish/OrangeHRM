@@ -60,14 +60,18 @@ public class ReportGenerationPage extends BasePage {
     public boolean isPdfSaved(String fileName) {
         Path file = Paths.get("target", "downloads", fileName);
         if (!Files.exists(file)) {
+            log.error("❌ PDF not found: {}", file.toAbsolutePath());
             return false;
         }
         try (InputStream in = Files.newInputStream(file)) {
-            byte[] header = in.readNBytes(4);
-            return header.length == 4 && new String(header, StandardCharsets.US_ASCII).equals("%PDF");
+            String header = new String(in.readNBytes(4), StandardCharsets.US_ASCII);
+            if (!"%PDF".equals(header)) {
+                log.error("❌ File {} is not a PDF, header was '{}'", file.toAbsolutePath(), header);
+                return false;
+            }
+            return true;
         } catch (IOException e) {
-            log.error("❌ Could not read PDF '{}'", fileName, e);
-            return false;
+            throw new UncheckedIOException("Could not read PDF: " + file.toAbsolutePath(), e);
         }
     }
 
