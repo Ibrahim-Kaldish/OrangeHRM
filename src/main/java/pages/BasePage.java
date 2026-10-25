@@ -14,6 +14,8 @@ public class BasePage {
     protected final WebDriver driver;
     private WebDriverWait wait;
     private static final By successToast = By.xpath("//div[contains(@class,'oxd-toast')]//p[contains(@class,'oxd-text--toast-message')]");
+    private static final By loadingSpinner = By.cssSelector(".oxd-loading-spinner");
+    private static final Duration SPINNER_GONE_TIMEOUT = Duration.ofSeconds(10);
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
@@ -85,16 +87,30 @@ public class BasePage {
         }
         throw new IllegalArgumentException("Dropdown option not found: " + optionText);
     }
-    public void waitForScreen(int seconds) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+    public void waitForScreen(int appearSeconds) {
+        boolean appeared = true;
         try {
-            new WebDriverWait(driver, Duration.ofSeconds(seconds))
-                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".oxd-loading-spinner")));
-        } catch (TimeoutException ignored) {
-            // spinner didn't appear, the page was already loaded
+            new WebDriverWait(driver, Duration.ofSeconds(appearSeconds))
+                    .until(ExpectedConditions.visibilityOfElementLocated(loadingSpinner));
+            log.debug("⏳ Loading spinner appeared");
+        } catch (TimeoutException e) {
+            appeared = false;
+            log.debug("No loading spinner appeared within {}s, assuming page already loaded", appearSeconds);
         }
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".oxd-loading-spinner")));
+
+        try {
+            new WebDriverWait(driver, SPINNER_GONE_TIMEOUT)
+                    .until(ExpectedConditions.invisibilityOfElementLocated(loadingSpinner));
+        } catch (TimeoutException e) {
+            String msg = String.format(
+                    "Loading spinner still visible after %ds (spinner seen: %s) at URL: %s",
+                    SPINNER_GONE_TIMEOUT.getSeconds(), appeared, driver.getCurrentUrl());
+            log.error("❌ {}", msg);
+            throw new TimeoutException(msg, e);
+        }
     }
+
     public void waitForScreen() {
         waitForScreen(1);
     }
