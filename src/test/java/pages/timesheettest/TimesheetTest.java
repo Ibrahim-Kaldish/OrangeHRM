@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 import pages.basetest.BaseTest;
-import pages.dashboardPage.DashboardPage;
+import pages.dashboard.DashboardPage;
 import pages.login.LoginPage;
 import pages.timesheet.TimesheetPage;
 import java.time.DayOfWeek;
@@ -64,8 +64,10 @@ public class TimesheetTest extends BaseTest {
         loginPage.enterUsername(employee[4]);
         loginPage.enterPassword(employee[5]);
         loginPage.clickLogin();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")));
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
+                "Employee login did not redirect to the dashboard for " + employee[4]);
+        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
+                "Dashboard title is not displayed after employee login for " + employee[4]);
 
         dashboardPage.clickTimeMenu();
         new WebDriverWait(driver, Duration.ofSeconds(10))

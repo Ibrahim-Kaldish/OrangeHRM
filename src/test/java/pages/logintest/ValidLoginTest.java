@@ -9,8 +9,9 @@ import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
-import pages.dashboardPage.DashboardPage;
+import pages.dashboard.DashboardPage;
 import pages.basetest.BaseTest;
 import pages.login.LoginPage;
 
@@ -32,8 +33,12 @@ public class ValidLoginTest extends BaseTest {
         loginPage.enterPassword(password);
         loginPage.clickLogin();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")));
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
+        log.info("🔍 Checking dashboard after login");
+        WebElement title = dashboardPage.getDashboardTitle();
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
+                "Login did not redirect to the dashboard for " + username);
+        softAssert.assertTrue(title.isDisplayed(),
+                "Dashboard title not displayed for " + username);
         softAssert.assertAll();
 
         log.info("✅ Login succeeded for {}", username);

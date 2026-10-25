@@ -10,11 +10,11 @@ import io.qameta.allure.Story;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.Test;
-import pages.pim.PIMPage;
 import pages.basetest.BaseTest;
-import pages.dashboardPage.DashboardPage;
+import pages.dashboard.DashboardPage;
 import pages.employeeinfo.*;
 import pages.login.LoginPage;
+import pages.pim.PIMPage;
 import java.util.Map;
 
 @Epic("Employee Management")
@@ -85,11 +85,13 @@ public class EmployeeInformationTest extends BaseTest {
         dependentsPage = new DependentsPage(driver);
         pimPage = new PIMPage(driver);
     }
+
     public void personalDetailsAssert(){
         log.info("🔍 Verifying Personal Details after reload");
         softAssert.assertEquals(personalDetailsPage.getSelectedNationality(), nationality, "Nationality after reload");
         softAssert.assertEquals(personalDetailsPage.getSelectedMaritalStatus(), maritalStatus, "Marital status after reload");
     }
+
     public void contactDetailsAssert(){
         log.info("🔍 Verifying Contact Details after reload");
         softAssert.assertEquals(contactDetailsPage.getContactStreet1Value(), street1, "Street 1 after reload");
@@ -104,6 +106,7 @@ public class EmployeeInformationTest extends BaseTest {
         softAssert.assertEquals(contactDetailsPage.getContactWorkEmailValue(), workEmail, "Work email after reload");
         softAssert.assertEquals(contactDetailsPage.getContactOtherEmailValue(), otherEmail, "Other email after reload");
     }
+
     public void emergencyContactAssert(){
         log.info("🔍 Verifying saved emergency contact");
         String savedCard = emergencyContactsPage.getSavedContactCardText();
@@ -113,25 +116,31 @@ public class EmployeeInformationTest extends BaseTest {
         softAssert.assertTrue(savedCard.contains(emergencyMobile), "Saved mobile missing: " + emergencyMobile);
         softAssert.assertTrue(savedCard.contains(emergencyWorkTelephone), "Saved work telephone missing: " + emergencyWorkTelephone);
     }
+
     public void dependentAssert(){
         log.info("🔍 Verifying saved dependent");
         String dependentCards = dependentsPage.getDependentCardsText();
         softAssert.assertTrue(dependentCards.contains(dependentName), "Saved dependent name missing: " + dependentName);
         softAssert.assertTrue(dependentCards.contains(dependentRelationship), "Saved dependent relationship missing: " + dependentRelationship);
     }
+
     public void assertSuccessMessage(String msg1, String msg2){
         log.info("🔔 Checking toast: {}", msg1);
         softAssert.assertEquals(personalDetailsPage.getSuccessToastText(), msg1, msg2);
     }
+
     public void loginAsUser(){
         log.info("🔐 Logging in as employee {}", username);
         loginPage.enterUsername(username);
         loginPage.enterPassword(password);
         loginPage.clickLogin();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")));
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
+                "Employee login did not redirect to the dashboard");
+        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
+                "Dashboard title is not displayed after employee login");
         log.info("✅ Employee logged in");
     }
+
     public void loginAsAdmin(){
         log.info("🔐 Logging in as admin");
         Map<String, String> admin = (Map<String, String>) jsonFileManagerUsers.getValueByKey("admin");
@@ -140,59 +149,73 @@ public class EmployeeInformationTest extends BaseTest {
         loginPage.enterPassword(admin.get("password"));
         loginPage.clickLogin();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")));
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
+                "Admin login did not redirect to the dashboard");
+        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
+                "Dashboard title is not displayed after admin login");
         log.info("✅ Admin logged in");
     }
+
     public void navigateToMyInfo(){
         log.info("📂 Opening My Info");
         personalDetailsPage.clickMyInfoMenuItem();
     }
+
     public void navigateToEmergencyContacts(){
         log.info("📂 Opening Emergency Contacts tab");
         emergencyContactsPage.clickEmergencyContactsTab();
     }
+
     public void navigateToContactDetails(){
         log.info("📂 Opening Contact Details tab");
         contactDetailsPage.clickContactDetailsTab();
     }
-    public void navigateToPIM(){
+
+    public void navigateToPim(){
         log.info("📂 Opening PIM from the dashboard");
         dashboardPage.clickPimMenuLink();
     }
+
     public void navigateToDependents(){
         log.info("📂 Opening Dependents tab");
         dependentsPage.clickDependentsTab();
     }
+
     public void searchForEmployee(String id){
         log.info("🔎 Searching PIM for employee Id {}", id);
         pimPage.enterEmployeeId(id);
         pimPage.clickSearch();
 
         pimPage.waitForSearchResults();
-        softAssert.assertTrue(pimPage.getResultCount() > 0, "Search returned no results");
+        softAssert.assertTrue(pimPage.getResultCount() > 0,
+                "Search for employee Id " + id + " returned no results");
         pimPage.clickFirstResult();
         log.info("✅ Opened employee record for Id {}", id);
     }
+
     public void loginAsAdminAndSearch(String id){
         loginAsAdmin();
-        navigateToPIM();
+        navigateToPim();
         searchForEmployee(id);
     }
+
     public void clickAddEmergency(){
         log.info("✏️ Adding emergency contact {}", emergencyName);
         emergencyContactsPage.clickAssignedEmergencyContactsAdd();
     }
+
     public void clickAddDependent(){
         log.info("➕ Adding dependent {}", dependentName);
         dependentsPage.clickAssignedDependentsAdd();
     }
+
     public void personalDetailsActions(){
         log.info("✏️ Updating Personal Details");
         personalDetailsPage.selectNationality(nationality);
         personalDetailsPage.selectMaritalStatus(maritalStatus);
         personalDetailsPage.clickPersonalDetailsSave();
     }
+
     public void emergencyContactActions(){
         emergencyContactsPage.enterEmergencyName(emergencyName);
         emergencyContactsPage.enterEmergencyRelationship(emergencyRelationship);
@@ -201,12 +224,14 @@ public class EmployeeInformationTest extends BaseTest {
         emergencyContactsPage.enterEmergencyWorkTelephone(emergencyWorkTelephone);
         emergencyContactsPage.clickEmergencyContactSave();
     }
+
     public void contactDetailsActions(){
         log.info("✏️ Updating Contact Details");
         contactDetailsPage.enterContactDetails(street1, street2, city, stateProvince, zipPostalCode,
                 country, contactHomeTelephone, contactMobile, contactWorkTelephone, workEmail, otherEmail);
         contactDetailsPage.clickContactSave();
     }
+
     public void dependentActions(){
         dependentsPage.enterDependentName(dependentName);
         dependentsPage.selectDependentRelationship(dependentRelationship);
@@ -248,7 +273,8 @@ public class EmployeeInformationTest extends BaseTest {
 
         log.info("🚪 Logging out employee");
         dashboardPage.clickLogout();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("url")));
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("url")),
+                "Logout did not return to the login page after the employee session");
 
         loginAsAdminAndSearch(employeeData[3]);
 
@@ -290,25 +316,27 @@ public class EmployeeInformationTest extends BaseTest {
         emergencyContactsPage.enterEmergencyMobile("0111234567");
         emergencyContactsPage.enterEmergencyWorkTelephone("0987654321");
         emergencyContactsPage.clickEmergencyContactSave();
-        assertSuccessMessage("Successfully Updated", "Emergency Contact save message");
+        assertSuccessMessage("Successfully Updated", "Emergency Contact update message");
         emergencyContactsPage.waitForScreen(3);
-        String savedCard = emergencyContactsPage.getSavedContactCardText();
-        log.info("🔍 Verifying saved emergency contact");
-        softAssert.assertTrue(savedCard.contains("Emily Johnson"), "Saved name missing: Emily Johnson");
-        softAssert.assertTrue(savedCard.contains("Spouse"), "Saved relationship missing: Spouse");
-        softAssert.assertTrue(savedCard.contains("0223456789"), "Saved home telephone missing: 0223456789");
-        softAssert.assertTrue(savedCard.contains("0111234567"), "Saved mobile missing: 0111234567");
-        softAssert.assertTrue(savedCard.contains("0987654321"), "Saved work telephone missing: 0987654321");
 
+        String savedCard = emergencyContactsPage.getSavedContactCardText();
+        log.info("🔍 Verifying updated emergency contact");
+        softAssert.assertTrue(savedCard.contains("Emily Johnson"), "Updated name missing: Emily Johnson");
+        softAssert.assertTrue(savedCard.contains("Spouse"), "Updated relationship missing: Spouse");
+        softAssert.assertTrue(savedCard.contains("0223456789"), "Updated home telephone missing: 0223456789");
+        softAssert.assertTrue(savedCard.contains("0111234567"), "Updated mobile missing: 0111234567");
+        softAssert.assertTrue(savedCard.contains("0987654321"), "Updated work telephone missing: 0987654321");
 
         int countBefore = emergencyContactsPage.getSavedContactCount();
         emergencyContactsPage.clickDeleteSavedContact();
         emergencyContactsPage.clickConfirmDelete();
 
-        softAssert.assertEquals(personalDetailsPage.getSuccessToastText(), "Successfully Deleted", "Delete message");
+        softAssert.assertEquals(personalDetailsPage.getSuccessToastText(), "Successfully Deleted",
+                "Delete confirmation message did not match");
 
         emergencyContactsPage.waitForScreen(3);
-        softAssert.assertEquals(emergencyContactsPage.getSavedContactCount(), countBefore - 2, "Saved contact count after delete");
+        softAssert.assertEquals(emergencyContactsPage.getSavedContactCount(), countBefore - 2,
+                "Saved contact count did not drop by one after delete");
 
         navigateToDependents();
         clickAddDependent();
@@ -317,12 +345,14 @@ public class EmployeeInformationTest extends BaseTest {
         dependentAssert();
 
         dashboardPage.clickLogout();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("url")));
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("url")),
+                "Logout did not return to the login page before the admin re-login");
 
         loginAsAdminAndSearch(employeeData[3]);
 
         navigateToEmergencyContacts();
-        softAssert.assertEquals(emergencyContactsPage.getSavedContactCount(), countBefore - 2, "Saved contact count after delete");
+        softAssert.assertEquals(emergencyContactsPage.getSavedContactCount(), countBefore - 2,
+                "Saved contact count after re-login does not match the count after delete");
         emergencyContactAssert();
 
         navigateToDependents();

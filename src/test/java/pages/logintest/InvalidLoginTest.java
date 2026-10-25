@@ -9,6 +9,7 @@ import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import pages.basetest.BaseTest;
@@ -32,8 +33,10 @@ public class InvalidLoginTest extends BaseTest {
         loginPage.clickLogin();
 
         log.info("🔍 Checking for the invalid credentials message");
-        Assert.assertTrue(loginPage.errorMessage().isDisplayed());
-        Assert.assertEquals(loginPage.errorMessage().getText(), "Invalid credentials");
+        WebElement error = loginPage.errorMessage();
+        Assert.assertTrue(error.isDisplayed(), "Error message not displayed for " + username);
+        Assert.assertEquals(error.getText(), "Invalid credentials",
+                "Unexpected error message for " + username);
         log.info("✅ Invalid credentials message shown for {}", username);
     }
 }

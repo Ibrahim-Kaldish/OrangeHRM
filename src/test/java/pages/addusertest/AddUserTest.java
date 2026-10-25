@@ -1,5 +1,6 @@
 package pages.addusertest;
 
+import dataproviders.DataProviderTest;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -11,9 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import pages.dashboardPage.DashboardPage;
 import pages.adduser.AddUserPage;
 import pages.basetest.BaseTest;
+import pages.dashboard.DashboardPage;
 import pages.login.LoginPage;
 import java.util.Map;
 
@@ -23,12 +24,13 @@ import java.util.Map;
 public class AddUserTest extends BaseTest {
     private static final Logger log = LogManager.getLogger(AddUserTest.class);
 
-    @Test(dataProvider = "validUsernames", dataProviderClass = dataproviders.DataProviderTest.class)
+    @Test(dataProvider = "validUsernames", dataProviderClass = DataProviderTest.class)
     @Story("Admin creates a system user for an existing employee")
     @Description("As an admin, I want to create login accounts for existing employees so that they can sign in with the assigned role and status.")
     @Severity(SeverityLevel.CRITICAL)
     public void addAllValidUsers(String... user) {
         log.info("🚀 Starting add user test for username {}", user[3]);
+
         LoginPage loginPage = new LoginPage(driver);
         DashboardPage dashboardPage = new DashboardPage(driver);
         AddUserPage addUserPage = new AddUserPage(driver);
@@ -39,14 +41,16 @@ public class AddUserTest extends BaseTest {
         loginPage.enterPassword(admin.get("password"));
         loginPage.clickLogin();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")));
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
-        softAssert.assertAll();
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
+                "Admin login did not redirect to the dashboard");
+        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
+                "Dashboard title is not displayed after admin login");
 
         dashboardPage.clickAdminMenuItem();
         dashboardPage.clickHeaderSecondaryButton();
 
-        softAssert.assertTrue(addUserPage.isPageDisplayed());
+        softAssert.assertTrue(addUserPage.isPageDisplayed(),
+                "Add User page is not displayed after clicking the Add button");
 
         addUserPage.selectEmployee(user[0]);
         addUserPage.selectUserRole(user[1]);
@@ -54,13 +58,15 @@ public class AddUserTest extends BaseTest {
         addUserPage.enterUsername(user[3]);
         addUserPage.enterPassword(user[4]);
         addUserPage.enterConfirmPassword(user[5]);
+
         log.info("💾 Saving new user {}", user[3]);
         addUserPage.clickSave();
-
         addUserPage.waitForScreen(5);
-        softAssert.assertEquals(driver.getCurrentUrl(), jsonFileManagerData.getValueByKey("admin"));
 
-        log.info("🏁 Add user test finished, checking results");
+        softAssert.assertEquals(driver.getCurrentUrl(), jsonFileManagerData.getValueByKey("admin"),
+                "User was not saved and the page did not return to the Admin list for username " + user[3]);
+
+        log.info("🏁 Add user test finished for username {}", user[3]);
         softAssert.assertAll();
     }
 }

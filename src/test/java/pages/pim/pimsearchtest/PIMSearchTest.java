@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.testng.annotations.Test;
 import pages.pim.PIMPage;
 import pages.basetest.BaseTest;
-import pages.dashboardPage.DashboardPage;
+import pages.dashboard.DashboardPage;
 import pages.login.LoginPage;
 import java.util.Map;
 
@@ -37,13 +37,17 @@ public class PIMSearchTest extends BaseTest {
         loginPage.enterPassword(admin.get("password"));
         loginPage.clickLogin();
 
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")));
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed());
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
+                "Admin login did not redirect to the dashboard");
+        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
+                "Dashboard title is not displayed after admin login");
         softAssert.assertAll();
 
         dashboardPage.clickPimMenuLink();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("PIM")));
-        softAssert.assertTrue(pimPage.getPIMTitle().isDisplayed());
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("PIM")),
+                "PIM page URL is incorrect after opening the PIM menu");
+        softAssert.assertTrue(pimPage.getPIMTitle().isDisplayed(),
+                "PIM title is not displayed");
 
         pimPage.enterEmployeeName(employee[0] + " " + employee[1] + " " + employee[2]);
         pimPage.enterEmployeeId(employee[3]);
@@ -57,23 +61,22 @@ public class PIMSearchTest extends BaseTest {
         pimPage.waitForSearchResults();
 
         int count = pimPage.getResultCount();
-        softAssert.assertEquals(count, 1, "Search should return exactly one employee");
+        softAssert.assertEquals(count, 1, "Search should return exactly one employee for " + employee[4]);
 
-        if (count != 1) {
-            return;
+        if (count == 1) {
+            String row = pimPage.getDisplayedResultRows().get(0).getText();
+            softAssert.assertTrue(row.contains(employee[3]), "Employee Id missing: " + employee[3]);
+            softAssert.assertTrue(row.contains(employee[0] + " " + employee[1]), "First and middle name missing");
+            softAssert.assertTrue(row.contains(employee[2]), "Last name missing: " + employee[2]);
+            softAssert.assertTrue(row.contains(employee[8]), "Job title missing: " + employee[8]);
+            softAssert.assertTrue(row.contains(employee[9]), "Sub unit missing: " + employee[9]);
+            softAssert.assertTrue(row.contains(employee[10]), "Employment status missing: " + employee[10]);
+
+            pimPage.clickFirstResult();
+            softAssert.assertTrue(driver.getCurrentUrl().contains("viewPersonalDetails"),
+                    "Personal details page did not open for " + employee[4]);
+            pimPage.waitForScreen(3);
         }
-
-        String row = pimPage.getDisplayedResultRows().get(0).getText();
-        softAssert.assertTrue(row.contains(employee[3]), "Employee Id missing: " + employee[3]);
-        softAssert.assertTrue(row.contains(employee[0] + " " + employee[1]), "First and middle name missing");
-        softAssert.assertTrue(row.contains(employee[2]), "Last name missing: " + employee[2]);
-        softAssert.assertTrue(row.contains(employee[8]), "Job title missing: " + employee[8]);
-        softAssert.assertTrue(row.contains(employee[9]), "Sub unit missing: " + employee[9]);
-        softAssert.assertTrue(row.contains(employee[10]), "Employment status missing: " + employee[10]);
-
-        pimPage.clickFirstResult();
-        softAssert.assertTrue(driver.getCurrentUrl().contains("viewPersonalDetails"));
-        pimPage.waitForScreen(3);
 
         softAssert.assertAll();
 

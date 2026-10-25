@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.testng.annotations.Test;
 import pages.pim.PIMPage;
 import pages.basetest.BaseTest;
-import pages.dashboardPage.DashboardPage;
+import pages.dashboard.DashboardPage;
 import pages.employeeinfo.ContactDetailsPage;
 import pages.employeeinfo.DependentsPage;
 import pages.employeeinfo.EmergencyContactsPage;
@@ -76,17 +76,17 @@ public class ReportGenerationTest extends BaseTest {
         dashboardPage.clickPimMenuLink();
         dashboardPage.waitForScreen();
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("PIM")),
-                "PIM page URL is incorrect");
+                "PIM page URL is incorrect for " + employee[4]);
         softAssert.assertTrue(pimPage.getPIMTitle().isDisplayed(),
-                "PIM title is not displayed");
+                "PIM title is not displayed for " + employee[4]);
 
         log.info("📊 Opening the Reports tab");
         dashboardPage.clickReportsTab();
         dashboardPage.waitForScreen();
         softAssert.assertTrue(reportGenerationPage.isEmployeeReportsTitleDisplayed(),
-                "Employee Reports title is not displayed");
+                "Employee Reports title is not displayed for " + employee[4]);
         softAssert.assertEquals(reportGenerationPage.getEmployeeReportsTitle().getText(), "Employee Reports",
-                "Employee Reports title text is incorrect");
+                "Employee Reports title text is incorrect for " + employee[4]);
 
         String reportName = (String) jsonFileManagerData.getValueByKey("reportName");
         log.info("🔎 Searching for predefined report '{}'", reportName);
@@ -98,7 +98,7 @@ public class ReportGenerationTest extends BaseTest {
         reportGenerationPage.clickEditReport();
         reportGenerationPage.waitForScreen();
         softAssert.assertTrue(driver.getCurrentUrl().contains("definePredefinedReport"),
-                "Report did not open the definePredefinedReport page");
+                "Report did not open the definePredefinedReport page for " + employee[4]);
 
         log.info("🎯 Adding selection criteria: Job Title = '{}'", employee[8]);
         reportGenerationPage.selectSelectionCriteria("Job Title");
@@ -127,7 +127,7 @@ public class ReportGenerationTest extends BaseTest {
         reportGenerationPage.clickSave();
         reportGenerationPage.waitForScreen(4);
         softAssert.assertTrue(driver.getCurrentUrl().contains("displayPredefinedReport"),
-                "Report did not open the displayPredefinedReport page");
+                "Report did not open the displayPredefinedReport page for " + employee[4]);
 
         reportGenerationPage.clickExpandTable();
         reportGenerationPage.waitForScreen(4);
@@ -135,7 +135,7 @@ public class ReportGenerationTest extends BaseTest {
         String pdfName = "Employee Contact info report.pdf";
         reportGenerationPage.saveReportAsPdf(pdfName);
         softAssert.assertTrue(reportGenerationPage.isPdfSaved(pdfName),
-                "PDF was not saved or is not a valid PDF: " + pdfName);
+                "PDF was not saved or is not a valid PDF: " + pdfName + " for " + employee[4]);
 
         log.info("🏁 Report generation test finished, checking results");
         softAssert.assertAll();
