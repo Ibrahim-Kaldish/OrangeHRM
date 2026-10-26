@@ -8,10 +8,10 @@ import utils.OpenCSVFileManager;
 
 public class DataProviderTest {
     private static final Logger log = LogManager.getLogger(DataProviderTest.class);
-    private static final JsonFileManager jsonFileManagerUsers = new JsonFileManager("src/main/resources/users.json");
-    private static final OpenCSVFileManager openCSVFileManagerUsernames = new OpenCSVFileManager("src/main/resources/usernames.csv");
-    private static final OpenCSVFileManager openCSVFileManagerEmployees = new OpenCSVFileManager("src/main/resources/employees.csv");
-    private static final OpenCSVFileManager openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("src/main/resources/invalidEmployees.csv");
+    private static final JsonFileManager jsonFileManagerUsers = new JsonFileManager("src/test/resources/users.json");
+    private static final OpenCSVFileManager openCSVFileManagerUsernames = new OpenCSVFileManager("src/test/resources/usernames.csv");
+    private static final OpenCSVFileManager openCSVFileManagerEmployees = new OpenCSVFileManager("src/test/resources/employees.csv");
+    private static final OpenCSVFileManager openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("src/test/resources/invalidEmployees.csv");
 
     @DataProvider (name = "validCredentials")
     public Object[][] validCredentials() {

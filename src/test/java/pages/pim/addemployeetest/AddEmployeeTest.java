@@ -75,7 +75,7 @@ public class AddEmployeeTest extends BaseTest {
 
         String defaultPhotoSrc = addEmployeePage.getPhotoPreviewSrc();
 
-        Path photo = Paths.get("src", "main", "resources", "photos", employee[32] + ".jpeg");
+        Path photo = Paths.get("src", "test", "resources", "photos", employee[32] + ".jpeg");
         addEmployeePage.clickAddPhotoAndSelect(photo.toAbsolutePath().toString());
         addEmployeePage.waitForScreen();
         String uploadedPhotoSrc = addEmployeePage.getPhotoPreviewSrc();

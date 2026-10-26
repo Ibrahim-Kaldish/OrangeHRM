@@ -28,18 +28,18 @@ public class BaseTest {
     private static final Logger log = LogManager.getLogger(BaseTest.class);
     protected static JsonFileManager jsonFileManagerUsers;
     protected static JsonFileManager jsonFileManagerData;
-    protected static OpenCSVFileManager openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("src/main/resources/invalidEmployees.csv");
-    protected static OpenCSVFileManager openCSVFileManagerEmployees = new OpenCSVFileManager("src/main/resources/employees.csv");
+    protected static OpenCSVFileManager openCSVFileManagerInvalidEmployees;
+    protected static OpenCSVFileManager openCSVFileManagerEmployees;
 
     protected static WebDriver driver;
     protected SoftAssert softAssert;
 
     @BeforeMethod
     public void setUp() {
-        jsonFileManagerData = new JsonFileManager("src/main/resources/data.json");
-        jsonFileManagerUsers = new JsonFileManager("src/main/resources/users.json");
-        openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("src/main/resources/invalidEmployees.csv");
-        openCSVFileManagerEmployees = new OpenCSVFileManager("src/main/resources/employees.csv");
+        jsonFileManagerData = new JsonFileManager("src/test/resources/data.json");
+        jsonFileManagerUsers = new JsonFileManager("src/test/resources/users.json");
+        openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("src/test/resources/invalidEmployees.csv");
+        openCSVFileManagerEmployees = new OpenCSVFileManager("src/test/resources/employees.csv");
 
         softAssert = new SoftAssert();
 
