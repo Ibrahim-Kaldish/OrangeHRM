@@ -4,7 +4,6 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -15,10 +14,13 @@ public class OpenCSVFileManager {
     private final List<String> columns = new ArrayList<>();
     private final List<String[]> rows = new ArrayList<>();
 
+    /**
+     * @param csvFilePath the resource name, e.g. "employees.csv"
+     */
     public OpenCSVFileManager(String csvFilePath) {
         log.info("📂 Reading CSV file: {}", csvFilePath);
 
-        try (CSVReader reader = new CSVReader(new FileReader(csvFilePath))) {
+        try (CSVReader reader = new CSVReader(ResourceUtil.openReader(csvFilePath))) {
             List<String[]> all = reader.readAll();
             if (all.isEmpty()) {
                 log.error("❌ CSV file is empty: {}", csvFilePath);

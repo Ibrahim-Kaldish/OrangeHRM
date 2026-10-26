@@ -36,10 +36,10 @@ public class BaseTest {
 
     @BeforeMethod
     public void setUp() {
-        jsonFileManagerData = new JsonFileManager("src/test/resources/data.json");
-        jsonFileManagerUsers = new JsonFileManager("src/test/resources/users.json");
-        openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("src/test/resources/invalidEmployees.csv");
-        openCSVFileManagerEmployees = new OpenCSVFileManager("src/test/resources/employees.csv");
+        jsonFileManagerData = new JsonFileManager("data.json");
+        jsonFileManagerUsers = new JsonFileManager("users.json");
+        openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("invalidEmployees.csv");
+        openCSVFileManagerEmployees = new OpenCSVFileManager("employees.csv");
 
         softAssert = new SoftAssert();
 

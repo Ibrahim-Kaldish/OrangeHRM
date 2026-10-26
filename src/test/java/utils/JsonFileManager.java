@@ -5,8 +5,8 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
@@ -21,9 +21,9 @@ public class JsonFileManager {
     private final LinkedHashMap<String, Object> data;
 
     /**
-     * Loads the JSON file at the given path into memory.
+     * Loads the JSON resource with the given name from the classpath into memory.
      *
-     * @param jsonPath the path to the JSON file
+     * @param jsonPath the resource name, e.g. "users.json"
      */
     public JsonFileManager(String jsonPath) {
         if (jsonPath == null || jsonPath.isEmpty()) {
@@ -31,7 +31,7 @@ public class JsonFileManager {
             throw new IllegalArgumentException("JSON path must be provided");
         }
         log.info("📄 Loading JSON from [{}]", jsonPath);
-        try (FileReader reader = new FileReader(jsonPath)) {
+        try (Reader reader = ResourceUtil.openReader(jsonPath)) {
             LinkedHashMap<String, Object> loaded = new Gson().fromJson(reader, TYPE);
             data = loaded == null ? new LinkedHashMap<>() : loaded;
         } catch (IOException e) {

@@ -21,8 +21,7 @@ import pages.employeeinfo.JobInfoPage;
 import pages.employeeinfo.ReportToPage;
 import pages.login.LoginPage;
 import pages.pim.PIMPage;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import utils.ResourceUtil;
 import java.util.Map;
 
 @Epic("Employee Management")
@@ -75,8 +74,8 @@ public class AddEmployeeTest extends BaseTest {
 
         String defaultPhotoSrc = addEmployeePage.getPhotoPreviewSrc();
 
-        Path photo = Paths.get("src", "test", "resources", "photos", employee[32] + ".jpeg");
-        addEmployeePage.clickAddPhotoAndSelect(photo.toAbsolutePath().toString());
+        String photoPath = ResourceUtil.absolutePath("photos/" + employee[32] + ".jpeg");
+        addEmployeePage.clickAddPhotoAndSelect(photoPath);
         addEmployeePage.waitForScreen();
         String uploadedPhotoSrc = addEmployeePage.getPhotoPreviewSrc();
         softAssert.assertNotNull(uploadedPhotoSrc, "No photo preview after uploading the photo");

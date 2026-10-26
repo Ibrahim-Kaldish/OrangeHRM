@@ -8,10 +8,10 @@ import utils.OpenCSVFileManager;
 
 public class DataProviderTest {
     private static final Logger log = LogManager.getLogger(DataProviderTest.class);
-    private static final JsonFileManager jsonFileManagerUsers = new JsonFileManager("src/test/resources/users.json");
-    private static final OpenCSVFileManager openCSVFileManagerUsernames = new OpenCSVFileManager("src/test/resources/usernames.csv");
-    private static final OpenCSVFileManager openCSVFileManagerEmployees = new OpenCSVFileManager("src/test/resources/employees.csv");
-    private static final OpenCSVFileManager openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("src/test/resources/invalidEmployees.csv");
+    private static final JsonFileManager jsonFileManagerUsers = new JsonFileManager("users.json");
+    private static final OpenCSVFileManager openCSVFileManagerUsernames = new OpenCSVFileManager("usernames.csv");
+    private static final OpenCSVFileManager openCSVFileManagerEmployees = new OpenCSVFileManager("employees.csv");
+    private static final OpenCSVFileManager openCSVFileManagerInvalidEmployees = new OpenCSVFileManager("invalidEmployees.csv");
 
     @DataProvider (name = "validCredentials")
     public Object[][] validCredentials() {
@@ -26,7 +26,7 @@ public class DataProviderTest {
     @DataProvider (name = "invalidCredentials")
     public Object[][] invalidCredentials() {
         log.info("📋 Supplying invalidCredentials data");
-        Object[][] data = jsonFileManagerUsers.getUsersByKey("invalid");;
+        Object[][] data = jsonFileManagerUsers.getUsersByKey("invalid");
         if (data.length == 0) {
             log.warn("⚠️ invalidCredentials returned no rows");
         }
@@ -36,7 +36,7 @@ public class DataProviderTest {
     @DataProvider (name = "validEmployeesData")
     public Object[][] validEmployeesData() {
         log.info("📋 Supplying valid Employees data");
-        Object[][] data = openCSVFileManagerEmployees.getRowsAsArray();;
+        Object[][] data = openCSVFileManagerEmployees.getRowsAsArray();
         if (data.length == 0) {
             log.warn("⚠️ valid Employees returned no rows");
         }
