@@ -55,28 +55,11 @@ public class BaseTest {
         if (driver == null) {
             log.warn("⚠️ tearDown called but BaseTest.driver is null");
         } else if (result.getStatus() == ITestResult.FAILURE) {
-            saveFailureScreenshot(result.getMethod().getMethodName());
+            ScreenshotUtil.saveFailureScreenshot(driver, result.getMethod().getMethodName());
         }
         GetChromeDriver.quitDriver();
         driver = null;
         log.debug("🧹 Driver quit and references cleared");
     }
 
-    private void saveFailureScreenshot(String testName) {
-        File captured = ScreenshotUtil.takeScreenshot(driver);
-        if (captured == null) {
-            log.warn("⚠️ No screenshot captured for {}", testName);
-            return;
-        }
-
-        Path target = Paths.get("target", "screenshots", testName + "_" + System.currentTimeMillis() + ".png");
-        try {
-            Files.createDirectories(target.getParent());
-            Files.copy(captured.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
-            Allure.addAttachment(testName, "image/png", new ByteArrayInputStream(Files.readAllBytes(target)), "png");
-            log.info("📸 Failure screenshot saved to {}", target.toAbsolutePath());
-        } catch (IOException e) {
-            throw new UncheckedIOException("Could not save failure screenshot for " + testName, e);
-        }
-    }
 }
