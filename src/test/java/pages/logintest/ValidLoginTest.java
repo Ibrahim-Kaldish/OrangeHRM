@@ -11,9 +11,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebElement;
 import org.testng.annotations.Test;
-import pages.dashboard.DashboardPage;
 import pages.basetest.BaseTest;
-import pages.login.LoginPage;
+import pages.dashboard.DashboardPage;
 
 @Epic("Authentication")
 @Feature("Login")
@@ -25,13 +24,10 @@ public class ValidLoginTest extends BaseTest {
     @Description("As a user, I want to sign in with valid credentials so that I can reach the dashboard.")
     @Severity(SeverityLevel.BLOCKER)
     public void login(String username, String password) {
-        LoginPage loginPage = new LoginPage(driver);
         DashboardPage dashboardPage = new DashboardPage(driver);
 
         log.info("🔐 Logging in as {}", username);
-        loginPage.enterUsername(username);
-        loginPage.enterPassword(password);
-        loginPage.clickLogin();
+        loginAs(username, password);
 
         log.info("🔍 Checking dashboard after login");
         WebElement title = dashboardPage.getDashboardTitle();

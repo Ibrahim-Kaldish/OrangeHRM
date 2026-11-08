@@ -46,6 +46,9 @@ public class AddEmployeePage extends BasePage {
                 .until(ExpectedConditions.visibilityOfElementLocated(photoPreview))
                 .getAttribute("src");
     }
+    public boolean isEnabledSelected() {
+        return driver.findElement(By.xpath("//label[normalize-space()='Enabled']//input[@type='radio']")).isSelected();
+    }
 
     // Actions
     public void enterFirstName(String firstName) {

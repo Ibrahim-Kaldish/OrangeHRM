@@ -15,14 +15,48 @@ import org.testng.annotations.Test;
 import pages.adduser.AddUserPage;
 import pages.basetest.BaseTest;
 import pages.dashboard.DashboardPage;
-import pages.login.LoginPage;
-import java.util.Map;
 
 @Epic("User Management")
 @Feature("Add User")
 @Listeners(AllureTestNg.class)
 public class AddUserTest extends BaseTest {
     private static final Logger log = LogManager.getLogger(AddUserTest.class);
+
+    private DashboardPage dashboardPage;
+    private AddUserPage addUserPage;
+
+    private void initPages() {
+        dashboardPage = new DashboardPage(driver);
+        addUserPage = new AddUserPage(driver);
+    }
+
+    private void openAddUserForm() {
+        dashboardPage.clickAdminMenuItem();
+        dashboardPage.clickHeaderSecondaryButton();
+
+        softAssert.assertTrue(addUserPage.isPageDisplayed(),
+                "Add User page is not displayed after clicking the Add button");
+    }
+
+    private void fillUserForm(String... user) {
+        addUserPage.selectEmployee(user[0]);
+        addUserPage.selectUserRole(user[1]);
+        addUserPage.selectStatus(user[2]);
+        addUserPage.enterUsername(user[3]);
+        addUserPage.enterPassword(user[4]);
+        addUserPage.enterConfirmPassword(user[5]);
+    }
+
+    private void saveUser(String username) {
+        log.info("💾 Saving new user {}", username);
+        addUserPage.clickSave();
+        addUserPage.waitForScreen(5);
+    }
+
+    private void assertUserSaved(String username) {
+        softAssert.assertEquals(driver.getCurrentUrl(), jsonFileManagerData.getValueByKey("admin"),
+                "User was not saved and the page did not return to the Admin list for username " + username);
+    }
 
     @Test(dataProvider = "validUsernames", dataProviderClass = DataProviderTest.class)
     @Story("Admin creates a system user for an existing employee")
@@ -31,40 +65,12 @@ public class AddUserTest extends BaseTest {
     public void addAllValidUsers(String... user) {
         log.info("🚀 Starting add user test for username {}", user[3]);
 
-        LoginPage loginPage = new LoginPage(driver);
-        DashboardPage dashboardPage = new DashboardPage(driver);
-        AddUserPage addUserPage = new AddUserPage(driver);
-
-        Map<String, String> admin = (Map<String, String>) jsonFileManagerUsers.getValueByKey("admin");
-
-        loginPage.enterUsername(admin.get("username"));
-        loginPage.enterPassword(admin.get("password"));
-        loginPage.clickLogin();
-
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
-                "Admin login did not redirect to the dashboard");
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
-                "Dashboard title is not displayed after admin login");
-
-        dashboardPage.clickAdminMenuItem();
-        dashboardPage.clickHeaderSecondaryButton();
-
-        softAssert.assertTrue(addUserPage.isPageDisplayed(),
-                "Add User page is not displayed after clicking the Add button");
-
-        addUserPage.selectEmployee(user[0]);
-        addUserPage.selectUserRole(user[1]);
-        addUserPage.selectStatus(user[2]);
-        addUserPage.enterUsername(user[3]);
-        addUserPage.enterPassword(user[4]);
-        addUserPage.enterConfirmPassword(user[5]);
-
-        log.info("💾 Saving new user {}", user[3]);
-        addUserPage.clickSave();
-        addUserPage.waitForScreen(5);
-
-        softAssert.assertEquals(driver.getCurrentUrl(), jsonFileManagerData.getValueByKey("admin"),
-                "User was not saved and the page did not return to the Admin list for username " + user[3]);
+        initPages();
+        loginAsAdmin();
+        openAddUserForm();
+        fillUserForm(user);
+        saveUser(user[3]);
+        assertUserSaved(user[3]);
 
         log.info("🏁 Add user test finished for username {}", user[3]);
         softAssert.assertAll();

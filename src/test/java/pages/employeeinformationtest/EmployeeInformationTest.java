@@ -13,14 +13,19 @@ import org.testng.annotations.Test;
 import pages.basetest.BaseTest;
 import pages.dashboard.DashboardPage;
 import pages.employeeinfo.*;
-import pages.login.LoginPage;
 import pages.pim.PIMPage;
-import java.util.Map;
 
 @Epic("Employee Management")
 @Feature("Employee Information")
 public class EmployeeInformationTest extends BaseTest {
     private static final Logger log = LogManager.getLogger(EmployeeInformationTest.class);
+
+    private static final String UPDATED_CONTACT_NAME = "Emily Johnson";
+    private static final String UPDATED_RELATIONSHIP = "Spouse";
+    private static final String UPDATED_HOME_TEL = "0223456789";
+    private static final String UPDATED_MOBILE = "0111234567";
+    private static final String UPDATED_WORK_TEL = "0987654321";
+
     String username;
     String password;
     String nationality;
@@ -44,7 +49,6 @@ public class EmployeeInformationTest extends BaseTest {
     String dependentName;
     String dependentRelationship;
     String dependentDateOfBirth;
-    LoginPage loginPage;
     DashboardPage dashboardPage;
     PersonalDetailsPage personalDetailsPage;
     EmergencyContactsPage emergencyContactsPage;
@@ -77,7 +81,6 @@ public class EmployeeInformationTest extends BaseTest {
         dependentName = employeeData[29];
         dependentRelationship = employeeData[30];
         dependentDateOfBirth = employeeData[31];
-        loginPage = new LoginPage(driver);
         dashboardPage = new DashboardPage(driver);
         personalDetailsPage = new PersonalDetailsPage(driver);
         emergencyContactsPage = new EmergencyContactsPage(driver);
@@ -131,29 +134,8 @@ public class EmployeeInformationTest extends BaseTest {
 
     public void loginAsUser(){
         log.info("🔐 Logging in as employee {}", username);
-        loginPage.enterUsername(username);
-        loginPage.enterPassword(password);
-        loginPage.clickLogin();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
-                "Employee login did not redirect to the dashboard");
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
-                "Dashboard title is not displayed after employee login");
-        log.info("✅ Employee logged in");
-    }
-
-    public void loginAsAdmin(){
-        log.info("🔐 Logging in as admin");
-        Map<String, String> admin = (Map<String, String>) jsonFileManagerUsers.getValueByKey("admin");
-
-        loginPage.enterUsername(admin.get("username"));
-        loginPage.enterPassword(admin.get("password"));
-        loginPage.clickLogin();
-
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
-                "Admin login did not redirect to the dashboard");
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
-                "Dashboard title is not displayed after admin login");
-        log.info("✅ Admin logged in");
+        loginAs(username, password);
+        assertOnDashboard("Employee");
     }
 
     public void navigateToMyInfo(){
@@ -199,14 +181,11 @@ public class EmployeeInformationTest extends BaseTest {
         searchForEmployee(id);
     }
 
-    public void clickAddEmergency(){
-        log.info("✏️ Adding emergency contact {}", emergencyName);
-        emergencyContactsPage.clickAssignedEmergencyContactsAdd();
-    }
-
-    public void clickAddDependent(){
-        log.info("➕ Adding dependent {}", dependentName);
-        dependentsPage.clickAssignedDependentsAdd();
+    public void logout(String context){
+        log.info("🚪 Logging out");
+        dashboardPage.clickLogout();
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("url")),
+                "Logout did not return to the login page " + context);
     }
 
     public void personalDetailsActions(){
@@ -239,45 +218,34 @@ public class EmployeeInformationTest extends BaseTest {
         dependentsPage.clickDependentSave();
     }
 
-    @Test(priority = 0, dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
-    @Story("Employee updates personal, contact, and emergency details")
-    @Description("As an employee, I want to update my personal, contact, and emergency details so that HR has current records.")
-    @Severity(SeverityLevel.CRITICAL)
-    public void updateEmployeeInformation(String... employeeData) {
-        log.info("🚀 Starting employee information update");
-
-        setAttributes(employeeData);
-
-        loginAsUser();
-
+    private void updatePersonalDetails(){
         navigateToMyInfo();
         dashboardPage.waitForScreen(3);
-
         personalDetailsActions();
         assertSuccessMessage("Successfully Updated", "Personal Details save message");
         personalDetailsAssert();
         personalDetailsPage.waitForScreen(3);
+    }
 
+    private void addEmergencyContact(){
         navigateToEmergencyContacts();
-        clickAddEmergency();
+        log.info("✏️ Adding emergency contact {}", emergencyName);
+        emergencyContactsPage.clickAssignedEmergencyContactsAdd();
         emergencyContactActions();
         assertSuccessMessage("Successfully Saved", "Emergency Contact save message");
         emergencyContactAssert();
         emergencyContactsPage.waitForScreen(3);
+    }
 
+    private void updateContactDetails(){
         navigateToContactDetails();
         contactDetailsActions();
         assertSuccessMessage("Successfully Updated", "Contact Details save message");
         contactDetailsAssert();
         contactDetailsPage.waitForScreen(3);
+    }
 
-        log.info("🚪 Logging out employee");
-        dashboardPage.clickLogout();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("url")),
-                "Logout did not return to the login page after the employee session");
-
-        loginAsAdminAndSearch(employeeData[3]);
-
+    private void verifyUpdatesAsAdmin(){
         dashboardPage.waitForScreen(3);
         personalDetailsAssert();
 
@@ -288,6 +256,66 @@ public class EmployeeInformationTest extends BaseTest {
         contactDetailsPage.clickContactDetailsTab();
         contactDetailsPage.waitForScreen(3);
         contactDetailsAssert();
+    }
+
+    private void editEmergencyContact(){
+        emergencyContactsPage.clickEditSavedContact();
+        emergencyContactsPage.enterEmergencyName(UPDATED_CONTACT_NAME);
+        emergencyContactsPage.enterEmergencyRelationship(UPDATED_RELATIONSHIP);
+        emergencyContactsPage.enterEmergencyHomeTelephone(UPDATED_HOME_TEL);
+        emergencyContactsPage.enterEmergencyMobile(UPDATED_MOBILE);
+        emergencyContactsPage.enterEmergencyWorkTelephone(UPDATED_WORK_TEL);
+        emergencyContactsPage.clickEmergencyContactSave();
+        assertSuccessMessage("Successfully Updated", "Emergency Contact update message");
+        emergencyContactsPage.waitForScreen(3);
+
+        String savedCard = emergencyContactsPage.getSavedContactCardText();
+        log.info("🔍 Verifying updated emergency contact");
+        softAssert.assertTrue(savedCard.contains(UPDATED_CONTACT_NAME), "Updated name missing: " + UPDATED_CONTACT_NAME);
+        softAssert.assertTrue(savedCard.contains(UPDATED_RELATIONSHIP), "Updated relationship missing: " + UPDATED_RELATIONSHIP);
+        softAssert.assertTrue(savedCard.contains(UPDATED_HOME_TEL), "Updated home telephone missing: " + UPDATED_HOME_TEL);
+        softAssert.assertTrue(savedCard.contains(UPDATED_MOBILE), "Updated mobile missing: " + UPDATED_MOBILE);
+        softAssert.assertTrue(savedCard.contains(UPDATED_WORK_TEL), "Updated work telephone missing: " + UPDATED_WORK_TEL);
+    }
+
+    private int deleteEmergencyContact(){
+        int countBefore = emergencyContactsPage.getSavedContactCount();
+        emergencyContactsPage.clickDeleteSavedContact();
+        emergencyContactsPage.clickConfirmDelete();
+
+        softAssert.assertEquals(personalDetailsPage.getSuccessToastText(), "Successfully Deleted",
+                "Delete confirmation message did not match");
+
+        emergencyContactsPage.waitForScreen(3);
+        softAssert.assertEquals(emergencyContactsPage.getSavedContactCount(), countBefore - 2,
+                "Saved contact count did not drop by one after delete");
+        return countBefore;
+    }
+
+    private void addDependent(){
+        navigateToDependents();
+        dependentsPage.clickAssignedDependentsAdd();
+        dependentActions();
+        assertSuccessMessage("Successfully Saved", "Dependent save message");
+        dependentAssert();
+    }
+
+    @Test(priority = 0, dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
+    @Story("Employee updates personal, contact, and emergency details")
+    @Description("As an employee, I want to update my personal, contact, and emergency details so that HR has current records.")
+    @Severity(SeverityLevel.CRITICAL)
+    public void updateEmployeeInformation(String... employeeData) {
+        log.info("🚀 Starting employee information update");
+
+        setAttributes(employeeData);
+        loginAsUser();
+        updatePersonalDetails();
+        addEmergencyContact();
+        updateContactDetails();
+        logout("after the employee session");
+
+        loginAsAdminAndSearch(employeeData[3]);
+        verifyUpdatesAsAdmin();
 
         log.info("🏁 Employee information update finished, checking results");
         softAssert.assertAll();
@@ -299,57 +327,15 @@ public class EmployeeInformationTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     public void editOrRemoveExistingContact(String... employeeData) {
         setAttributes(employeeData);
-
         loginAsAdminAndSearch(employeeData[3]);
 
-        navigateToEmergencyContacts();
-        clickAddEmergency();
-        emergencyContactActions();
-        assertSuccessMessage("Successfully Saved", "Emergency Contact save message");
-        emergencyContactsPage.waitForScreen(3);
-        emergencyContactAssert();
-
-        emergencyContactsPage.clickEditSavedContact();
-        emergencyContactsPage.enterEmergencyName("Emily Johnson");
-        emergencyContactsPage.enterEmergencyRelationship("Spouse");
-        emergencyContactsPage.enterEmergencyHomeTelephone("0223456789");
-        emergencyContactsPage.enterEmergencyMobile("0111234567");
-        emergencyContactsPage.enterEmergencyWorkTelephone("0987654321");
-        emergencyContactsPage.clickEmergencyContactSave();
-        assertSuccessMessage("Successfully Updated", "Emergency Contact update message");
-        emergencyContactsPage.waitForScreen(3);
-
-        String savedCard = emergencyContactsPage.getSavedContactCardText();
-        log.info("🔍 Verifying updated emergency contact");
-        softAssert.assertTrue(savedCard.contains("Emily Johnson"), "Updated name missing: Emily Johnson");
-        softAssert.assertTrue(savedCard.contains("Spouse"), "Updated relationship missing: Spouse");
-        softAssert.assertTrue(savedCard.contains("0223456789"), "Updated home telephone missing: 0223456789");
-        softAssert.assertTrue(savedCard.contains("0111234567"), "Updated mobile missing: 0111234567");
-        softAssert.assertTrue(savedCard.contains("0987654321"), "Updated work telephone missing: 0987654321");
-
-        int countBefore = emergencyContactsPage.getSavedContactCount();
-        emergencyContactsPage.clickDeleteSavedContact();
-        emergencyContactsPage.clickConfirmDelete();
-
-        softAssert.assertEquals(personalDetailsPage.getSuccessToastText(), "Successfully Deleted",
-                "Delete confirmation message did not match");
-
-        emergencyContactsPage.waitForScreen(3);
-        softAssert.assertEquals(emergencyContactsPage.getSavedContactCount(), countBefore - 2,
-                "Saved contact count did not drop by one after delete");
-
-        navigateToDependents();
-        clickAddDependent();
-        dependentActions();
-        assertSuccessMessage("Successfully Saved", "Dependent save message");
-        dependentAssert();
-
-        dashboardPage.clickLogout();
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("url")),
-                "Logout did not return to the login page before the admin re-login");
+        addEmergencyContact();
+        editEmergencyContact();
+        int countBefore = deleteEmergencyContact();
+        addDependent();
+        logout("before the admin re-login");
 
         loginAsAdminAndSearch(employeeData[3]);
-
         navigateToEmergencyContacts();
         softAssert.assertEquals(emergencyContactsPage.getSavedContactCount(), countBefore - 2,
                 "Saved contact count after re-login does not match the count after delete");

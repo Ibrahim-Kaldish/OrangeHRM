@@ -10,85 +10,48 @@ import io.qameta.allure.Story;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.annotations.Test;
-import pages.pim.PIMPage;
 import pages.basetest.BaseTest;
 import pages.dashboard.DashboardPage;
-import pages.employeeinfo.ContactDetailsPage;
-import pages.employeeinfo.DependentsPage;
-import pages.employeeinfo.EmergencyContactsPage;
-import pages.employeeinfo.PersonalDetailsPage;
 import pages.generatereport.ReportGenerationPage;
-import pages.login.LoginPage;
-import java.util.Map;
+import pages.pim.PIMPage;
 
 @Epic("Employee Management")
 @Feature("Reports")
 public class ReportGenerationTest extends BaseTest {
     private static final Logger log = LogManager.getLogger(ReportGenerationTest.class);
-    LoginPage loginPage;
-    DashboardPage dashboardPage;
-    PersonalDetailsPage personalDetailsPage;
-    EmergencyContactsPage emergencyContactsPage;
-    ContactDetailsPage contactDetailsPage;
-    DependentsPage dependentsPage;
-    PIMPage pimPage;
-    ReportGenerationPage reportGenerationPage;
+    private static final String PDF_NAME = "Employee Contact info report.pdf";
 
-    public void setAttributes(String ... employeeData){
-        log.info("📋 Loading page objects for employee username {}", employeeData[4]);
-        loginPage = new LoginPage(driver);
+    private DashboardPage dashboardPage;
+    private PIMPage pimPage;
+    private ReportGenerationPage reportGenerationPage;
+
+    private void initPages() {
         dashboardPage = new DashboardPage(driver);
-        personalDetailsPage = new PersonalDetailsPage(driver);
-        emergencyContactsPage = new EmergencyContactsPage(driver);
-        contactDetailsPage = new ContactDetailsPage(driver);
-        dependentsPage = new DependentsPage(driver);
         pimPage = new PIMPage(driver);
         reportGenerationPage = new ReportGenerationPage(driver);
     }
 
-    public void loginAsAdmin(){
-        log.info("🔐 Logging in as admin");
-        Map<String, String> admin = (Map<String, String>) jsonFileManagerUsers.getValueByKey("admin");
-
-        loginPage.enterUsername(admin.get("username"));
-        loginPage.enterPassword(admin.get("password"));
-        loginPage.clickLogin();
-
-        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
-                "Admin login did not redirect to the dashboard");
-        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
-                "Dashboard title is not displayed after admin login");
-        log.info("✅ Admin logged in");
-    }
-
-    @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
-    @Story("Admin generates a predefined report filtered by job details")
-    @Description("As an admin, I want to generate a predefined report filtered by job title, sub unit, and employment status so that I can review matching employees.")
-    @Severity(SeverityLevel.CRITICAL)
-    public void generateReport(String ...employee) {
-        log.info("🚀 Starting report generation test");
-
-        setAttributes(employee);
-
-        loginAsAdmin();
-
+    private void openPim(String employeeUsername) {
         log.info("🧭 Opening PIM from the dashboard");
         dashboardPage.clickPimMenuLink();
         dashboardPage.waitForScreen();
         softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("PIM")),
-                "PIM page URL is incorrect for " + employee[4]);
+                "PIM page URL is incorrect for " + employeeUsername);
         softAssert.assertTrue(pimPage.getPIMTitle().isDisplayed(),
-                "PIM title is not displayed for " + employee[4]);
+                "PIM title is not displayed for " + employeeUsername);
+    }
 
+    private void openReportsTab(String employeeUsername) {
         log.info("📊 Opening the Reports tab");
         dashboardPage.clickReportsTab();
         dashboardPage.waitForScreen();
         softAssert.assertTrue(reportGenerationPage.isEmployeeReportsTitleDisplayed(),
-                "Employee Reports title is not displayed for " + employee[4]);
+                "Employee Reports title is not displayed for " + employeeUsername);
         softAssert.assertEquals(reportGenerationPage.getEmployeeReportsTitle().getText(), "Employee Reports",
-                "Employee Reports title text is incorrect for " + employee[4]);
+                "Employee Reports title text is incorrect for " + employeeUsername);
+    }
 
-        String reportName = (String) jsonFileManagerData.getValueByKey("reportName");
+    private void openPredefinedReportForEditing(String reportName, String employeeUsername) {
         log.info("🔎 Searching for predefined report '{}'", reportName);
         reportGenerationPage.enterReportName(reportName);
         reportGenerationPage.selectReport(reportName);
@@ -98,44 +61,72 @@ public class ReportGenerationTest extends BaseTest {
         reportGenerationPage.clickEditReport();
         reportGenerationPage.waitForScreen();
         softAssert.assertTrue(driver.getCurrentUrl().contains("definePredefinedReport"),
-                "Report did not open the definePredefinedReport page for " + employee[4]);
+                "Report did not open the definePredefinedReport page for " + employeeUsername);
+    }
 
-        log.info("🎯 Adding selection criteria: Job Title = '{}'", employee[8]);
-        reportGenerationPage.selectSelectionCriteria("Job Title");
+    private void addSelectionCriteria(String criteriaName, String value, SelectionCriteriaAction action) {
+        log.info("🎯 Adding selection criteria: {} = '{}'", criteriaName, value);
+        reportGenerationPage.selectSelectionCriteria(criteriaName);
         reportGenerationPage.clickSelectionCriteriaAdd();
         reportGenerationPage.waitForScreen();
-        reportGenerationPage.selectJobTitleCriteria(employee[8]);
+        action.apply(value);
+    }
 
-        log.info("🎯 Adding selection criteria: Sub Unit = '{}'", employee[9]);
-        reportGenerationPage.selectSelectionCriteria("Sub Unit");
-        reportGenerationPage.clickSelectionCriteriaAdd();
-        reportGenerationPage.waitForScreen();
-        reportGenerationPage.selectSubUnitCriteria(employee[9]);
+    @FunctionalInterface
+    private interface SelectionCriteriaAction {
+        void apply(String value);
+    }
 
-        log.info("🎯 Adding selection criteria: Employment Status = '{}'", employee[10]);
-        reportGenerationPage.selectSelectionCriteria("Employment Status");
-        reportGenerationPage.clickSelectionCriteriaAdd();
-        reportGenerationPage.waitForScreen();
-        reportGenerationPage.selectEmploymentStatusCriteria(employee[10]);
+    private void addAllSelectionCriteria(String[] employee) {
+        addSelectionCriteria("Job Title", employee[8], reportGenerationPage::selectJobTitleCriteria);
+        addSelectionCriteria("Sub Unit", employee[9], reportGenerationPage::selectSubUnitCriteria);
+        addSelectionCriteria("Employment Status", employee[10], reportGenerationPage::selectEmploymentStatusCriteria);
+    }
 
+    private void addJobDisplayField() {
         log.info("🧾 Adding display field group: Job");
         reportGenerationPage.selectDisplayField("Job");
         reportGenerationPage.clickDisplayFieldAdd();
         reportGenerationPage.waitForScreen();
+    }
 
+    private void saveAndOpenDisplayedReport(String employeeUsername) {
         log.info("💾 Saving the predefined report");
         reportGenerationPage.clickSave();
         reportGenerationPage.waitForScreen(4);
         softAssert.assertTrue(driver.getCurrentUrl().contains("displayPredefinedReport"),
-                "Report did not open the displayPredefinedReport page for " + employee[4]);
+                "Report did not open the displayPredefinedReport page for " + employeeUsername);
 
         reportGenerationPage.clickExpandTable();
         reportGenerationPage.waitForScreen(4);
+    }
 
-        String pdfName = "Employee Contact info report.pdf";
-        reportGenerationPage.saveReportAsPdf(pdfName);
-        softAssert.assertTrue(reportGenerationPage.isPdfSaved(pdfName),
-                "PDF was not saved or is not a valid PDF: " + pdfName + " for " + employee[4]);
+    private void saveReportAsPdf(String employeeUsername) {
+        reportGenerationPage.saveReportAsPdf(PDF_NAME);
+        softAssert.assertTrue(reportGenerationPage.isPdfSaved(PDF_NAME),
+                "PDF was not saved or is not a valid PDF: " + PDF_NAME + " for " + employeeUsername);
+    }
+
+    @Test(dataProvider = "validEmployeesData", dataProviderClass = DataProviderTest.class)
+    @Story("Admin generates a predefined report filtered by job details")
+    @Description("As an admin, I want to generate a predefined report filtered by job title, sub unit, and employment status so that I can review matching employees.")
+    @Severity(SeverityLevel.CRITICAL)
+    public void generateReport(String... employee) {
+        String employeeUsername = employee[4];
+        log.info("🚀 Starting report generation test");
+
+        initPages();
+        loginAsAdmin();
+        openPim(employeeUsername);
+        openReportsTab(employeeUsername);
+
+        String reportName = (String) jsonFileManagerData.getValueByKey("reportName");
+        openPredefinedReportForEditing(reportName, employeeUsername);
+
+        addAllSelectionCriteria(employee);
+        addJobDisplayField();
+        saveAndOpenDisplayedReport(employeeUsername);
+        saveReportAsPdf(employeeUsername);
 
         log.info("🏁 Report generation test finished, checking results");
         softAssert.assertAll();

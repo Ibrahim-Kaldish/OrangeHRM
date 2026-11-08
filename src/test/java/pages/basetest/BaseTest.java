@@ -11,6 +11,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Listeners;
 import org.testng.asserts.SoftAssert;
+import pages.dashboard.DashboardPage;
+import pages.login.LoginPage;
 import utils.JsonFileManager;
 import utils.OpenCSVFileManager;
 import utils.ScreenshotUtil;
@@ -22,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Map;
 
 @Listeners(AllureTestNg.class)
 public class BaseTest {
@@ -62,4 +65,26 @@ public class BaseTest {
         log.debug("🧹 Driver quit and references cleared");
     }
 
+    protected void loginAs(String username, String password) {
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.enterUsername(username);
+        loginPage.enterPassword(password);
+        loginPage.clickLogin();
+    }
+
+    protected void assertOnDashboard(String role) {
+        DashboardPage dashboardPage = new DashboardPage(driver);
+        softAssert.assertTrue(driver.getCurrentUrl().equals(jsonFileManagerData.getValueByKey("dashboard")),
+                role + " login did not redirect to the dashboard");
+        softAssert.assertTrue(dashboardPage.getDashboardTitle().isDisplayed(),
+                "Dashboard title is not displayed after " + role.toLowerCase() + " login");
+        log.info("✅ {} logged in", role);
+    }
+
+    protected void loginAsAdmin() {
+        log.info("🔐 Logging in as admin");
+        Map<String, String> admin = (Map<String, String>) jsonFileManagerUsers.getValueByKey("admin");
+        loginAs(admin.get("username"), admin.get("password"));
+        assertOnDashboard("Admin");
+    }
 }
