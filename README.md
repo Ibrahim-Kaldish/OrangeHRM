@@ -4,7 +4,7 @@
 
 ## 🎬 Demo video
 
-▶️ Watch the full test run before you install anything: **[Open the demo video](https://github.com/user-attachments/assets/<generated-id>)**
+▶️ Watch the full test run before you install anything: **[Open the demo video](https://www.loom.com/share/0d28db54d86746b498db400b670bea27)**
 🎞️ The video shows the whole test run from the first login to the last logout, in the order the tests run.
 
 ## 📖 What this project does
